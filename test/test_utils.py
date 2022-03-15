@@ -1,5 +1,5 @@
 import pytest
-from src.utils import *
+from src.utils import is_list, is_list_of_type, is_type
 
 class TestClass():
   pass

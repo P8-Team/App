@@ -1,5 +1,5 @@
 from enum import Enum
-from src.utils import is_list, is_list_of_type, is_type
+from src.utils import is_list_of_type
 
 # Enum defining the possible results of classify
 Label = Enum('Label', 'Ok Undesired')
