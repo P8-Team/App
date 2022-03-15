@@ -1,21 +1,13 @@
-
-# do pyshark stuff
-import json
-
 import pyshark
 
+from src.filter_raw_frames import FilterFrameIterator
+from src.wifi_frame import WifiFrame
+
 if __name__ == '__main__':
-    # capture packets
-    # monitor mode
     capture = pyshark.LiveCapture(interface='Wi-Fi', monitor_mode=True)
     capture.set_debug()
-    for packet in capture:
-        print("=====================================================")
-        print("=====================================================")
-        print("=====================================================")
-        print(packet)
-        # serialize packets content to json
 
-        print(json.dumps(packet, indent=4))
+    for packet in FilterFrameIterator().filter_raw_frames(capture):
+        print(WifiFrame(packet))
         break
 
