@@ -9,7 +9,7 @@ class Frame:
         self.id = 0
         self.rssi = []
         self.packet_length = 0
-        self.mac_address = 0
+        self.transmitter_mac_address = 0
 
 class Classifier:
   def classify(self, frames: list):
