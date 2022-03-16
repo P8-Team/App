@@ -1,4 +1,4 @@
-from sympy import Circle, Point2D, Point
+from sympy import Circle, Point
 
 from src.location import common_intersection
 
@@ -9,7 +9,7 @@ def test_comon_intersection_returns_point_where_three_circles_overlap():
     Circle(Point(5,-5), 5)
   ]
 
-  assert common_intersection(circles) == Point2D(5,0)
+  assert common_intersection(circles) == Point(5,0)
 
 def test_comon_intersection_returns_None_when_three_circles_do_not_overlap():
   circles = [

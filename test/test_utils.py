@@ -1,5 +1,6 @@
 import pytest
-from src.utils import is_list, is_list_of_type, is_type
+from sympy import Circle, Point
+from src.utils import is_list, is_list_of_type, is_type, is_circle, is_point
 
 class TestClass():
   pass
@@ -53,3 +54,19 @@ def test_is_list_of_type():
   assert is_list_of_type([1,2,'three',4], int) == False
   assert is_list_of_type([{1:2}, [], {3:4}], dict) == False
   
+def test_is_point():
+  assert is_point(Point(1,2,3)) == True
+  assert is_point(Point(2,3)) == True
+
+  assert is_point(3) == False
+  assert is_point([1,2]) == False
+  assert is_point('no a point') == False
+
+def test_is_circle():
+  assert is_circle(Circle(Point(2,2), 2)) == True
+  assert is_circle(Circle(Point(0, 0), Point(1, 1), Point(1, 0))) == True
+
+  assert is_circle(Point(2,2)) == False
+  assert is_circle(2) == False
+  assert is_circle([1,2]) == False
+  assert is_circle('no a circle') == False

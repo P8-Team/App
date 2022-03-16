@@ -1,3 +1,4 @@
+from sympy import Circle, Point
 
 def is_list(object) -> bool:
   return isinstance(object, list)
@@ -11,3 +12,9 @@ def is_list_of_type(list: list, given_type: type) -> bool:
   if not is_type(given_type):
     raise TypeError('is_list_of_types must be given a type as second argument')
   return all(isinstance(item, given_type) for item in list)
+
+def is_point(object):
+  return isinstance(object, Point)
+
+def is_circle(object):
+  return isinstance(object, Circle)
