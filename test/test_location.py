@@ -1,3 +1,5 @@
+from typing import Type
+import pytest
 from sympy import Circle, Point
 
 from src.location import common_intersection
@@ -19,3 +21,9 @@ def test_comon_intersection_returns_None_when_three_circles_do_not_overlap():
   ]
 
   assert common_intersection(circles) == None
+
+def test_common_intersection_throws_exception_if_not_given_list_of_circles():
+  with pytest.raises(TypeError):
+    common_intersection('this is not a list')
+  with pytest.raises(TypeError):
+    common_intersection([1, Point(3,3), 'not a circle'])
