@@ -1,15 +1,25 @@
-from sympy import Circle, Point
+from turtle import circle
+from sympy import Circle
 from src.utils import is_list_of_type
+import itertools
 
 def common_intersection(circles):
   if not is_list_of_type(circles, Circle):
     raise TypeError('common_intersection must be given a list of Circles')
-    
-  intersection1 = circles[0].intersection(circles[1])
-  intersection2 = circles[1].intersection(circles[2])
+  if len(circles) < 2:
+    raise ValueError('common_intersection must be given at least two Circles')
 
-  result = list(set(intersection1).intersection(intersection2))
-  if len(result) == 0:
-    return None
-  else:
+  intersections = set(compare(circles[0], circles[1]))
+
+  for a, b in itertools.combinations(circles[2:], 2):
+    intersections.update(set(compare(a, b)))
+
+  result = list(intersections)
+
+  if len(result) > 0:
     return result[0]
+  else:
+    return None
+
+def compare(a, b):
+  return a.intersection(b)
