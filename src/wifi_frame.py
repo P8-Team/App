@@ -12,8 +12,8 @@ class WifiFrame:
 
     def __init__(self, frame):
         self.frame_control_information = FrameControlInformation(frame.wlan)
-        self.length = frame.length
-        self.sniff_timestamp = frame.sniff_timestamp
+        self.length = int(frame.length)
+        self.sniff_timestamp = float(frame.sniff_timestamp)
         self.wlan_radio = WlanRadioInformation(frame.wlan_radio)
 
     def __eq__(self, other):
