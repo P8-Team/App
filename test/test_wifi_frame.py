@@ -1,5 +1,5 @@
 from src.wifi_frame import WifiFrame
-from utils.wifi_test_utils import Frame, Layer
+from test.utils.wifi_test_utils import Frame, Layer
 
 
 def test_construct_wifi_frame():

@@ -1,5 +1,5 @@
 from src.wlan_radio_information import WlanRadioInformation
-from utils.wifi_test_utils import Layer
+from test.utils.wifi_test_utils import Layer
 
 
 def test_wlan_radio_information():

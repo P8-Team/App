@@ -1,5 +1,5 @@
 from src.frame_control_information import FrameControlInformation
-from utils.wifi_test_utils import Layer
+from test.utils.wifi_test_utils import Layer
 
 
 def test_construct_frame_control_information():
