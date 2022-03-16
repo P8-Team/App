@@ -10,11 +10,19 @@ class WifiFrame:
         Most attributes are removed when constructed, leaving only attributes that can be relevant for further analysis.
     """
 
-    def __init__(self, frame):
-        self.frame_control_information = FrameControlInformation(frame.wlan)
-        self.length = int(frame.length)
-        self.sniff_timestamp = float(frame.sniff_timestamp)
-        self.wlan_radio = WlanRadioInformation(frame.wlan_radio)
+    def __init__(self, length=None, sniff_timestamp=None, wlan_radio=None, frame_control_information=None):
+        self.frame_control_information = frame_control_information
+        self.length = length
+        self.sniff_timestamp = sniff_timestamp
+        self.wlan_radio = wlan_radio
+
+    @classmethod
+    def from_frame(cls, frame):
+        length = int(frame.length)
+        sniff_timestamp = float(frame.sniff_timestamp)
+        wlan_radio = WlanRadioInformation.from_layer(frame.wlan_radio)
+        frame_control_information = FrameControlInformation.from_layer(frame.wlan)
+        return cls(length, sniff_timestamp, wlan_radio, frame_control_information)
 
     def __eq__(self, other):
         """
@@ -24,8 +32,8 @@ class WifiFrame:
         :return: boolean
         """
         return self.frame_control_information == other.frame_control_information and \
-            self.length == other.length and \
-            self.wlan_radio == other.wlan_radio
+               self.length == other.length and \
+               self.wlan_radio == other.wlan_radio
 
     def __repr__(self):
         """

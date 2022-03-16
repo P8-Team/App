@@ -12,7 +12,7 @@ def test_construct_frame_control_information():
     })
 
     # Act
-    frame_control_information = FrameControlInformation(layer)
+    frame_control_information = FrameControlInformation.from_layer(layer)
 
     # Assert
     assert frame_control_information.type == 1
@@ -29,7 +29,7 @@ def test_construct_frame_control_information_missing_fields():
     })
 
     # Act
-    frame_control_information = FrameControlInformation(layer)
+    frame_control_information = FrameControlInformation.from_layer(layer)
 
     # Assert
     assert frame_control_information.type == 1
@@ -54,8 +54,8 @@ def test_compare_frame_control_information_identical():
     })
 
     # Act
-    frame_control_information1 = FrameControlInformation(layer1)
-    frame_control_information2 = FrameControlInformation(layer2)
+    frame_control_information1 = FrameControlInformation.from_layer(layer1)
+    frame_control_information2 = FrameControlInformation.from_layer(layer2)
 
     # Assert
     assert frame_control_information1 == frame_control_information2
@@ -77,8 +77,8 @@ def test_compare_frame_control_information_different():
     })
 
     # Act
-    frame_control_information1 = FrameControlInformation(layer1)
-    frame_control_information2 = FrameControlInformation(layer2)
+    frame_control_information1 = FrameControlInformation.from_layer(layer1)
+    frame_control_information2 = FrameControlInformation.from_layer(layer2)
 
     # Assert
     assert frame_control_information1 != frame_control_information2

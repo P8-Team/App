@@ -11,7 +11,7 @@ def test_wlan_radio_information():
     })
 
     # Act
-    wlan_radio_information = WlanRadioInformation(layer)
+    wlan_radio_information = WlanRadioInformation.from_layer(layer)
 
     # Assert
     assert wlan_radio_information.rssi == -50
@@ -27,7 +27,7 @@ def test_wlan_radio_information_construct_missing_information():
     })
 
     # Act
-    wlan_radio_information = WlanRadioInformation(layer)
+    wlan_radio_information = WlanRadioInformation.from_layer(layer)
 
     # Assert
     assert wlan_radio_information.rssi == -50
@@ -43,7 +43,7 @@ def test_wlan_radio_information_construct_with_float():
     })
 
     # Act
-    wlan_radio_information = WlanRadioInformation(layer)
+    wlan_radio_information = WlanRadioInformation.from_layer(layer)
 
     # Assert
     assert wlan_radio_information.rssi == -50.5
@@ -65,8 +65,8 @@ def test_compare_wlan_radio_information_identical():
     })
 
     # Act
-    wlan_radio_information1 = WlanRadioInformation(layer1)
-    wlan_radio_information2 = WlanRadioInformation(layer2)
+    wlan_radio_information1 = WlanRadioInformation.from_layer(layer1)
+    wlan_radio_information2 = WlanRadioInformation.from_layer(layer2)
 
     # Assert
     assert wlan_radio_information1 == wlan_radio_information2
@@ -87,8 +87,8 @@ def test_compare_wlan_radio_information_different_rrsi():
     })
 
     # Act
-    wlan_radio_information1 = WlanRadioInformation(layer1)
-    wlan_radio_information2 = WlanRadioInformation(layer2)
+    wlan_radio_information1 = WlanRadioInformation.from_layer(layer1)
+    wlan_radio_information2 = WlanRadioInformation.from_layer(layer2)
 
     # Assert
     assert wlan_radio_information1 == wlan_radio_information2
@@ -109,8 +109,8 @@ def test_compare_wlan_radio_information_different():
     })
 
     # Act
-    wlan_radio_information1 = WlanRadioInformation(layer1)
-    wlan_radio_information2 = WlanRadioInformation(layer2)
+    wlan_radio_information1 = WlanRadioInformation.from_layer(layer1)
+    wlan_radio_information2 = WlanRadioInformation.from_layer(layer2)
 
     # Assert
     assert wlan_radio_information1 != wlan_radio_information2

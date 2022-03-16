@@ -8,6 +8,6 @@ if __name__ == '__main__':
     capture.set_debug()
 
     for packet in capture:
-        print(WifiFrame(packet))
+        print(WifiFrame.from_frame(packet))
         break
 
