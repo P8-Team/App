@@ -38,8 +38,5 @@ class WlanRadioInformation:
         """
         return self.data_rate, self.radio_timestamp
 
-    def __hash__(self):
-        return hash(self.__key__())
-
 
         

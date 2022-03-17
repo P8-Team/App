@@ -1,3 +1,5 @@
+import copy
+
 from src.wifi_frame import WifiFrame
 from test.utils.wifi_test_utils import Frame, Layer
 
@@ -69,6 +71,7 @@ def test_compare_wifi_frame_identical():
     # Assert
     assert wifi_frame1 == wifi_frame2
 
+
 def test_compare_wifi_frame_different_timestamp():
     # Arrange
     frame1 = Frame("340", "1647417907.513663000", {
@@ -105,6 +108,7 @@ def test_compare_wifi_frame_different_timestamp():
     # Assert
     assert wifi_frame1 == wifi_frame2
 
+
 def test_compare_wifi_frame_different_rssi():
     # Arrange
     frame1 = Frame("340", "1647417907.513663000", {
@@ -140,6 +144,7 @@ def test_compare_wifi_frame_different_rssi():
 
     # Assert
     assert wifi_frame1 == wifi_frame2
+
 
 def test_compare_wifi_frame_different():
     # Arrange
@@ -178,3 +183,66 @@ def test_compare_wifi_frame_different():
     assert wifi_frame1 != wifi_frame2
 
 
+def test_wifi_frame_has_same_hash_with_different_rrsi_and_sniff_timestamp():
+    frame1 = WifiFrame.from_frame(Frame("340", "1647417907.513663000", {
+        'wlan': Layer({
+            'wlan.fc.type': '0',
+            'wlan.fc.subtype': '4',
+            'wlan.ra_resolved': '00:0c:29:b7:d9:b0',
+            'wlan.ta_resolved': '00:0c:29:b7:d9:b1',
+        }),
+        'wlan_radio': Layer({
+            'wlan_radio.signal_dbm': '-62',
+            'wlan_radio.data_rate': '54',
+            'wlan_radio.timestamp': '1567757308'
+        })
+    }))
+    # Copy frame 1 and change the rssi and sniff timestamp
+
+    frame2 = copy.deepcopy(frame1)
+    frame2.sniff_timestamp = 1647417905.513663000
+    frame2.wlan_radio.rssi = -63
+
+    assert frame1.__key__() == frame2.__key__()
+    assert hash(frame1) == hash(frame2)
+
+
+def test_wifi_frame_has_same_hash_identical():
+    frame1 = WifiFrame.from_frame(Frame("340", "1647417907.513663000", {
+        'wlan': Layer({
+            'wlan.fc.type': '0',
+            'wlan.fc.subtype': '4',
+            'wlan.ra_resolved': '00:0c:29:b7:d9:b0',
+            'wlan.ta_resolved': '00:0c:29:b7:d9:b1',
+        }),
+        'wlan_radio': Layer({
+            'wlan_radio.signal_dbm': '-62',
+            'wlan_radio.data_rate': '54',
+            'wlan_radio.timestamp': '1567757308'
+        })
+    }))
+    frame2 = copy.deepcopy(frame1)
+
+    assert frame1.__key__() == frame2.__key__()
+    assert hash(frame1) == hash(frame2)
+
+
+def test_wifi_frame_has_different_hash():
+    frame1 = WifiFrame.from_frame(Frame("340", "1647417907.513663000", {
+        'wlan': Layer({
+            'wlan.fc.type': '0',
+            'wlan.fc.subtype': '4',
+            'wlan.ra_resolved': '00:0c:29:b7:d9:b0',
+            'wlan.ta_resolved': '00:0c:29:b7:d9:b1',
+        }),
+        'wlan_radio': Layer({
+            'wlan_radio.signal_dbm': '-62',
+            'wlan_radio.data_rate': '54',
+            'wlan_radio.timestamp': '1567757308'
+        })
+    }))
+    frame2 = copy.deepcopy(frame1)
+    frame2.length = 341
+
+    assert frame1.__key__() != frame2.__key__()
+    assert hash(frame1) != hash(frame2)
