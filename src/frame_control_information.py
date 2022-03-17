@@ -25,3 +25,9 @@ class FrameControlInformation:
                and self.subtype == other.subtype \
                and self.receiver_address == other.receiver_address \
                and self.transmitter_address == other.transmitter_address
+
+    def __key__(self):
+        return self.type, self.subtype, self.receiver_address, self.transmitter_address
+
+    def __hash__(self):
+        return hash(self.__key__())

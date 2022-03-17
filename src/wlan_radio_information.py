@@ -29,4 +29,17 @@ class WlanRadioInformation:
         return self.data_rate == other.data_rate \
             and self.radio_timestamp == other.radio_timestamp
 
+    def __key__(self):
+        """
+            Overrides the default implementation
+            Don't compare RSSI
+        :param other:
+        :return:
+        """
+        return self.data_rate, self.radio_timestamp
+
+    def __hash__(self):
+        return hash(self.__key__())
+
+
         
