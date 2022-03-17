@@ -19,7 +19,7 @@ def test_construct_wifi_frame():
     })
 
     # Act
-    wifi_frame = WifiFrame(frame)
+    wifi_frame = WifiFrame.from_frame(frame)
 
     # Assert
     assert wifi_frame.length == 340
@@ -31,6 +31,7 @@ def test_construct_wifi_frame():
     assert wifi_frame.wlan_radio.rssi == -62
     assert wifi_frame.wlan_radio.data_rate == 54
     assert wifi_frame.wlan_radio.radio_timestamp == 1567757308
+
 
 def test_compare_wifi_frame_identical():
     # Arrange
@@ -62,8 +63,8 @@ def test_compare_wifi_frame_identical():
     })
 
     # Act
-    wifi_frame1 = WifiFrame(frame1)
-    wifi_frame2 = WifiFrame(frame2)
+    wifi_frame1 = WifiFrame.from_frame(frame1)
+    wifi_frame2 = WifiFrame.from_frame(frame2)
 
     # Assert
     assert wifi_frame1 == wifi_frame2
@@ -98,8 +99,8 @@ def test_compare_wifi_frame_different_timestamp():
     })
 
     # Act
-    wifi_frame1 = WifiFrame(frame1)
-    wifi_frame2 = WifiFrame(frame2)
+    wifi_frame1 = WifiFrame.from_frame(frame1)
+    wifi_frame2 = WifiFrame.from_frame(frame2)
 
     # Assert
     assert wifi_frame1 == wifi_frame2
@@ -134,8 +135,8 @@ def test_compare_wifi_frame_different_rssi():
     })
 
     # Act
-    wifi_frame1 = WifiFrame(frame1)
-    wifi_frame2 = WifiFrame(frame2)
+    wifi_frame1 = WifiFrame.from_frame(frame1)
+    wifi_frame2 = WifiFrame.from_frame(frame2)
 
     # Assert
     assert wifi_frame1 == wifi_frame2
@@ -170,8 +171,8 @@ def test_compare_wifi_frame_different():
     })
 
     # Act
-    wifi_frame1 = WifiFrame(frame1)
-    wifi_frame2 = WifiFrame(frame2)
+    wifi_frame1 = WifiFrame.from_frame(frame1)
+    wifi_frame2 = WifiFrame.from_frame(frame2)
 
     # Assert
     assert wifi_frame1 != wifi_frame2
