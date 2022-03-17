@@ -1,4 +1,3 @@
-from turtle import circle
 from sympy import Circle
 from src.utils import is_list_of_type
 import itertools
@@ -19,7 +18,7 @@ def common_intersection(circles):
     intersections.intersection(compare(a, b))
 
   result = list(intersections)
-  
+
   if len(result) > 0:
     return result[0]
   else:
