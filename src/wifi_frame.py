@@ -47,3 +47,16 @@ class WifiFrame:
     def construct_from_iterator(cls, iterator):
         for frame in iterator:
             yield cls(frame)
+
+    def __key__(self):
+        """
+            Returns a tuple of all attributes that are used for comparison
+            Calls __key__ on the frame_control_information object to avoid getting rssi in the comparison
+        :return:
+        """
+        return self.length, self.frame_control_information, self.wlan_radio.__key__()
+
+    def __hash__(self):
+        return hash(self.__key__())
+
+
