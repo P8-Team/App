@@ -3,7 +3,6 @@ from multiprocessing import Queue, Process
 import pyshark
 
 from src.frame_aggregator import frame_aggregator
-from src.packet_filter import PacketFilter
 from src.wifi_frame import WifiFrame
 
 
