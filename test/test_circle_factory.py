@@ -22,6 +22,16 @@ def test_circle_factory_returns_circle_gets_float_second_parameter():
 def test_circle_factory_returns_circle_gets_int_second_parameter():
     assert is_circle(circle_factory(Point(2, 2), 5))
 
+# TODO: Write tests checking that circle_factory returns correct circles
+
+def test_circle_factory_returns_circle_with_correct_values():
+    circle1 = circle_factory(Point(1,2),3)
+    circle2 = circle_factory(Point(47.2, 800.99), 567.567)
+    assert circle1.center == Point(1,2)
+    assert circle2.center == Point(47.2, 800.99)
+    assert circle1.radius == 3
+    assert circle2.radius == 567.567
+
 
 def test_circle_factory_lst_throws_exception_if_elements_are_incorrect():
     with pytest.raises(ValueError):
