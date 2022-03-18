@@ -1,7 +1,17 @@
 class PacketFilter:
-    # https://en.wikipedia.org/wiki/802.11_Frame_Types
-    whitelisted_types = [2]
-    whitelisted_subtypes = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]
+
+    def __init__(
+            self,
+            whitelisted_types=None,
+            whitelisted_subtypes=None
+    ):
+        # https://en.wikipedia.org/wiki/802.11_Frame_Types
+        if whitelisted_types is None:
+            whitelisted_types = [2]
+        if whitelisted_subtypes is None:
+            whitelisted_subtypes = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]
+        self.whitelisted_types = whitelisted_types
+        self.whitelisted_subtypes = whitelisted_subtypes
 
     def filter(self, iterator):
         """
@@ -11,8 +21,8 @@ class PacketFilter:
         """
         return self.filter_iterator(iterator,
                                     lambda packet:
-                                       self.filter_packets_by_subtypes(packet, self.whitelisted_subtypes)
-                                       and self.packet_types_filter_func(packet, self.whitelisted_types)
+                                    self.filter_packets_by_subtypes(packet, self.whitelisted_subtypes)
+                                    and self.packet_types_filter_func(packet, self.whitelisted_types)
                                     )
 
     @staticmethod

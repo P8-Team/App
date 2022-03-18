@@ -54,6 +54,19 @@ def test_frame_aggregator_combine_packets():
     assert combined_frame == frames[0]
 
 
+def test_frame_aggregator_threshold_one():
+    # Arrange
+    frames = [
+        make_wifi_frame(1, 5),
+    ]
+
+    # Act
+    combined_frames = list(frame_aggregator(frames, 1, 0.1, 10))
+
+    # Assert
+    assert len(combined_frames) == 1
+
+
 def test_frame_aggregator_does_not_yield_frames_before_threshold_reached():
     # Arrange
     frames = [
@@ -121,4 +134,3 @@ def test_frame_aggregator_full_buffer():
 
     # Assert that the first two frames were dropped
     assert len(combined_frames) == 0
-
