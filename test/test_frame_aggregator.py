@@ -53,6 +53,7 @@ def test_frame_aggregator_combine_packets():
     # as the compare function does not care about rssi or sniff_timestamp
     assert combined_frame == frames[0]
 
+
 def test_frame_aggregator_threshold_one():
     # Arrange
     frames = [
@@ -64,6 +65,7 @@ def test_frame_aggregator_threshold_one():
 
     # Assert
     assert len(combined_frames) == 1
+
 
 def test_frame_aggregator_does_not_yield_frames_before_threshold_reached():
     # Arrange
@@ -132,6 +134,3 @@ def test_frame_aggregator_full_buffer():
 
     # Assert that the first two frames were dropped
     assert len(combined_frames) == 0
-
-
-
