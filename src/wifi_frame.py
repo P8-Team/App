@@ -42,3 +42,8 @@ class WifiFrame:
         :return:
         """
         return json.dumps(self, default=lambda o: o.__dict__, sort_keys=True, indent=4)
+
+    @classmethod
+    def construct_from_iterator(cls, iterator):
+        for frame in iterator:
+            yield cls(frame)
