@@ -5,6 +5,9 @@ from src.utils import is_point
 
 def circle_factory(point: Point, radius: float):
     """
+    Creates a circle from a Point and a radius.
+    Note: When using floats, the resulting values in Point and Circle
+    objects will be converted to the type Fraction
     :param point: Takes an input of the type sympy.Point
     :param radius: Takes a radius of the circle.
     :return: A circle.
