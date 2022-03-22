@@ -1,0 +1,4 @@
+pyshark==0.4.5
+pytest==7.1.0
+expiringdict==1.2.1
+iterators==0.0.2
