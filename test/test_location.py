@@ -66,7 +66,7 @@ def test_location_returns_point_based_on_two_reference_values():
 
   assert location(values) == Point(5,0)
 
-def test_common_intersection_four_circles():
+def test_location_returns_point_based_on_four_reference_values():
   values = [
     [0,0,5],
     [9,0,4],
