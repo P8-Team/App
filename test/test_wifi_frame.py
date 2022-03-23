@@ -30,7 +30,7 @@ def test_construct_wifi_frame():
     assert wifi_frame.frame_control_information.subtype == 4
     assert wifi_frame.frame_control_information.receiver_address == '00:0c:29:b7:d9:b0'
     assert wifi_frame.frame_control_information.transmitter_address == '00:0c:29:b7:d9:b1'
-    assert wifi_frame.wlan_radio.rssi == -62
+    assert wifi_frame.wlan_radio.signal_strength == -62
     assert wifi_frame.wlan_radio.data_rate == 54
     assert wifi_frame.wlan_radio.radio_timestamp == 1567757308
 
@@ -109,7 +109,7 @@ def test_compare_wifi_frame_different_timestamp():
     assert wifi_frame1 == wifi_frame2
 
 
-def test_compare_wifi_frame_different_rssi():
+def test_compare_wifi_frame_different_signal_strength():
     # Arrange
     frame1 = Frame("340", "1647417907.513663000", {
         'wlan': Layer({
@@ -197,11 +197,11 @@ def test_wifi_frame_has_same_hash_with_different_rrsi_and_sniff_timestamp():
             'wlan_radio.timestamp': '1567757308'
         })
     }))
-    # Copy frame 1 and change the rssi and sniff timestamp
+    # Copy frame 1 and change the signal_strength and sniff timestamp
 
     frame2 = copy.deepcopy(frame1)
     frame2.sniff_timestamp = 1647417905.513663000
-    frame2.wlan_radio.rssi = -63
+    frame2.wlan_radio.signal_strength = -63
 
     assert frame1.__key__() == frame2.__key__()
     assert hash(frame1) == hash(frame2)
