@@ -1,4 +1,5 @@
-from sympy import Circle
+import math
+from sympy import Circle, Point
 from src.utils import is_list_of_type
 from src.Circle_factory import circle_factory_lst
 import itertools
@@ -35,3 +36,13 @@ def common_intersection(circles):
 
 def compare(a, b):
   return set(a.intersection(b))
+
+def angle_between_two_points(p1: Point, p2: Point):
+  """
+  Finds the angle of p2 relative to p1.
+  Note: angle 0 is along the positive x axis
+  :param p1: A Point
+  :param p2: A Point
+  :return: The angle of p2 relative to p1
+  """
+  return math.degrees(math.atan2(p2.y - p1.y, p2.x - p1.x)) % 360

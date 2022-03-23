@@ -1,7 +1,7 @@
 import pytest
 from sympy import Circle, Point
 
-from src.location import common_intersection, location
+from src.location import common_intersection, location, angle_between_two_points
 
 def test_common_intersection_returns_point_where_three_circles_overlap():
   circles = [
@@ -84,3 +84,11 @@ def test_location_returns_None_when_no_location_can_be_determined():
   ]
 
   assert location(values) == None
+
+def test_angle_between_two_points_return_correct_angle_in_degrees():
+  assert angle_between_two_points(Point(0,0), Point(15, 0)) == 0
+  assert angle_between_two_points(Point(0,0), Point(5, 5)) == 45
+  assert angle_between_two_points(Point(0,0), Point(0, 5.5)) == 90
+  assert angle_between_two_points(Point(0,0), Point(-6.6, 0)) == 180
+  assert angle_between_two_points(Point(0,0), Point(0, -82)) == 270
+  
