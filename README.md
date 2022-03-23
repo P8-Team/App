@@ -34,5 +34,10 @@ Be aware you may not be able to retrieve all frame types, notable data frames, o
 ### 3. Start listening
 To start listening, run:
 ```bash
-$ python3 src/main.py
+$ python3 src/main.py [...interfaces]
+```
+
+For example to listen on interfaces `wlan0` and `wlan1`, run:
+```bash
+$ python3 src/main.py wlan0 wlan1
 ```
