@@ -1,6 +1,15 @@
 from sympy import Circle
 from src.utils import is_list_of_type
+from src.Circle_factory import circle_factory_lst
 import itertools
+
+def location(reference_values):
+  """
+  Determine a position based on the distance from a number of reference_values
+  :param reference_values: List of lists containing position and distance. (Each elements has the form [x, y, dist])
+  :return: Point representing the location
+  """
+  return common_intersection(circle_factory_lst(reference_values))
 
 def common_intersection(circles):
   if not is_list_of_type(circles, Circle):

@@ -1,5 +1,4 @@
 from types import FunctionType
-from typing import Type
 from sympy import Circle, Point
 
 def is_list(object) -> bool:
@@ -13,7 +12,7 @@ def is_list_of_type(list: list, given_type: type) -> bool:
     raise TypeError('is_list_of_types must be given a list as first argument')
   if not is_type(given_type):
     raise TypeError('is_list_of_types must be given a type as second argument')
-  return all(isinstance(item, given_type) for item in list)
+  return true_for_all(lambda item: isinstance(item, given_type), list)
 
 def is_point(object):
   return isinstance(object, Point)
