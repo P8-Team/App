@@ -9,6 +9,14 @@ def output_formatter(objects: list, serializer_function):
     return serializer_function(objects)
 
 
-def outputter(objects: list, serializer_function, output_function, *extra_args):
+def outputter(objects: list, serializer_function, output_function, *output_function_args):
+    """
+
+    :param objects: The list objects which should be serialized
+    :param serializer_function: The function to serialize the objects. Should be able to serialize the list.
+    :param output_function: The function making the output
+    :param output_function_args: Arguments to the output function. The serialized objects will be first argument.
+    :return:
+    """
     formatted_output = output_formatter(objects, serializer_function)
-    output_function(formatted_output, extra_args)
+    output_function(formatted_output, output_function_args)

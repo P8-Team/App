@@ -12,6 +12,10 @@ def __serializer_for_test_point(objects):
     return output
 
 
+def __output_test_function(input_value, output_value):
+    output_value[0].append(input_value)
+
+
 def test_outputter_gives_correct_output_given_list_of_strings():
     elements = ["a", "b,c", "c"]
     result = output_formatter(elements, json.dumps)
@@ -25,4 +29,8 @@ def test_outputter_gives_correct_output_given_custom_serializer():
 
 
 def test_output_function_returns_correct_information():
-    outputter()
+    elemnts = ['a', 'b', 'c']
+    output_test = list()
+    outputter(elemnts, json.dumps, __output_test_function, output_test)
+    # output_test[0] is needed, as the output_test is a tuple which, and only the first element is relevant.
+    assert output_test[0] == '["a", "b", "c"]'
