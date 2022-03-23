@@ -1,6 +1,6 @@
 class WlanRadioInformation:
-    def __init__(self, rssi=None, data_rate=None, radio_timestamp=None):
-        self.rssi = rssi
+    def __init__(self, signal_strength=None, data_rate=None, radio_timestamp=None):
+        self.signal_strength = signal_strength
         self.data_rate = data_rate
         self.radio_timestamp = radio_timestamp
 
@@ -11,18 +11,18 @@ class WlanRadioInformation:
 
         :param layer: Layer from pyshark
         """
-        rssi = layer.get("wlan_radio.signal_dbm")
-        rssi = float(rssi) if rssi is not None else None
+        signal_strength = layer.get("wlan_radio.signal_dbm")
+        signal_strength = float(signal_strength) if signal_strength is not None else None
         data_rate = layer.get("wlan_radio.data_rate")
         data_rate = float(data_rate) if data_rate is not None else None
         radio_timestamp = layer.get("wlan_radio.timestamp")
         radio_timestamp = int(radio_timestamp) if radio_timestamp is not None else None
-        return cls(rssi, data_rate, radio_timestamp)
+        return cls(signal_strength, data_rate, radio_timestamp)
 
     def __eq__(self, other):
         """
             Overrides the default implementation
-            Don't compare RSSI
+            Don't compare signal_strength
         :param other:
         :return:
         """
@@ -32,7 +32,7 @@ class WlanRadioInformation:
     def __key__(self):
         """
             Overrides the default implementation
-            Don't compare RSSI
+            Don't compare signal_strength
         :param other:
         :return:
         """

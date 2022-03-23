@@ -27,7 +27,7 @@ class WifiFrame:
     def __eq__(self, other):
         """
             Overrides the default implementation
-            Compares everything but sniff_timestamp and rssi, as everything else should be the same for the same frame.
+            Compares everything but sniff_timestamp and signal_strength, as everything else should be the same for the same frame.
         :param other:
         :return: boolean
         """
@@ -44,14 +44,14 @@ class WifiFrame:
         return json.dumps(self, default=lambda o: o.__dict__, sort_keys=True, indent=4)
 
     @classmethod
-    def construct_from_iterator(cls, iterator):
-        for frame in iterator:
+    def construct_from_generator(cls, generator):
+        for frame in generator:
             yield cls(frame)
 
     def __key__(self):
         """
             Returns a tuple of all attributes that are used for comparison
-            Calls __key__ on the frame_control_information object to avoid getting rssi in the comparison
+            Calls __key__ on the frame_control_information object to avoid getting signal_strength in the comparison
         :return:
         """
         return self.length, self.frame_control_information, self.wlan_radio.__key__()

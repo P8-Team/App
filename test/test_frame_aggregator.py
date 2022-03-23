@@ -8,7 +8,7 @@ from src.wifi_frame import WifiFrame
 from src.wlan_radio_information import WlanRadioInformation
 
 
-def make_wifi_frame(sniff_timestamp, rssi, transmitter_address='00:00:00:00:00:01'):
+def make_wifi_frame(sniff_timestamp, signal_strength, transmitter_address='00:00:00:00:00:01'):
     return WifiFrame(
         length=200,
         sniff_timestamp=sniff_timestamp,
@@ -19,14 +19,14 @@ def make_wifi_frame(sniff_timestamp, rssi, transmitter_address='00:00:00:00:00:0
             transmitter_address=transmitter_address,
         ),
         wlan_radio=WlanRadioInformation(
-            rssi=rssi,
+            signal_strength=signal_strength,
             data_rate=12,
             radio_timestamp=1200
         )
     )
 
 
-def test_frame_aggregator_combine_packets():
+def test_frame_aggregator_combine_frames():
     # Arrange
     frames = [
         make_wifi_frame(1, 5),
@@ -44,13 +44,13 @@ def test_frame_aggregator_combine_packets():
     assert 1 in combined_frame.sniff_timestamp
     assert 2 in combined_frame.sniff_timestamp
     assert 3 in combined_frame.sniff_timestamp
-    assert len(combined_frame.wlan_radio.rssi) == 3
-    assert 5 in combined_frame.wlan_radio.rssi
-    assert 6 in combined_frame.wlan_radio.rssi
-    assert 7 in combined_frame.wlan_radio.rssi
+    assert len(combined_frame.wlan_radio.signal_strength) == 3
+    assert 5 in combined_frame.wlan_radio.signal_strength
+    assert 6 in combined_frame.wlan_radio.signal_strength
+    assert 7 in combined_frame.wlan_radio.signal_strength
 
     # Rest of the combined frame should be equal to any of the test input frames
-    # as the compare function does not care about rssi or sniff_timestamp
+    # as the compare function does not care about signal_strength or sniff_timestamp
     assert combined_frame == frames[0]
 
 
@@ -84,7 +84,7 @@ def test_frame_aggregator_does_not_yield_frames_before_threshold_reached():
 
 def test_frame_aggregator_frames_expire():
     """
-        The idea of this test, is to provide the aggregator with enough packets to exceed the threshold,
+        The idea of this test, is to provide the aggregator with enough frames to exceed the threshold,
         and combine them into a combined frame.
 
         However the generator is slow (sleeps 0.05 seconds pr frame), such that the aggregator does not see the
