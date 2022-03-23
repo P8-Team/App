@@ -26,7 +26,11 @@ def circle_factory_lst(circles: list):
     :param circles: Takes a list of lists of the form [X,Y,Radius]
     :return: List of circles
     """
-    for elem in circles:
-        if len(elem) != 3:
-            raise ValueError("Elements must be lists containing three elements")
-        circle_factory(Point(elem[0], elem[1]), elem[2])
+    return list(map(circle_from_list, circles))
+        
+def circle_from_list(list: list):
+    if len(list) != 3:
+        raise ValueError("Elements must be lists containing three elements")
+    if not all(isinstance(elem, float) or isinstance(elem, int) for elem in list):
+        raise ValueError("All elements of list must be numbers")
+    return circle_factory(Point(list[0], list[1]), list[2])

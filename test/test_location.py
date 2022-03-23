@@ -20,7 +20,7 @@ def test_comon_intersection_two_circles():
 
   assert common_intersection(circles) == Point(5,0)
 
-def test_comon_intersection_four_circles():
+def test_common_intersection_four_circles():
   circles = [
     Circle(Point(0,0), 5),
     Circle(Point(9,0), 4),
@@ -30,7 +30,7 @@ def test_comon_intersection_four_circles():
 
   assert common_intersection(circles) == Point(5,0)
 
-def test_comon_intersection_returns_None_when_three_circles_do_not_overlap():
+def test_common_intersection_returns_None_when_three_circles_do_not_overlap():
   circles = [
     Circle(Point(0,0), 2),
     Circle(Point(9,0), 4),
