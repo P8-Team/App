@@ -1,3 +1,5 @@
+from types import FunctionType
+from typing import Type
 from sympy import Circle, Point
 
 def is_list(object) -> bool:
@@ -18,3 +20,10 @@ def is_point(object):
 
 def is_circle(object):
   return isinstance(object, Circle)
+
+def true_for_all(cond: FunctionType, list: list):
+  if not isinstance(cond, FunctionType):
+    raise TypeError('First argument must be a function')
+  if not is_list(list):
+    raise TypeError('Second argument must be a list')
+  return all(cond(x) for x in list)

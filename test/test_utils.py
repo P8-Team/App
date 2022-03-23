@@ -1,6 +1,6 @@
 import pytest
 from sympy import Circle, Point
-from src.utils import is_list, is_list_of_type, is_type, is_circle, is_point
+from src.utils import is_list, is_list_of_type, is_type, is_circle, is_point, true_for_all
 
 class TestClass():
   pass
@@ -70,3 +70,23 @@ def test_is_circle():
   assert is_circle(2) == False
   assert is_circle([1,2]) == False
   assert is_circle('no a circle') == False
+
+def test_true_for_all_returns_true_given_empty_list():
+  assert true_for_all(lambda x: False, []) == True
+  assert true_for_all(lambda x: True, []) == True
+
+def test_true_for_all_returns_true_if_condition_hold_for_all():
+  assert true_for_all(lambda x: x < 10, [1,2,3,4]) == True
+  assert true_for_all(lambda x: x % 3 == 0, [3,6,9,81]) == True
+  
+def test_true_for_all_return_false_if_condition_fails():
+  assert true_for_all(lambda x: x == 1, [1,2,1,1,1]) == False
+  assert true_for_all(lambda x: x < 0, [1,2,3,4]) == False
+
+def test_true_for_all_throws_exception_if_second_argument_is_not_list():
+  with pytest.raises(TypeError):
+    true_for_all(lambda x: True, 'not a list')
+
+def test_true_for_all_throws_exception_if_first_argument_is_not_function():
+  with pytest.raises(TypeError):
+    true_for_all('Not a function', [])
