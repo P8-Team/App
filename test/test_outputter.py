@@ -31,6 +31,6 @@ def test_outputter_gives_correct_output_given_custom_serializer():
 def test_output_function_returns_correct_information():
     elements = ['a', 'b', 'c']
     output_test = list()
-    outputter(elemnts, json.dumps, __output_test_function, output_test)
+    outputter(elements, json.dumps, __output_test_function, output_test)
     # output_test[0] is needed, as the output_test is a tuple which, and only the first element is relevant.
     assert output_test[0] == '["a", "b", "c"]'
