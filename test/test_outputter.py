@@ -1,5 +1,6 @@
 import json
 
+import pytest
 from sympy import Point
 
 from src.outputter import output_formatter, outputter
@@ -34,3 +35,26 @@ def test_output_function_returns_correct_information():
     outputter(elements, json.dumps, __output_test_function, output_test)
     # output_test[0] is needed, as the output_test is a tuple which, and only the first element is relevant.
     assert output_test[0] == '["a", "b", "c"]'
+
+
+def test_outputter_function_one_variable():
+    i = 0
+
+    def __output_test_function_with_one_input(input_value):
+        nonlocal i
+        i = 10
+
+    elements = ['a', 'b']
+    outputter(elements, json.dumps, __output_test_function_with_one_input)
+
+    assert i == 10
+
+
+def test_output_formatter_raises_type_error_on_non_function_input():
+    with pytest.raises(TypeError):
+        output_formatter(['a,b,c'], "NotAFunction")
+
+
+def test_outputter_raises_type_error_on_non_function_input():
+    with pytest.raises(TypeError):
+        outputter(['a,b,c'], print, "NotAFunction")
