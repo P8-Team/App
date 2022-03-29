@@ -1,6 +1,7 @@
 import pytest
 from src.behaviour import Frame, Classifier, Label
 
+# Function for turning list into generator
 def generator(items: list):
   for item in items:
     yield item

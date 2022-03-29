@@ -1,6 +1,7 @@
 import pytest
 from sympy import Circle, Point
-from src.utils import is_list, is_list_of_type, is_type, is_circle, is_point, true_for_all
+from src.utils import is_list, is_list_of_type, is_type, is_circle, is_point, true_for_all, verify_type
+import types
 
 class TestClass():
   pass
@@ -90,3 +91,31 @@ def test_true_for_all_throws_exception_if_second_argument_is_not_list():
 def test_true_for_all_throws_exception_if_first_argument_is_not_function():
   with pytest.raises(TypeError):
     true_for_all('Not a function', [])
+
+
+# Helper function for turning list into generator
+def generator(items: list):
+  for item in items:
+    yield item
+
+def test_verify_type_returns_none_if_given_item_with_correct_type():
+  assert verify_type(int, 1) == None
+  assert verify_type(list, [1,2,3]) == None
+  assert verify_type(types.GeneratorType, generator([1,2,3])) == None
+
+def test_verify_type_throws_exception_if_given_item_with_incorrect_type():
+  with pytest.raises(TypeError):
+    verify_type(int, 'string')
+  with pytest.raises(TypeError):
+    verify_type(types.GeneratorType, generator)
+  with pytest.raises(TypeError):
+    verify_type(list, generator([1,2,3,4]))
+
+def test_verify_type_accepts_optional_parameter_that_becomes_message_prefix():
+  with pytest.raises(TypeError) as ex:
+    verify_type(int, 'string', 'test prefix')
+    assert ex.value.startswith('test prefix') == True
+
+def test_verify_type_throws_exception_if_optional_parameter_is_not_string():
+  with pytest.raises(TypeError):
+    verify_type(int, 1, ['not a string'])

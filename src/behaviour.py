@@ -36,15 +36,17 @@ class Classifier:
             yield self.classify_interval(frame_list)
 
     def accumulate_frames(self, frame_gen):
+        # Get first element of generator and use it to determine end of interval
         first = next(frame_gen)
-        self._check_if_frame(first)
+        self._verify_item_is_frame(first)
         interval_end = first.timestamp + self.interval
         frames_in_interval = [first]
         for frame in frame_gen:
-            self._check_if_frame(frame)
+            self._verify_item_is_frame(frame)
                 
             if frame.timestamp >= interval_end:
                 yield frames_in_interval
+                # Add frame to next interval use it to determine end of next interval
                 frames_in_interval = [frame]
                 interval_end = frame.timestamp + self.interval
             else:
@@ -54,7 +56,7 @@ class Classifier:
         # Classify behaviour
         return Label.Ok if len(frames) <= 2 else Label.Undesired
 
-    def _check_if_frame(self, item):
+    def _verify_item_is_frame(self, item):
         """
         This method raises an error if the given item is not a frame
         """
