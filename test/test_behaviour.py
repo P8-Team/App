@@ -26,4 +26,4 @@ def test_classify_returns_ok_if_given_less_than_2_frames():
 
 def test_classify_throws_exception_if_given_generator_that_does_not_produce_frames():
   with pytest.raises(ValueError):
-    Classifier(1).classify(generator([2, 'string']))
+    list(Classifier(1).classify(generator([2, 'string'])))

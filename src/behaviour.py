@@ -30,26 +30,33 @@ class Classifier:
 
         :param frame_gen: A generator that produces frames
         """ 
+        # Create generator that accumulates frames in an interval and yields lists of frames
+        frame_acc = self.accumulate_frames(frame_gen)
+        for frame_list in frame_acc:
+            yield self.classify_interval(frame_list)
+
+    def accumulate_frames(self, frame_gen):
         first = next(frame_gen)
-        if not isinstance(first, Frame):
-            raise ValueError('classify must be given generator that produces elements of type Frame')
+        self._check_if_frame(first)
         interval_end = first.timestamp + self.interval
         frames_in_interval = [first]
         for frame in frame_gen:
-            if not isinstance(frame, Frame):
-                raise ValueError('classify must be given generator that produces elements of type Frame')
+            self._check_if_frame(frame)
                 
-            if frame.timestamp > interval_end:
-                result = self.classify_interval(frames_in_interval)
-                frames_in_interval = list()
+            if frame.timestamp >= interval_end:
+                yield frames_in_interval
+                frames_in_interval = [frame]
                 interval_end = frame.timestamp + self.interval
-                yield result
             else:
-                frames_in_interval.append(frame)  
+                frames_in_interval.append(frame)
 
     def classify_interval(self, frames):
-        if not is_list_of_type(frames, Frame):
-            raise ValueError('classify_interval must be given list with elements of type Frame')
-
         # Classify behaviour
         return Label.Ok if len(frames) <= 2 else Label.Undesired
+
+    def _check_if_frame(self, item):
+        """
+        This method raises an error if the given item is not a frame
+        """
+        if not isinstance(item, Frame):
+            raise ValueError('classify must be given generator that produces elements of type Frame')
