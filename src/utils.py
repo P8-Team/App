@@ -26,3 +26,9 @@ def true_for_all(cond: FunctionType, list: list):
   if not is_list(list):
     raise TypeError('Second argument must be a list')
   return all(cond(x) for x in list)
+
+def verify_type(type, obj, prefix = ''):
+  if not isinstance(prefix, str):
+    raise TypeError('verify_type Expected type str but got ' + type(prefix))
+  if not isinstance(obj, type):
+    raise TypeError(prefix + ' Expected type ' + type + ' but got ' + type(obj))
