@@ -6,7 +6,7 @@ def calc_distance_from_mw_signal_strength(tp, rp, freq_in_mhz):
         raise ValueError("frequency must be positive")
 
     # calculate wavelength with speed of light and frequency
-    l = 300/freq_in_mhz # 0.1 * 10 * 10 * 4*100*pi
+    l = 300/freq_in_mhz
     # Formula from http://www.sis.pitt.edu/prashk/inf1072/Fall16/lec5.pdf
     d = (l * math.sqrt(rp) * math.sqrt(tp))/(4*math.pi*rp)
     return d
