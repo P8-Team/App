@@ -34,7 +34,7 @@ def test_calc_distance_from_mw_signal_strength_real_data():
 
 
 def test_calc_distance_from_dbm_signal_strength():
-    assert calc_distance_from_dbm_signal_strength(30,-50,5800) == pytest.approx(4.116076114445569)
+    assert calc_distance_from_dbm_signal_strength(30,-50,5800) == pytest.approx(41.16076114)
 
 
 def test_calc_distance_from_mw_signal_strength_with_zero_r_fails():
