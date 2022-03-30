@@ -2,7 +2,7 @@ import math
 
 import pytest
 
-from src.distance_from_signal_strength import dbm_to_mw, calc_distance_from_mw_signal_strength, \
+from src.distance_strength_calculations import dbm_to_mw, calc_distance_from_mw_signal_strength, \
     calc_distance_from_dbm_signal_strength
 
 
