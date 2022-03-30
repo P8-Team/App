@@ -3,3 +3,5 @@ pytest==7.1.1
 expiringdict==1.2.1
 iterators==0.0.2
 sympy==1.10.1
+PyYAML~=6.0
+jsonschema~=4.4.0
