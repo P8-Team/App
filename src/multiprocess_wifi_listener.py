@@ -35,18 +35,3 @@ def multiprocess_wifi_listener(wifi_interface_list):
     # Wait for queue entries and yield them
     while True:
         yield queue.get()
-
-
-def sniff_filtered_combined_packages(wifi_interface_list, frame_filter):
-    """
-        Starts a listener on each Wi-Fi interface name in the provided list and collects it into a single generator.
-        The generator is filtered by the provided FrameFilter and frames are combined.
-    :param frame_filter:
-    :param wifi_interface_list:
-    :return:
-    """
-    for frame in frame_aggregator(
-            frame_filter.filter(multiprocess_wifi_listener(wifi_interface_list)),
-            threshold=len(wifi_interface_list)
-    ):
-        yield frame

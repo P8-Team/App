@@ -1,7 +1,7 @@
 from expiringdict import ExpiringDict
 
 
-def frame_aggregator(generator, threshold=3, max_age_seconds=2, max_buffer_size=10000):
+def frame_aggregator(generator, threshold=None, max_age_seconds=None, max_buffer_size=None):
     """
     Generator that yields combined frames from a generator.
     If frames are equal, combine into one with multiple signal_strengths and sniff_timestamps.
@@ -13,6 +13,13 @@ def frame_aggregator(generator, threshold=3, max_age_seconds=2, max_buffer_size=
     :param max_buffer_size: max number of frames in buffer
     :return: generator that yields combined frames
     """
+    if threshold is None:
+        threshold = 3
+    if max_age_seconds is None:
+        max_age_seconds = 2
+    if max_buffer_size is None:
+        max_buffer_size = 10000
+
     buffer = ExpiringDict(max_age_seconds=max_age_seconds, max_len=max_buffer_size)
     for frame in generator:
         # Create hash of frame
