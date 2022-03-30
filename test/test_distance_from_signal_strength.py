@@ -2,16 +2,16 @@ import math
 
 import pytest
 
-from src.distance_from_signal_strength import dbm_to_w, calc_distance_from_mw_signal_strength, \
+from src.distance_from_signal_strength import dbm_to_mw, calc_distance_from_mw_signal_strength, \
     calc_distance_from_dbm_signal_strength
 
 
 def test_mw_from_dbm():
-    assert dbm_to_w(20) == 100
-    assert dbm_to_w(0) == 1
-    assert dbm_to_w(-20) == 0.01
-    assert dbm_to_w(-50) == 0.00001
-    assert dbm_to_w(50) == 100000
+    assert dbm_to_mw(20) == 100
+    assert dbm_to_mw(0) == 1
+    assert dbm_to_mw(-20) == 0.01
+    assert dbm_to_mw(-50) == 0.00001
+    assert dbm_to_mw(50) == 100000
 
 
 def test_calc_distance_from_mw_signal_strength():

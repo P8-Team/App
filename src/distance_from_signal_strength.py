@@ -11,8 +11,10 @@ def calc_distance_from_mw_signal_strength(tp, rp, freq_in_mhz):
     d = (l * math.sqrt(rp) * math.sqrt(tp))/(4*math.pi*rp)
     return d
 
+
 def dbm_to_mw(dbm):
     return math.pow(10,dbm/10)
+
 
 def calc_distance_from_dbm_signal_strength(tp, rp, freq_in_mhz):
     return calc_distance_from_mw_signal_strength(dbm_to_mw(tp), dbm_to_mw(rp), freq_in_mhz)
