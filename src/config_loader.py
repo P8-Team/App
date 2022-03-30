@@ -1,3 +1,5 @@
+from os import path
+
 import yaml
 from jsonschema import validate
 import shutil
@@ -26,23 +28,42 @@ schema = {
     }
 }
 
+def load_config_file(file_path):
+    if not path.exists(file_path):
+        print("Config file not found, copying default config file")
+        shutil.copy(f"{file_path}.default", file_path)
 
-def load_config(config_file):
+    with open(file_path, 'r') as stream:
+        load_config(stream)
+
+def load_config(config_stream):
     """
     Loads the configuration yml file, validates if with json schema and returns the config object
-    :param config_file: path to the config file
+    :param config_stream: stream containing data from config file
     :return: config object
     """
-    try:
-        with open(config_file, 'r') as stream:
-            config = yaml.safe_load(stream)
-    except FileNotFoundError:
-        print("Config file not found, copying default config file")
-
-        shutil.copy(f"{config_file}.default", config_file)
-        with open(config_file, 'r') as stream:
-            config = yaml.safe_load(stream)
-
+    config = yaml.safe_load(config_stream)
     validate(config, schema)
 
     return config
+
+
+# def load_config(config_file):
+#     """
+#     Loads the configuration yml file, validates if with json schema and returns the config object
+#     :param config_file: path to the config file
+#     :return: config object
+#     """
+#     try:
+#         with open(config_file, 'r') as stream:
+#             config = yaml.safe_load(stream)
+#     except FileNotFoundError:
+#         print("Config file not found, copying default config file")
+#
+#         shutil.copy(f"{config_file}.default", config_file)
+#         with open(config_file, 'r') as stream:
+#             config = yaml.safe_load(stream)
+#
+#     validate(config, schema)
+#
+#     return config
