@@ -16,7 +16,7 @@ def __generator_factory_for_test():
 
 def test_generator_generates_correct_data_type():
     generator = __generator_factory_for_test()
-    element = next(generator.generator(Point(5, 0), 3000))
+    element = generator.generator(Point(5, 0), 3000)
     assert isinstance(element, WifiFrame)
 
 
@@ -29,7 +29,7 @@ def test_generator_raises_typeerror_on_incorrect_positions_input():
 
 def test_generator_generates_correct_data_types_contains_wlan_radio_information_object():
     generator = __generator_factory_for_test()
-    element = next(generator.generator(Point(1, 1), 3000))
+    element = generator.generator(Point(1, 1), 3000)
     assert hasattr(element, 'wlan_radio')
     assert isinstance(element.wlan_radio, WlanRadioInformation)
 

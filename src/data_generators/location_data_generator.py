@@ -30,7 +30,7 @@ class LocationGenerator:
         data_rate = []
         timestamp = []
         wifi_element.wlan_radio = WlanRadioInformation(signal_strength, data_rate, timestamp)
-        yield wifi_element
+        return wifi_element
 
     def _positions_populator(self, positions):
         for element in positions:
