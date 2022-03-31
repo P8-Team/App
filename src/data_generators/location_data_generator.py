@@ -13,7 +13,7 @@ class LocationGenerator:
 
         :param receiver_positions: List of positions for receivers
         """
-        self.receiver_positions = list()
+        self.receiver_positions = []
         self._positions_populator(receiver_positions)
 
     def generator(self, position: Point, frequency, transmission_power=100):
