@@ -1,5 +1,3 @@
-import math
-
 from sympy import Point
 
 from src.distance_strength_calculations import mw_to_dbm, distance_to_signal_strength
