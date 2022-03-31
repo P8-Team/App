@@ -14,7 +14,7 @@ class LocationGenerator:
         self.receiver_positions = []
         self._positions_populator(receiver_positions)
 
-    def generator(self, position: Point, frequency, transmission_power=100):
+    def make_wifi_element(self, position: Point, frequency, transmission_power=100):
         """
 
         :param position: The position of the transmitter, given as a sympy Point
