@@ -2,7 +2,7 @@ import math
 
 from sympy import Point
 
-from src.distance_strength_calculations import mw_to_dbm, wavelength
+from src.distance_strength_calculations import mw_to_dbm, distance_to_signal_strength
 from src.wifi_frame import WifiFrame
 from src.wlan_radio_information import WlanRadioInformation
 
@@ -48,11 +48,3 @@ class LocationGenerator:
             output.append(round((mw_to_dbm(signal_strength))))
 
         return output
-
-
-def distance_to_signal_strength(distance, frequency, transmission_power):
-    if not distance > 0:
-        raise TypeError("Distance should be more than 0")
-    wl = wavelength(frequency)
-
-    return (transmission_power * pow(wl, 2)) / pow(4 * math.pi * distance, 2)

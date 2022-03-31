@@ -31,3 +31,11 @@ def wavelength(frequency):
     :return:
     """
     return 300 / frequency
+
+
+def distance_to_signal_strength(distance, frequency, transmission_power):
+    if not distance > 0:
+        raise TypeError("Distance should be more than 0")
+    wl = wavelength(frequency)
+
+    return (transmission_power * pow(wl, 2)) / pow(4 * math.pi * distance, 2)
