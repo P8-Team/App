@@ -35,7 +35,7 @@ def load_config_file(file_path):
         shutil.copy(f"{file_path}.default", file_path)
 
     with open(file_path, 'r') as stream:
-        load_config(stream)
+        return load_config(stream)
 
 
 def load_config(config_stream):

@@ -19,7 +19,7 @@ class FrameFilter:
         :param generator:
         :return:
         """
-        return self.filter_generator(generator,
+        return FrameFilter.filter_generator(generator,
                                      lambda frame:
                                     self.filter_frames_by_subtypes(frame, self.whitelisted_subtypes)
                                     and self.filter_frames_by_types(frame, self.whitelisted_types)
@@ -29,7 +29,6 @@ class FrameFilter:
     def filter_generator(generator, filter_func):
         """
             Filters a frame generator using a filter function.
-
         :param generator:
         :param filter_func:
         :return:

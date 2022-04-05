@@ -11,7 +11,6 @@ from src.wlan_radio_information import WlanRadioInformation
 def make_wifi_frame(sniff_timestamp, signal_strength, transmitter_address='00:00:00:00:00:01'):
     return WifiFrame(
         length=200,
-        sniff_timestamp=sniff_timestamp,
         frame_control_information=FrameControlInformation(
             fc_type=0,
             subtype=1,
@@ -19,7 +18,7 @@ def make_wifi_frame(sniff_timestamp, signal_strength, transmitter_address='00:00
             transmitter_address=transmitter_address,
         ),
         wlan_radio=WlanRadioInformation(
-            signal_strength=signal_strength,
+            signals = [{'signal_strength': signal_strength, 'sniff_timestamp': sniff_timestamp}],
             data_rate=12,
             radio_timestamp=1200
         )
@@ -40,14 +39,13 @@ def test_frame_aggregator_combine_frames():
     # Assert
     assert len(combined_frames) == 1
     combined_frame = combined_frames[0]
-    assert len(combined_frame.sniff_timestamp) == 3
-    assert 1 in combined_frame.sniff_timestamp
-    assert 2 in combined_frame.sniff_timestamp
-    assert 3 in combined_frame.sniff_timestamp
-    assert len(combined_frame.wlan_radio.signal_strength) == 3
-    assert 5 in combined_frame.wlan_radio.signal_strength
-    assert 6 in combined_frame.wlan_radio.signal_strength
-    assert 7 in combined_frame.wlan_radio.signal_strength
+    assert len(combined_frame.wlan_radio.signals) == 3
+    assert combined_frame.wlan_radio.signals[0]['sniff_timestamp'] == 1
+    assert combined_frame.wlan_radio.signals[1]['sniff_timestamp'] == 2
+    assert combined_frame.wlan_radio.signals[2]['sniff_timestamp'] == 3
+    assert combined_frame.wlan_radio.signals[0]['signal_strength'] == 5
+    assert combined_frame.wlan_radio.signals[1]['signal_strength'] == 6
+    assert combined_frame.wlan_radio.signals[2]['signal_strength'] == 7
 
     # Rest of the combined frame should be equal to any of the test input frames
     # as the compare function does not care about signal_strength or sniff_timestamp

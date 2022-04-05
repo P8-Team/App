@@ -1,16 +1,10 @@
 from enum import Enum
-from src.utils import is_list_of_type
+
+from src.wifi_frame import WifiFrame
 
 # Enum defining the possible results of classify
 Label = Enum('Label', 'Ok Undesired')
 
-class Frame:
-    def __init__(self, timestamp):
-        self.id = 0
-        self.signal_strength = []
-        self.frame_length = 0
-        self.transmitter_mac_address = 0
-        self.timestamp = timestamp
 
 class Classifier:
     """
@@ -39,16 +33,16 @@ class Classifier:
         # Get first element of generator and use it to determine end of interval
         first = next(frame_gen)
         self._verify_item_is_frame(first)
-        interval_end = first.timestamp + self.interval
+        interval_end = first.wlan_radio.get_earliest_sniff_timestamp() + self.interval
         frames_in_interval = [first]
         for frame in frame_gen:
             self._verify_item_is_frame(frame)
                 
-            if frame.timestamp >= interval_end:
+            if frame.wlan_radio.get_earliest_sniff_timestamp() >= interval_end:
                 yield frames_in_interval
                 # Add frame to next interval use it to determine end of next interval
                 frames_in_interval = [frame]
-                interval_end = frame.timestamp + self.interval
+                interval_end = frame.wlan_radio.get_earliest_sniff_timestamp() + self.interval
             else:
                 frames_in_interval.append(frame)
 
@@ -60,5 +54,5 @@ class Classifier:
         """
         This method raises an error if the given item is not a frame
         """
-        if not isinstance(item, Frame):
+        if not isinstance(item, WifiFrame):
             raise ValueError('classify must be given generator that produces elements of type Frame')
