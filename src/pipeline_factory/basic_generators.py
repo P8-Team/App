@@ -4,7 +4,7 @@ import json
 
 import pyshark
 
-from src.distance_from_signal_strength import calc_distance_from_dbm_signal_strength
+from src.distance_strength_calculations import calc_distance_from_dbm_signal_strength
 from src.location import location
 
 
