@@ -22,7 +22,7 @@ def frame_aggregator(generator, threshold=None, max_age_seconds=None, max_buffer
 
     buffer = ExpiringDict(max_age_seconds=max_age_seconds, max_len=max_buffer_size)
     for frame in generator:
-        # Create hash of framedistance_from
+        # Create hash of frame
         frame_hash = hash(frame)
         buffer_frame = buffer.get(frame_hash)
         # Check if frame is in buffer
