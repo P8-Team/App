@@ -1,17 +1,22 @@
 import argparse
 
-from src.config_loader import load_config
-from src.multiprocess_wifi_listener import sniff_filtered_combined_packages
-from src.frame_filter import FrameFilter
+from src.behaviour import Classifier
+from src.config_loader import load_config_file
+from src.pipeline_factory import PipelineFactory
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='P8 App - Wifi Sniffer')
     parser.add_argument('interfaces', nargs='+', help='Interfaces to sniff on')
 
-    config = load_config("config.yml")
-    print(config)
+    config = load_config_file("config.yml")
 
     args = parser.parse_args()
 
-    for frame in sniff_filtered_combined_packages(args.interfaces, FrameFilter(whitelisted_types=[0, 1, 2, 3, 4])):
-        print(frame)
+    generator = PipelineFactory.input_wifi_listeners(config['adapters'])\
+        .add_frame_aggregator(threshold=len(config['adapters']))\
+        .add_location_multilateration()\
+        .add_classifier(Classifier(1))\
+        .output_to_console()\
+        .transform_to_json()\
+        .output_to_file("out.json")\
+        .listen()

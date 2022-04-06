@@ -156,3 +156,6 @@ cython_debug/
 
 # Config
 config.yml
+
+#Pytest coverage
+coverage.xml

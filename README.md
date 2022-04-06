@@ -1,4 +1,5 @@
 # App
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=P8-Team_App&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=P8-Team_App)
 
 ## Listening on Wi-Fi
 To listen on Wi-Fi, you need to identify the Wi-Fi interfaces that you want to use.

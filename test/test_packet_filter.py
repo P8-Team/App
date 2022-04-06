@@ -12,7 +12,7 @@ def get_frame_filter():
 
 def get_wifi_frame(fc_type, subtype):
     frame_control_information = FrameControlInformation(fc_type, subtype)
-    return WifiFrame(0, 0, None, frame_control_information)
+    return WifiFrame(0, None, frame_control_information)
 
 
 def test_frame_filter_subtype_allowed():
