@@ -39,5 +39,3 @@ def multiprocess_wifi_listener(wifi_interface_list):
     # Wait for queue entries and yield them
     while True:
         yield queue.get()
-
-        # yield queue.get()

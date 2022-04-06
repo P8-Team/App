@@ -53,6 +53,5 @@ class PipelineFactory:
         self.generator = csv_row_generator(self.generator, delimiter)
         return self
 
-    def listen(self):
-        for item in self.generator:
-            pass
+    def to_list(self):
+        return list(self.generator)
