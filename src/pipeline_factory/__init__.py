@@ -5,6 +5,7 @@ from src.frame_filter import FrameFilter
 from src.multiprocess_wifi_listener import multiprocess_wifi_listener
 from src.pipeline_factory.basic_generators import csv_row_generator, output_to_file_generator, \
     output_to_console_generator, json_generator, pcap_file_generator, append_location_to_wifi_frame
+# from src.channel_hopper import ChannelHopper
 
 
 class PipelineFactory:
@@ -19,6 +20,11 @@ class PipelineFactory:
     @classmethod
     def input_pcap_file(cls, filename):
         return cls(pcap_file_generator(filename))
+
+    # @classmethod
+    # def add_channel_hopper(cls, wlan_interfaces):
+    #     channel_hopper = ChannelHopper(wlan_interfaces)
+    #     return cls(ChannelHopper.start(channel_hopper))
 
     def add_type_subtype_filter(self, whitelisted_types=None, whitelisted_subtypes=None):
         frame_filter = FrameFilter(whitelisted_types, whitelisted_subtypes)
