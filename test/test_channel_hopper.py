@@ -41,7 +41,7 @@ def test_channel_hopper_uses_given_time_between_hops():
 def test_channel_hopper_start_creates_hopper_process():
     channel_hopper = ChannelHopper([""])
     channel_hopper.start()
-    time.sleep(0.5)
+    time.sleep(2)
     assert channel_hopper.hopper_process is not None
     assert channel_hopper.hopper_process.is_alive()
     channel_hopper.hopper_process.terminate()
@@ -52,5 +52,5 @@ def test_channel_hopper_stop_terminates_hopper_process():
     channel_hopper.start()
     assert channel_hopper.hopper_process.exitcode is None
     channel_hopper.stop()
-    time.sleep(0.5)
+    time.sleep(2)
     assert channel_hopper.hopper_process.exitcode is not None
