@@ -54,14 +54,6 @@ class WlanRadioInformation:
         """
         return min(signal['sniff_timestamp'] for signal in self.signals)
 
-    def to_dict(self): 
-        return {
-            'signals': self.signals,
-            'data_rate': self.data_rate,
-            'radio_timestamp': self.radio_timestamp,
-            'frequency_mhz': self.frequency_mhz
-        }
-
     def to_dataframe(self):
         df = pd.DataFrame({'signal_strength': [self.signals[0]['signal_strength']], 'location': [self.signals[0]['location']], 'sniff_timestamp': [self.signals[0]['sniff_timestamp']]})
         for i in range(1, len(self.signals)):
