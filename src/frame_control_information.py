@@ -1,3 +1,5 @@
+import pandas as pd
+
 class FrameControlInformation:
     def __init__(self, fc_type=None, subtype=None, receiver_address=None, transmitter_address=None):
         self.type = fc_type
@@ -31,3 +33,6 @@ class FrameControlInformation:
 
     def __hash__(self):
         return hash(self.__key__())
+
+    def to_dataframe(self):
+        return pd.DataFrame(vars(self), index = [0])

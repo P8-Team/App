@@ -1,8 +1,7 @@
 import json
-
+import pandas as pd
 from src.frame_control_information import FrameControlInformation
 from src.wlan_radio_information import WlanRadioInformation
-
 
 class WifiFrame:
     """
@@ -58,4 +57,7 @@ class WifiFrame:
     def __hash__(self):
         return hash(self.__key__())
 
+    def to_dataframe(self):
+        len_df = pd.DataFrame({'length': [self.length]})
+        return pd.concat([len_df, self.wlan_radio.to_dataframe(), self.frame_control_information.to_dataframe()], axis = 1)
 

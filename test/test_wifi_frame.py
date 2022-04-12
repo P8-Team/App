@@ -3,6 +3,9 @@ import copy
 from src.wifi_frame import WifiFrame
 from test.utils.wifi_test_utils import Frame, Layer
 
+from src.frame_control_information import FrameControlInformation
+from src.wlan_radio_information import WlanRadioInformation
+import pandas as pd
 
 def test_construct_wifi_frame():
     # Arrange
@@ -247,3 +250,32 @@ def test_wifi_frame_has_different_hash():
 
     assert frame1.__key__() != frame2.__key__()
     assert hash(frame1) != hash(frame2)
+
+def test_wifi_frame_to_dataframe():
+    expected = pd.DataFrame(data = 
+        {
+         'length': 12,
+         'signal_strength': [1], 'location': [[1,1]], 'sniff_timestamp': [1567757309],
+         'signal_strength_1': [2], 'location_1': [[2,2]], 'sniff_timestamp_1': [1567757309],
+         'signal_strength_2': [3], 'location_2': [[3,3]], 'sniff_timestamp_2': [1567757309],
+         'data_rate': [12], 'radio_timestamp': [1567757309], 'frequency_mhz': [44],
+         'type': [0],
+         'subtype': [10],
+         'receiver_address': ['b4:de:31:9c:f0:8a'],
+         'transmitter_address': ['50:e0:85:3f:77:5e']
+        })
+
+    frame_control_information = FrameControlInformation(0, 10, 'b4:de:31:9c:f0:8a', '50:e0:85:3f:77:5e')
+    wlan_radio_information = WlanRadioInformation(
+        [
+            {'signal_strength': 1, 'location': [1,1], 'sniff_timestamp': 1567757309}, 
+            {'signal_strength': 2, 'location': [2,2], 'sniff_timestamp': 1567757309}, 
+            {'signal_strength': 3, 'location': [3,3], 'sniff_timestamp': 1567757309}
+        ],
+        12, 1567757309, 44)
+
+    wifi_frame = WifiFrame(12, wlan_radio_information, frame_control_information)
+
+    actual = wifi_frame.to_dataframe()
+
+    pd.testing.assert_frame_equal(actual, expected)
