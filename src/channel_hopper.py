@@ -35,7 +35,7 @@ class ChannelHopper:
 
     def stop(self):
         print("Stopping channel hopper")
-        self.hopper_process.terminate()
+        self.hopper_process.kill()
 
     @staticmethod
     def __hop__(interfaces, channels, sleep_time, test_mode):

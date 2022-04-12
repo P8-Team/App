@@ -60,9 +60,7 @@ def test_channel_hopper_stop_terminates_hopper_process():
     channel_hopper = create_test_channel_hopper([""])
     channel_hopper.start()
     assert channel_hopper.hopper_process.exitcode is None
-    # channel_hopper.stop()
-    channel_hopper.hopper_process.kill()
+    channel_hopper.stop()
     channel_hopper.hopper_process.join(10)
     assert channel_hopper.hopper_process.is_alive() is False
     assert channel_hopper.hopper_process.exitcode is not None
-    assert channel_hopper.hopper_process.exitcode == -signal.SIGTERM
