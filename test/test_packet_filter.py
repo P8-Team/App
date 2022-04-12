@@ -1,6 +1,6 @@
-from src.frame_control_information import FrameControlInformation
+from src.wifi.frame_control_information import FrameControlInformation
 from src.frame_filter import FrameFilter
-from src.wifi_frame import WifiFrame
+from src.wifi.wifi_frame import WifiFrame
 
 
 def get_frame_filter():

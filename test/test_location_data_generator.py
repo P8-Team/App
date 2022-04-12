@@ -2,8 +2,8 @@ import pytest
 from sympy import Point
 
 from src.data_generators.location_data_generator import LocationGenerator, mw_to_dbm, distance_to_signal_strength
-from src.wifi_frame import WifiFrame
-from src.wlan_radio_information import WlanRadioInformation
+from src.wifi.wifi_frame import WifiFrame
+from src.wifi.wlan_radio_information import WlanRadioInformation
 
 
 def __generator_factory_for_test():

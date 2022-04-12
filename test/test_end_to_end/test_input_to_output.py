@@ -2,7 +2,7 @@ from typing import List
 import pytest
 from src.behaviour import Classifier, Label
 from src.pipeline_factory import PipelineFactory
-from src.wifi_frame import WifiFrame
+from src.wifi.wifi_frame import WifiFrame
 from test.utils.wifi_frame_factory import frame_factory
 
 

@@ -2,8 +2,7 @@ from multiprocessing import Queue, Process
 
 import pyshark
 
-from src.frame_aggregator import frame_aggregator
-from src.wifi_frame import WifiFrame
+from src.wifi.wifi_frame import WifiFrame
 
 
 def wifi_listener(wifi_card_name, wifi_card, queue):
