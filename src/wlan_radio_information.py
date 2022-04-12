@@ -1,3 +1,5 @@
+import pandas as pd
+
 class WlanRadioInformation:
     def __init__(self, signals=None, data_rate=None, radio_timestamp=None, frequency_mhz=None):
         self.signals = signals
@@ -52,4 +54,20 @@ class WlanRadioInformation:
         """
         return min(signal['sniff_timestamp'] for signal in self.signals)
 
-        
+    def to_dict(self): 
+        return {
+            'signals': self.signals,
+            'data_rate': self.data_rate,
+            'radio_timestamp': self.radio_timestamp,
+            'frequency_mhz': self.frequency_mhz
+        }
+
+    def to_dataframe(self):
+        df = pd.DataFrame({'signal_strength': [self.signals[0]['signal_strength']], 'location': [self.signals[0]['location']], 'sniff_timestamp': [self.signals[0]['sniff_timestamp']]})
+        for i in range(1, len(self.signals)):
+            newDf = pd.DataFrame({'signal_strength': [self.signals[i]['signal_strength']], 'location': [self.signals[i]['location']], 'sniff_timestamp': [self.signals[i]['sniff_timestamp']]})
+            df = df.join(newDf, rsuffix='_'+ str(i))
+        df['data_rate'] = self.data_rate
+        df['radio_timestamp'] = self.radio_timestamp
+        df['frequency_mhz'] = self.frequency_mhz
+        return df

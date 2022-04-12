@@ -1,5 +1,6 @@
 from src.wlan_radio_information import WlanRadioInformation
 from test.utils.wifi_test_utils import Layer
+import pandas as pd
 
 
 def test_wlan_radio_information():
@@ -111,3 +112,24 @@ def test_compare_wlan_radio_information_different():
 
     # Assert
     assert wlan_radio_information1 != wlan_radio_information2
+
+def test_wlan_radio_information_to_dataframe():
+    expected = pd.DataFrame(data = 
+        {
+         'signal_strength': [1], 'location': [[1,1]], 'sniff_timestamp': [1567757309],
+         'signal_strength_1': [2], 'location_1': [[2,2]], 'sniff_timestamp_1': [1567757309],
+         'signal_strength_2': [3], 'location_2': [[3,3]], 'sniff_timestamp_2': [1567757309],
+         'data_rate': [12], 'radio_timestamp': [1567757309], 'frequency_mhz': [44]
+        })
+
+    wlan_radio_information = WlanRadioInformation(
+        [
+            {'signal_strength': 1, 'location': [1,1], 'sniff_timestamp': 1567757309}, 
+            {'signal_strength': 2, 'location': [2,2], 'sniff_timestamp': 1567757309}, 
+            {'signal_strength': 3, 'location': [3,3], 'sniff_timestamp': 1567757309}
+        ],
+        12, 1567757309, 44)
+
+    actual = wlan_radio_information.to_dataframe()
+
+    pd.testing.assert_frame_equal(actual, expected)
