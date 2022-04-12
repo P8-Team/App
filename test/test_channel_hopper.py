@@ -1,11 +1,15 @@
+import signal
+
 import pytest
 from src.channel_hopper import ChannelHopper
 import time
+
 
 def create_test_channel_hopper(interfaces, channels=None, sleep_time=None):
     ch = ChannelHopper(interfaces, channels, sleep_time)
     ch.test_mode = True
     return ch
+
 
 @pytest.mark.skip(reason="The result of the hop can only be seen by running 'sudo iwlist <interface> channel'")
 def test_channel_hopper_using_start():
@@ -48,13 +52,17 @@ def test_channel_hopper_start_creates_hopper_process():
     time.sleep(2)
     assert channel_hopper.hopper_process is not None
     assert channel_hopper.hopper_process.is_alive()
-    channel_hopper.hopper_process.terminate()
+    channel_hopper.hopper_process.kill()
 
-# TODO: The Git Runner halts here, because the spawned process is never terminated???
+
+# TODO: The Git Runner halts here, because the spawned process is never terminated?!?
 def test_channel_hopper_stop_terminates_hopper_process():
     channel_hopper = create_test_channel_hopper([""])
     channel_hopper.start()
     assert channel_hopper.hopper_process.exitcode is None
-    channel_hopper.stop()
+    # channel_hopper.stop()
+    channel_hopper.hopper_process.kill()
     channel_hopper.hopper_process.join(10)
+    assert channel_hopper.hopper_process.is_alive() is False
     assert channel_hopper.hopper_process.exitcode is not None
+    assert channel_hopper.hopper_process.exitcode == -signal.SIGTERM
