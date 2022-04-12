@@ -18,13 +18,12 @@ class ChannelHopper:
     hopper_process = None
 
     def __init__(self, wlan_interfaces, channels=None, time_between_hops_sec=None):
-        self.interfaces = wlan_interfaces
-
         if channels is None:
             channels = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13]
         if time_between_hops_sec is None:
             time_between_hops_sec = 2
 
+        self.interfaces = wlan_interfaces
         self.channels = channels
         self.sleep_time = time_between_hops_sec
 
@@ -47,5 +46,6 @@ class ChannelHopper:
                 os.system(hop_command.format(interface, channels[channel_index]))
                 print("{}: channel {}".format(interface, channels[channel_index]))
 
+            # Switch to the next channel for next round
             channel_index = (channel_index + 1) % len(channels)
             time.sleep(sleep_time)
