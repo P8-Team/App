@@ -1,22 +1,18 @@
-import argparse
-
 from src.behaviour import Classifier
 from src.config_loader import load_config_file
 from src.pipeline_factory import PipelineFactory
+from src.wifi.wifi_card import WifiCard
 
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser(description='P8 App - Wifi Sniffer')
-    parser.add_argument('interfaces', nargs='+', help='Interfaces to sniff on')
-
     config = load_config_file("config.yml")
 
-    args = parser.parse_args()
+    adapters = [WifiCard(name, wifi_card['location']) for name, wifi_card in config['adapters'].items()]
 
-    generator = PipelineFactory.input_wifi_listeners(config['adapters'])\
-        .add_frame_aggregator(threshold=len(config['adapters']))\
+    generator = PipelineFactory.input_wifi_listeners(adapters)\
+        .add_frame_aggregator(threshold=len(adapters))\
         .add_location_multilateration()\
         .add_classifier(Classifier(1))\
         .output_to_console()\
         .transform_to_json()\
         .output_to_file("out.json")\
-        .listen()
+        .to_list()
