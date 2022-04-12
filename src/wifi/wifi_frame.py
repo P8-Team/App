@@ -51,7 +51,7 @@ class WifiFrame:
         return json.dumps(self, default=lambda o: o.__dict__, sort_keys=True, indent=4)
 
     @classmethod
-    def construct_from_generator(cls, generator: Generator) -> Generator[WifiFrame]:
+    def construct_from_generator(cls, generator: Generator) -> Generator[WifiFrame, None, None]:
         for frame in generator:
             yield cls(frame)
 
