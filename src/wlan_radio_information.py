@@ -55,11 +55,16 @@ class WlanRadioInformation:
         return min(signal['sniff_timestamp'] for signal in self.signals)
 
     def to_dataframe(self):
-        df = pd.DataFrame({'signal_strength': [self.signals[0]['signal_strength']], 'location': [self.signals[0]['location']], 'sniff_timestamp': [self.signals[0]['sniff_timestamp']]})
-        for i in range(1, len(self.signals)):
-            newDf = pd.DataFrame({'signal_strength': [self.signals[i]['signal_strength']], 'location': [self.signals[i]['location']], 'sniff_timestamp': [self.signals[i]['sniff_timestamp']]})
-            df = df.join(newDf, rsuffix='_'+ str(i))
-        df['data_rate'] = self.data_rate
-        df['radio_timestamp'] = self.radio_timestamp
-        df['frequency_mhz'] = self.frequency_mhz
-        return df
+        # Create flat dataframe containing all signals
+        sigdf = pd.DataFrame(self.signals)  
+        v = sigdf.unstack().to_frame().sort_index(level=1).T
+        v.columns = v.columns.map(lambda x: x[0] + '_' + str(x[1]))
+
+        # Get value of the remaining fields
+        var_dict = vars(self)
+        # Remove signals as that is already handled
+        del var_dict['signals']
+        # Create dataframe containing the field values
+        var_df = pd.DataFrame(var_dict, index = [0])
+        # Combine signals and other fields into complete dataframe
+        return pd.concat([v, var_df], axis = 1).infer_objects()
