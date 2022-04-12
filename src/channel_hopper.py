@@ -16,6 +16,7 @@ import time
 
 class ChannelHopper:
     hopper_process = None
+    test_mode = False
 
     def __init__(self, wlan_interfaces, channels=None, time_between_hops_sec=None):
         if channels is None:
@@ -29,7 +30,7 @@ class ChannelHopper:
 
     def start(self):
         print("Starting channel hopper")
-        self.hopper_process = Process(target=self.__hop__, args=(self.interfaces, self.channels, self.sleep_time))
+        self.hopper_process = Process(target=self.__hop__, args=(self.interfaces, self.channels, self.sleep_time, self.test_mode))
         self.hopper_process.start()
 
     def stop(self):
@@ -37,13 +38,14 @@ class ChannelHopper:
         self.hopper_process.terminate()
 
     @staticmethod
-    def __hop__(interfaces, channels, sleep_time):
+    def __hop__(interfaces, channels, sleep_time, test_mode):
         # The command for making an interface listen on a specified channel
         hop_command = 'sudo iwconfig {} channel {}'
         channel_index = 0
         while True:
             for interface in interfaces:
-                os.system(hop_command.format(interface, channels[channel_index]))
+                if not test_mode:
+                    os.system(hop_command.format(interface, channels[channel_index]))
                 print("{}: channel {}".format(interface, channels[channel_index]))
 
             # Switch to the next channel for next round

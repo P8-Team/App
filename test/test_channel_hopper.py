@@ -2,10 +2,14 @@ import pytest
 from src.channel_hopper import ChannelHopper
 import time
 
+def create_test_channel_hopper(interfaces, channels=None, sleep_time=None):
+    ch = ChannelHopper(interfaces, channels, sleep_time)
+    ch.test_mode = True
+    return ch
 
 @pytest.mark.skip(reason="The result of the hop can only be seen by running 'sudo iwlist <interface> channel'")
 def test_channel_hopper_using_start():
-    ChannelHopper.__hop__(interfaces=["wlan4"], channels=[3, 7, 13], sleep_time=1)
+    ChannelHopper.__hop__(interfaces=["wlan4"], channels=[3, 7, 13], sleep_time=1, test_mode=False)
 
 
 def test_channel_hopper_sets_interfaces():
@@ -39,7 +43,7 @@ def test_channel_hopper_uses_given_time_between_hops():
 
 
 def test_channel_hopper_start_creates_hopper_process():
-    channel_hopper = ChannelHopper([""])
+    channel_hopper = create_test_channel_hopper([""])
     channel_hopper.start()
     time.sleep(2)
     assert channel_hopper.hopper_process is not None
@@ -48,7 +52,7 @@ def test_channel_hopper_start_creates_hopper_process():
 
 
 def test_channel_hopper_stop_terminates_hopper_process():
-    channel_hopper = ChannelHopper([""])
+    channel_hopper = create_test_channel_hopper([""])
     channel_hopper.start()
     assert channel_hopper.hopper_process.exitcode is None
     channel_hopper.stop()
