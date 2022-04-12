@@ -1,6 +1,7 @@
 from time import sleep
 
 from iterators import TimeoutIterator
+from sympy import Point2D
 
 from src.frame_aggregator import frame_aggregator
 from src.wifi.frame_control_information import FrameControlInformation
@@ -19,7 +20,7 @@ def make_wifi_frame(sniff_timestamp, signal_strength, transmitter_address='00:00
             transmitter_address=transmitter_address,
         ),
         wlan_radio=WlanRadioInformation(
-            signals = [Signal([0,0], signal_strength, sniff_timestamp)],
+            signals=[Signal(Point2D([0, 0]), signal_strength, sniff_timestamp)],
             data_rate=12,
             radio_timestamp=1200
         )

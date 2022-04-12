@@ -1,4 +1,4 @@
-from sympy import Point, Circle
+from sympy import Point, Circle, Point2D
 
 from src.utils import is_point, true_for_all
 
@@ -33,4 +33,4 @@ def circle_from_list(list: list):
         raise ValueError("Elements must be lists containing three elements")
     if not true_for_all(lambda elem: isinstance(elem, float) or isinstance(elem, int), list):
         raise ValueError("All elements of list must be numbers")
-    return circle_factory(Point(list[0], list[1]), list[2])
+    return circle_factory(Point2D(list[0], list[1]), list[2])

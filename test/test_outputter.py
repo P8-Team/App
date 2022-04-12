@@ -1,7 +1,7 @@
 import json
 
 import pytest
-from sympy import Point
+from sympy import Point2D
 
 from src.outputter import output_formatter, outputter
 
@@ -24,7 +24,7 @@ def test_outputter_gives_correct_output_given_list_of_strings():
 
 
 def test_outputter_gives_correct_output_given_custom_serializer():
-    elements = [Point(1, 2), Point(1, 3)]
+    elements = [Point2D(1, 2), Point2D(1, 3)]
     result = output_formatter(elements, __serializer_for_test_point)
     assert result == "1213"
 
