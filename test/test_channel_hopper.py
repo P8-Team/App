@@ -23,9 +23,10 @@ def test_channel_hopper_default_channels():
     assert channel_hopper.channels == [1,2,3,4,5,6,7,8,9,10,11,12,13]
 
 def test_channel_hopper_uses_given_channels():
-    channel_hopper = ChannelHopper([''], channels = [2,4,6,8888])
-
-    assert channel_hopper.channels == [2,4,6,8888]
+    expected = [1000, 1001]
+    channel_hopper = ChannelHopper([""], expected)
+    actual = channel_hopper.channels
+    assert expected == actual
 
 def test_channel_hopper_default_sleep_time():
     channel_hopper = ChannelHopper([''])
