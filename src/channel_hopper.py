@@ -19,15 +19,14 @@ class ChannelHopper:
 
     def __init__(self, wlan_interfaces, channels=None, time_between_hops_sec=None):
         self.interfaces = wlan_interfaces
-        if channels is None:
-            self.channels = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13]
-        else:
-            self.channels = channels
 
+        if channels is None:
+            channels = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13]
         if time_between_hops_sec is None:
-            self.sleep_time = 2
-        else:
-            self.sleep_time = time_between_hops_sec
+            time_between_hops_sec = 2
+
+        self.channels = channels
+        self.sleep_time = time_between_hops_sec
 
     def start(self):
         print("Starting channel hopper")
