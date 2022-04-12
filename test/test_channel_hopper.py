@@ -50,11 +50,11 @@ def test_channel_hopper_start_creates_hopper_process():
     assert channel_hopper.hopper_process.is_alive()
     channel_hopper.hopper_process.terminate()
 
-
+# TODO: The Git Runner halts here, because the spawned process is never terminated???
 def test_channel_hopper_stop_terminates_hopper_process():
     channel_hopper = create_test_channel_hopper([""])
     channel_hopper.start()
     assert channel_hopper.hopper_process.exitcode is None
     channel_hopper.stop()
-    channel_hopper.hopper_process.join()
+    channel_hopper.hopper_process.join(10)
     assert channel_hopper.hopper_process.exitcode is not None
