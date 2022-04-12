@@ -4,7 +4,7 @@ import time
 
 
 @pytest.mark.skip(reason="The result of the channel hopper can only be seen by "
-                         "running 'sudo iwlist <interface> channel'")
+                         "running 'sudo iwlist <interface> channel' and by looking at the console")
 def test_channel_hopper_using_start():
     channel_hopper = ChannelHopper(["wlan4"])
     channel_hopper.start()
