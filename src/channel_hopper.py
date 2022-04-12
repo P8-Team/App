@@ -3,54 +3,50 @@ from multiprocessing import Process, Value
 import os
 import time
 
+
+# TODO: Integrate the channel hopper into main.py
+
+# TODO: This needs sudo or root access to work. That might be a problem when used with everything else?
+
 # TODO: There might be a bug where after having run "sudo airmon-ng start <interface>", the interface drops back to
 #  managed after some time. I haven't been able to reproduce it or force it.
 #  Possible solution: Airmon says that there are some processes that might interfere and switch the interface back to
-#  managed mode. It might be possible to kill those processes.
-
-# TODO: This needs sudo or root access to work. That might be a problem?
-
-# See which channels are available to it and which channel the interface is listening on: 'sudo iwlist <interface> channel'
-
-# !!!Note: The interface has to be in monitor before!!!
-# Change channel: 'sudo iwconfig <interface> channel <channel number>'
+#  managed mode. It might be possible to kill those processes and solve this issue.
 
 
 class ChannelHopper:
-    process = None
+    hopper_process = None
 
-    def __init__(self, wlan_interfaces, channels=None, sleep_time_sec=None):
+    def __init__(self, wlan_interfaces, channels=None, time_between_hops_sec=None):
         self.interfaces = wlan_interfaces
-        if channels == None:
+        if channels is None:
             self.channels = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13]
         else:
             self.channels = channels
 
-        if sleep_time_sec == None:
-            self.sleep_time_sec = 2
+        if time_between_hops_sec is None:
+            self.sleep_time = 2
         else:
-            self.sleep_time_sec = sleep_time_sec
-
+            self.sleep_time = time_between_hops_sec
 
     def start(self):
         print("Starting channel hopper")
-        self.process = Process(target=self.hop, args=(self.interfaces, self.channels, self.sleep_time_sec))
-        self.process.start()
+        self.hopper_process = Process(target=self.__hop__, args=(self.interfaces, self.channels, self.sleep_time))
+        self.hopper_process.start()
 
     def stop(self):
         print("Stopping channel hopper")
-        self.process.terminate()
+        self.hopper_process.terminate()
 
     @staticmethod
-    def hop(interfaces, channels, sleep_time):
+    def __hop__(interfaces, channels, sleep_time):
+        # The command for making an interface listen on a specified channel
         hop_command = 'sudo iwconfig {} channel {}'
         channel_index = 0
         while True:
             for interface in interfaces:
                 os.system(hop_command.format(interface, channels[channel_index]))
-                print(hop_command.format(interface, channels[channel_index]))
+                print("{}: channel {}".format(interface, channels[channel_index]))
 
             channel_index = (channel_index + 1) % len(channels)
             time.sleep(sleep_time)
-
-
