@@ -56,5 +56,5 @@ def test_channel_hopper_stop_terminates_hopper_process():
     channel_hopper.start()
     assert channel_hopper.hopper_process.exitcode is None
     channel_hopper.stop()
-    time.sleep(2)
+    time.sleep(5)
     assert channel_hopper.hopper_process.exitcode is not None
