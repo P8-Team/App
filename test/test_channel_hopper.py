@@ -1,3 +1,4 @@
+from distutils.util import change_root
 import pytest
 from src.channel_hopper import ChannelHopper
 import time
@@ -11,22 +12,31 @@ def test_channel_hopper_using_start():
     time.sleep(5)
     channel_hopper.stop()
 
+def test_channel_hopper_sets_interfaces():
+    channel_hopper = ChannelHopper(['1','2','3'])
 
-def test_channel_hopper_default_values():
-    expected_channels = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13]
-    expected_sleep_time = 2
-    actual = ChannelHopper([""])
-    assert expected_channels == actual.channels
-    assert expected_sleep_time == actual.sleep_time
+    assert channel_hopper.interfaces == ['1','2','3']
 
+def test_channel_hopper_default_channels():
+    channel_hopper = ChannelHopper([''])
 
-def test_channel_hopper_uses_given_values():
-    expected_channels = [1000, 1001]
-    expected_sleep_time = 7
-    actual = ChannelHopper([""], expected_channels, expected_sleep_time)
-    assert expected_channels == actual.channels
-    assert expected_sleep_time == actual.sleep_time
+    assert channel_hopper.channels == [1,2,3,4,5,6,7,8,9,10,11,12,13]
 
+def test_channel_hopper_uses_given_channels():
+    expected = [1000, 1001]
+    channel_hopper = ChannelHopper([""], expected)
+    actual = channel_hopper.channels
+    assert expected == actual
+
+def test_channel_hopper_default_sleep_time():
+    channel_hopper = ChannelHopper([''])
+
+    assert channel_hopper.sleep_time == 2
+
+def test_channel_hopper_uses_given_time_between_hops():
+    channel_hopper = ChannelHopper([''], time_between_hops_sec= 87.2)
+
+    assert channel_hopper.sleep_time == 87.2
 
 def test_channel_hopper_start_creates_hopper_process():
     channel_hopper = ChannelHopper([""])
