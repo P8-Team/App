@@ -1,12 +1,12 @@
 from __future__ import annotations
 
 import json
+import pandas as pd
 from typing import Generator
 
 from src.wifi.frame_control_information import FrameControlInformation
 from src.wifi.wifi_card import WifiCard
 from src.wifi.wlan_radio_information import WlanRadioInformation
-
 
 class WifiFrame:
     """
@@ -65,3 +65,8 @@ class WifiFrame:
 
     def __hash__(self) -> int:
         return hash(self.__key__())
+
+    def to_dataframe(self):
+        len_df = pd.DataFrame({'length': [self.length]})
+        return pd.concat([len_df, self.wlan_radio.to_dataframe(), self.frame_control_information.to_dataframe()], axis = 1)
+

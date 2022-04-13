@@ -1,8 +1,15 @@
 import copy
 
+from sympy import Point2D
+
+from src.wifi.frame_control_information import FrameControlInformation
+from src.wifi.signal import Signal
 from src.wifi.wifi_card import WifiCard
 from src.wifi.wifi_frame import WifiFrame
+from src.wifi.wlan_radio_information import WlanRadioInformation
 from test.utils.wifi_test_utils import Frame, Layer
+
+import pandas as pd
 
 
 def test_construct_wifi_frame():
@@ -22,7 +29,7 @@ def test_construct_wifi_frame():
     })
 
     # Act
-    wifi_frame = WifiFrame.from_frame(frame, WifiCard("wlan0", [0, 0]))
+    wifi_frame = WifiFrame.from_frame(frame, WifiCard("wlan0", Point2D(0, 0)))
 
     # Assert
     assert wifi_frame.length == 340
@@ -67,8 +74,8 @@ def test_compare_wifi_frame_identical():
     })
 
     # Act
-    wifi_frame1 = WifiFrame.from_frame(frame1, WifiCard("wlan0", [0, 0]))
-    wifi_frame2 = WifiFrame.from_frame(frame2, WifiCard("wlan0", [0, 0]))
+    wifi_frame1 = WifiFrame.from_frame(frame1, WifiCard("wlan0", Point2D(0, 0)))
+    wifi_frame2 = WifiFrame.from_frame(frame2, WifiCard("wlan0", Point2D(0, 0)))
 
     # Assert
     assert wifi_frame1 == wifi_frame2
@@ -104,8 +111,8 @@ def test_compare_wifi_frame_different_timestamp():
     })
 
     # Act
-    wifi_frame1 = WifiFrame.from_frame(frame1, WifiCard("wlan0", [0, 0]))
-    wifi_frame2 = WifiFrame.from_frame(frame2, WifiCard("wlan0", [0, 0]))
+    wifi_frame1 = WifiFrame.from_frame(frame1, WifiCard("wlan0", Point2D(0, 0)))
+    wifi_frame2 = WifiFrame.from_frame(frame2, WifiCard("wlan0", Point2D(0, 0)))
 
     # Assert
     assert wifi_frame1 == wifi_frame2
@@ -141,8 +148,8 @@ def test_compare_wifi_frame_different_signal_strength():
     })
 
     # Act
-    wifi_frame1 = WifiFrame.from_frame(frame1, WifiCard("wlan0", [0, 0]))
-    wifi_frame2 = WifiFrame.from_frame(frame2, WifiCard("wlan0", [0, 0]))
+    wifi_frame1 = WifiFrame.from_frame(frame1, WifiCard("wlan0", Point2D(0, 0)))
+    wifi_frame2 = WifiFrame.from_frame(frame2, WifiCard("wlan0", Point2D(0, 0)))
 
     # Assert
     assert wifi_frame1 == wifi_frame2
@@ -178,8 +185,8 @@ def test_compare_wifi_frame_different():
     })
 
     # Act
-    wifi_frame1 = WifiFrame.from_frame(frame1, WifiCard("wlan0", [0, 0]))
-    wifi_frame2 = WifiFrame.from_frame(frame2, WifiCard("wlan0", [0, 0]))
+    wifi_frame1 = WifiFrame.from_frame(frame1, WifiCard("wlan0", Point2D(0, 0)))
+    wifi_frame2 = WifiFrame.from_frame(frame2, WifiCard("wlan0", Point2D(0, 0)))
 
     # Assert
     assert wifi_frame1 != wifi_frame2
@@ -198,7 +205,7 @@ def test_wifi_frame_has_same_hash_with_different_rrsi_and_sniff_timestamp():
             'wlan_radio.data_rate': '54',
             'wlan_radio.timestamp': '1567757308'
         })
-    }), WifiCard("wlan0", [0, 0]))
+    }), WifiCard("wlan0", Point2D(0, 0)))
     # Copy frame 1 and change the signal_strength and sniff timestamp
 
     frame2 = copy.deepcopy(frame1)
@@ -222,7 +229,7 @@ def test_wifi_frame_has_same_hash_identical():
             'wlan_radio.data_rate': '54',
             'wlan_radio.timestamp': '1567757308'
         })
-    }), WifiCard("wlan0", [0, 0]))
+    }), WifiCard("wlan0", Point2D(0, 0)))
     frame2 = copy.deepcopy(frame1)
 
     assert frame1.__key__() == frame2.__key__()
@@ -242,9 +249,39 @@ def test_wifi_frame_has_different_hash():
             'wlan_radio.data_rate': '54',
             'wlan_radio.timestamp': '1567757308'
         })
-    }), WifiCard("wlan0", [0, 0]))
+    }), WifiCard("wlan0", Point2D(0, 0)))
     frame2 = copy.deepcopy(frame1)
     frame2.length = 341
 
     assert frame1.__key__() != frame2.__key__()
     assert hash(frame1) != hash(frame2)
+
+
+def test_wifi_frame_to_dataframe():
+    expected = pd.DataFrame(data=
+    {
+        'length': 12,
+        'location_0': [[1, 1]], 'signal_strength_0': [1], 'sniff_timestamp_0': [1567757309],
+        'location_1': [[2, 2]], 'signal_strength_1': [2], 'sniff_timestamp_1': [1567757309],
+        'location_2': [[3, 3]], 'signal_strength_2': [3], 'sniff_timestamp_2': [1567757309],
+        'data_rate': [12], 'radio_timestamp': [1567757309], 'frequency_mhz': [44],
+        'type': [0],
+        'subtype': [10],
+        'receiver_address': ['b4:de:31:9c:f0:8a'],
+        'transmitter_address': ['50:e0:85:3f:77:5e']
+    })
+
+    frame_control_information = FrameControlInformation(0, 10, 'b4:de:31:9c:f0:8a', '50:e0:85:3f:77:5e')
+    wlan_radio_information = WlanRadioInformation(
+        [
+            Signal(Point2D(1, 1), 1, 1567757309),
+            Signal(Point2D(2, 2), 2, 1567757309),
+            Signal(Point2D(3, 3), 3, 1567757309)
+        ],
+        12, 1567757309, 44)
+
+    wifi_frame = WifiFrame(12, wlan_radio_information, frame_control_information)
+
+    actual = wifi_frame.to_dataframe()
+
+    pd.testing.assert_frame_equal(actual, expected)
