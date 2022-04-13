@@ -6,13 +6,13 @@ from src.wifi.wifi_frame import WifiFrame
 from src.wifi.wlan_radio_information import WlanRadioInformation
 
 
-def frame_factory(timestamp: float, location=None):
+def frame_factory(timestamp: float, location=None, signal_strength=-40):
     if location is None:
         location = Point2D([0, 0])
     return WifiFrame(
         100,
         WlanRadioInformation(
-            signals=[Signal(location, -40, timestamp)],
+            signals=[Signal(location, signal_strength, timestamp)],
             frequency_mhz=2412,
         ),
         FrameControlInformation(

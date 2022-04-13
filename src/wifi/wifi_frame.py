@@ -14,7 +14,7 @@ class WifiFrame:
         Most attributes are removed when constructed, leaving only attributes that can be relevant for further analysis.
     """
     frame_control_information: FrameControlInformation
-    wlan_radio_information: WlanRadioInformation
+    wlan_radio: WlanRadioInformation
     length: int
 
     def __init__(self, length: int = None, wlan_radio: WlanRadioInformation = None,

@@ -6,13 +6,6 @@ from src.wifi.signal import Signal
 from src.wifi.wifi_frame import WifiFrame
 
 
-def hasLocation(signalGroup: list[Signal], location: Point) -> bool:
-    for signal in signalGroup:
-        if signal.location == location:
-            return True
-    return False
-
-
 def average_signal_strength_on_location(signals: list[list[Signal]], location: Point) -> float:
     signal_strengths = []
     for signalGroup in signals:
@@ -23,11 +16,13 @@ def average_signal_strength_on_location(signals: list[list[Signal]], location: P
 
 
 def average_signals(signals: list[list[Signal]]) -> list[Signal]:
-    average_signal: list[Signal] = []
     last_element = signals[-1]
+    average_signals = []
     for signal_location in last_element:
-        signal_location.signal_strength = average_signal_strength_on_location(signals, signal_location.location)
-    return last_element
+        average_signals.append(
+            Signal(signal_location.location, average_signal_strength_on_location(signals, signal_location.location),
+                   signal_location.sniff_timestamp))
+    return average_signals
 
 
 def generate_average_signal_strength(wifi_frame_generator: Generator[WifiFrame, None, None],
@@ -46,9 +41,9 @@ def generate_average_signal_strength(wifi_frame_generator: Generator[WifiFrame, 
                 signal_strength_windows[mac_address].pop(0)
             # Add the new signal strength to the window
             signal_strength_windows[mac_address].append(signals)
+        else:
+            signal_strength_windows[mac_address] = [signals]
 
-        signal_strength_windows[mac_address] = [signals]
-
-        frame.wlan_radio_information.signals = average_signals(signal_strength_windows[mac_address])
+        frame.wlan_radio.signals = average_signals(signal_strength_windows[mac_address])
 
         yield frame
