@@ -1,6 +1,10 @@
-from src.wlan_radio_information import WlanRadioInformation
+from sympy import Point2D
+
+from src.wifi.wifi_card import WifiCard
+from src.wifi.wlan_radio_information import WlanRadioInformation
 from test.utils.wifi_test_utils import Layer
 
+wifi_card = WifiCard("wlan0", Point2D(0, 0))
 
 def test_wlan_radio_information():
     # Arrange
@@ -11,7 +15,7 @@ def test_wlan_radio_information():
     })
 
     # Act
-    wlan_radio_information = WlanRadioInformation.from_layer(layer, { 'location': [0, 0] }, 0)
+    wlan_radio_information = WlanRadioInformation.from_layer(layer, wifi_card, 0)
 
     # Assert
     assert wlan_radio_information.data_rate == 24
@@ -26,7 +30,7 @@ def test_wlan_radio_information_construct_missing_information():
     })
 
     # Act
-    wlan_radio_information = WlanRadioInformation.from_layer(layer, { 'location': [0, 0] }, 0)
+    wlan_radio_information = WlanRadioInformation.from_layer(layer, wifi_card, 0)
 
     # Assert
     assert wlan_radio_information.data_rate is None
@@ -41,7 +45,7 @@ def test_wlan_radio_information_construct_with_float():
     })
 
     # Act
-    wlan_radio_information = WlanRadioInformation.from_layer(layer, { 'location': [0, 0] }, 0)
+    wlan_radio_information = WlanRadioInformation.from_layer(layer, wifi_card, 0)
 
     # Assert
     assert wlan_radio_information.data_rate == 24.2
@@ -62,8 +66,8 @@ def test_compare_wlan_radio_information_identical():
     })
 
     # Act
-    wlan_radio_information1 = WlanRadioInformation.from_layer(layer1, { 'location': [0, 0] }, 0)
-    wlan_radio_information2 = WlanRadioInformation.from_layer(layer2, { 'location': [0, 0] }, 0)
+    wlan_radio_information1 = WlanRadioInformation.from_layer(layer1, wifi_card, 0)
+    wlan_radio_information2 = WlanRadioInformation.from_layer(layer2, wifi_card, 0)
 
     # Assert
     assert wlan_radio_information1 == wlan_radio_information2
@@ -84,8 +88,8 @@ def test_compare_wlan_radio_information_different_rrsi():
     })
 
     # Act
-    wlan_radio_information1 = WlanRadioInformation.from_layer(layer1, { 'location': [0, 0] }, 0)
-    wlan_radio_information2 = WlanRadioInformation.from_layer(layer2, { 'location': [0, 0] }, 0)
+    wlan_radio_information1 = WlanRadioInformation.from_layer(layer1, wifi_card, 0)
+    wlan_radio_information2 = WlanRadioInformation.from_layer(layer2, wifi_card, 0)
 
     # Assert
     assert wlan_radio_information1 == wlan_radio_information2
@@ -106,8 +110,8 @@ def test_compare_wlan_radio_information_different():
     })
 
     # Act
-    wlan_radio_information1 = WlanRadioInformation.from_layer(layer1, { 'location': [0, 0] }, 0)
-    wlan_radio_information2 = WlanRadioInformation.from_layer(layer2, { 'location': [0, 0] }, 0)
+    wlan_radio_information1 = WlanRadioInformation.from_layer(layer1, wifi_card, 0)
+    wlan_radio_information2 = WlanRadioInformation.from_layer(layer2, wifi_card, 0)
 
     # Assert
     assert wlan_radio_information1 != wlan_radio_information2

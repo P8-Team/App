@@ -1,4 +1,5 @@
-from sympy import Point, Circle
+import sympy
+from sympy import Point, Circle, Point2D
 
 from src.utils import is_point, true_for_all
 
@@ -27,10 +28,12 @@ def circle_factory_lst(circles: list):
     :return: List of circles
     """
     return list(map(circle_from_list, circles))
-        
+
+
 def circle_from_list(list: list):
     if len(list) != 3:
         raise ValueError("Elements must be lists containing three elements")
-    if not true_for_all(lambda elem: isinstance(elem, float) or isinstance(elem, int), list):
+    if not true_for_all(lambda elem: isinstance(elem, float) or isinstance(elem, int) or (
+            isinstance(elem, sympy.Basic) and elem.is_Number), list):
         raise ValueError("All elements of list must be numbers")
-    return circle_factory(Point(list[0], list[1]), list[2])
+    return circle_factory(Point2D(list[0], list[1]), list[2])

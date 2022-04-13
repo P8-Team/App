@@ -5,6 +5,7 @@ from src.frame_filter import FrameFilter
 from src.multiprocess_wifi_listener import multiprocess_wifi_listener
 from src.pipeline_factory.basic_generators import csv_row_generator, output_to_file_generator, \
     output_to_console_generator, json_generator, pcap_file_generator, append_location_to_wifi_frame
+from src.wifi.wifi_card import WifiCard
 
 
 class PipelineFactory:
@@ -13,7 +14,7 @@ class PipelineFactory:
         self.generator = generator
 
     @classmethod
-    def input_wifi_listeners(cls, wlan_interfaces) -> PipelineFactory:
+    def input_wifi_listeners(cls, wlan_interfaces: list[WifiCard]) -> PipelineFactory:
         return cls(multiprocess_wifi_listener(wlan_interfaces))
 
     @classmethod

@@ -1,7 +1,7 @@
 import pytest
 from sympy import Point, Circle
 from fractions import Fraction
-from src.Circle_factory import circle_factory, circle_factory_lst
+from src.circle_factory import circle_factory, circle_factory_lst
 from src.utils import is_circle
 
 
