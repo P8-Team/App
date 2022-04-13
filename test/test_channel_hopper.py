@@ -46,7 +46,6 @@ def test_channel_hopper_uses_given_time_between_hops():
     assert channel_hopper.sleep_time == 87.2
 
 
-@pytest.mark.skip(reason="Too slow")
 def test_channel_hopper_start_creates_hopper_process():
     channel_hopper = create_test_channel_hopper([""])
     channel_hopper.start()
@@ -56,7 +55,6 @@ def test_channel_hopper_start_creates_hopper_process():
     channel_hopper.hopper_process.kill()
 
 
-@pytest.mark.skip(reason="Too slow")
 def test_channel_hopper_stop_terminates_hopper_process():
     channel_hopper = create_test_channel_hopper([""])
     channel_hopper.start()
@@ -102,5 +100,6 @@ def test_single_hop_two_channels_two_hops_reset():
     assert channel_hopper.get_current_channel() == 5
 
 
-def test_single_hop_one_channel_interface_channel_is_set():
-    assert False
+# TODO: Figure out how to check which channel a given interface is on from Python (maybe?)
+# def test_single_hop_one_channel_interface_channel_is_set():
+#     assert False
