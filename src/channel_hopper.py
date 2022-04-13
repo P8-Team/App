@@ -1,7 +1,8 @@
-from multiprocessing import Process, Value
-
 import os
+import subprocess
 import time
+from multiprocessing import Process
+
 
 # TODO: Instead of spawning a new process which controls the hops, have the part that receives frames make the call
 #  to switch channels when it thinks it is time (Timeout, number of frames received, something like that). This would
@@ -31,10 +32,14 @@ class ChannelHopper:
         self.channels = channels
         self.sleep_time = time_between_hops_sec
 
+        self.hop_command_str = "sudo iwconfig {} channel {}"
+        self.current_channel_index = 0
+        # self.current_channel = channels[self.current_channel_index]
+
     def start(self):
         print("Starting channel hopper")
         self.hopper_process = Process(target=self.__hop__, args=(self.interfaces, self.channels,
-                                                               self.sleep_time, self.test_mode))
+                                                                 self.sleep_time, self.test_mode))
         self.hopper_process.start()
 
     def stop(self):
@@ -55,3 +60,25 @@ class ChannelHopper:
             # Switch to the next channel for next round
             channel_index = (channel_index + 1) % len(channels)
             time.sleep(sleep_time)
+
+    def single_hop(self):
+        self.current_channel_index = (self.current_channel_index + 1) % len(self.channels)
+
+        for interface in self.interfaces:
+            result = Command(self.hop_command_str.format(interface, self.channels[self.current_channel_index])).execute()
+
+
+    def get_current_channel(self):
+        return self.channels[self.current_channel_index]
+
+
+class Command:
+    def __init__(self, command: str):
+        self.command = command
+
+    def execute(self):
+        try:
+            subprocess.run(self.command, check=True, shell=True)
+            return True
+        except subprocess.SubprocessError:
+            return False
