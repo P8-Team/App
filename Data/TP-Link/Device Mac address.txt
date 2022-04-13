@@ -1,1 +1,4 @@
 6C:5A:B0:42:02:58
+
+Measuered DBM:
+-6
