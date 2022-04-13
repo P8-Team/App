@@ -55,7 +55,6 @@ def test_channel_hopper_start_creates_hopper_process():
     channel_hopper.hopper_process.kill()
 
 
-# TODO: The Git Runner halts here, because the spawned process is never terminated?!?
 def test_channel_hopper_stop_terminates_hopper_process():
     channel_hopper = create_test_channel_hopper([""])
     channel_hopper.start()

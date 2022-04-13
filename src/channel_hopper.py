@@ -3,6 +3,9 @@ from multiprocessing import Process, Value
 import os
 import time
 
+# TODO: Instead of spawning a new process which controls the hops, have the part that receives frames make the call
+#  to switch channels when it thinks it is time (Timeout, number of frames received, something like that). This would
+#  also allow the hopper to prioritise busy channels.
 
 # TODO: Integrate the channel hopper into main.py
 
@@ -30,7 +33,8 @@ class ChannelHopper:
 
     def start(self):
         print("Starting channel hopper")
-        self.hopper_process = Process(target=self.__hop__, args=(self.interfaces, self.channels, self.sleep_time, self.test_mode))
+        self.hopper_process = Process(target=self.__hop__, args=(self.interfaces, self.channels,
+                                                               self.sleep_time, self.test_mode))
         self.hopper_process.start()
 
     def stop(self):
