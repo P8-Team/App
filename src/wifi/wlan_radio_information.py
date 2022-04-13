@@ -66,7 +66,7 @@ class WlanRadioInformation:
 
     def to_dataframe(self):
         # Create flat dataframe containing all signals
-        sigdf = pd.DataFrame(self.signals)
+        sigdf = pd.concat(list(map(lambda x: x.to_dataframe(), self.signals)), ignore_index = True)
         v = sigdf.unstack().to_frame().sort_index(level=1).T
         v.columns = v.columns.map(lambda x: x[0] + '_' + str(x[1]))
 

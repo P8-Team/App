@@ -4,6 +4,7 @@ from src.wifi.wifi_card import WifiCard
 from src.wifi.wlan_radio_information import WlanRadioInformation
 from test.utils.wifi_test_utils import Layer
 import pandas as pd
+from src.wifi.signal import Signal
 
 wifi_card = WifiCard("wlan0", Point2D(0, 0))
 
@@ -128,9 +129,9 @@ def test_wlan_radio_information_to_dataframe():
 
     wlan_radio_information = WlanRadioInformation(
         [
-            {'signal_strength': 1, 'location': [1,1], 'sniff_timestamp': 1567757309}, 
-            {'signal_strength': 2, 'location': [2,2], 'sniff_timestamp': 1567757309}, 
-            {'signal_strength': 3, 'location': [3,3], 'sniff_timestamp': 1567757309}
+            Signal(Point2D(1, 1), 1, 1567757309),
+            Signal(Point2D(2, 2), 2, 1567757309),
+            Signal(Point2D(3, 3), 3, 1567757309)
         ],
         12, 1567757309, 44)
 
