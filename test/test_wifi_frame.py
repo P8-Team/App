@@ -1,6 +1,7 @@
 import copy
 
-from src.wifi_frame import WifiFrame
+from src.wifi.wifi_card import WifiCard
+from src.wifi.wifi_frame import WifiFrame
 from test.utils.wifi_test_utils import Frame, Layer
 
 from src.frame_control_information import FrameControlInformation
@@ -24,7 +25,7 @@ def test_construct_wifi_frame():
     })
 
     # Act
-    wifi_frame = WifiFrame.from_frame(frame, { 'location': [0, 0] })
+    wifi_frame = WifiFrame.from_frame(frame, WifiCard("wlan0", [0, 0]))
 
     # Assert
     assert wifi_frame.length == 340
@@ -33,8 +34,8 @@ def test_construct_wifi_frame():
     assert wifi_frame.frame_control_information.receiver_address == '00:0c:29:b7:d9:b0'
     assert wifi_frame.frame_control_information.transmitter_address == '00:0c:29:b7:d9:b1'
     assert len(wifi_frame.wlan_radio.signals) == 1
-    assert wifi_frame.wlan_radio.signals[0]["signal_strength"] == -62
-    assert wifi_frame.wlan_radio.signals[0]["sniff_timestamp"] == 1647417907.513663000
+    assert wifi_frame.wlan_radio.signals[0].signal_strength == -62
+    assert wifi_frame.wlan_radio.signals[0].sniff_timestamp == 1647417907.513663000
     assert wifi_frame.wlan_radio.data_rate == 54
     assert wifi_frame.wlan_radio.radio_timestamp == 1567757308
 
@@ -69,8 +70,8 @@ def test_compare_wifi_frame_identical():
     })
 
     # Act
-    wifi_frame1 = WifiFrame.from_frame(frame1, { 'location': [0, 0] })
-    wifi_frame2 = WifiFrame.from_frame(frame2, { 'location': [0, 0] })
+    wifi_frame1 = WifiFrame.from_frame(frame1, WifiCard("wlan0", [0, 0]))
+    wifi_frame2 = WifiFrame.from_frame(frame2, WifiCard("wlan0", [0, 0]))
 
     # Assert
     assert wifi_frame1 == wifi_frame2
@@ -106,8 +107,8 @@ def test_compare_wifi_frame_different_timestamp():
     })
 
     # Act
-    wifi_frame1 = WifiFrame.from_frame(frame1, { 'location': [0, 0] })
-    wifi_frame2 = WifiFrame.from_frame(frame2, { 'location': [0, 0] })
+    wifi_frame1 = WifiFrame.from_frame(frame1, WifiCard("wlan0", [0, 0]))
+    wifi_frame2 = WifiFrame.from_frame(frame2, WifiCard("wlan0", [0, 0]))
 
     # Assert
     assert wifi_frame1 == wifi_frame2
@@ -143,8 +144,8 @@ def test_compare_wifi_frame_different_signal_strength():
     })
 
     # Act
-    wifi_frame1 = WifiFrame.from_frame(frame1, { 'location': [0, 0] })
-    wifi_frame2 = WifiFrame.from_frame(frame2, { 'location': [0, 0] })
+    wifi_frame1 = WifiFrame.from_frame(frame1, WifiCard("wlan0", [0, 0]))
+    wifi_frame2 = WifiFrame.from_frame(frame2, WifiCard("wlan0", [0, 0]))
 
     # Assert
     assert wifi_frame1 == wifi_frame2
@@ -180,8 +181,8 @@ def test_compare_wifi_frame_different():
     })
 
     # Act
-    wifi_frame1 = WifiFrame.from_frame(frame1, { 'location': [0, 0] })
-    wifi_frame2 = WifiFrame.from_frame(frame2, { 'location': [0, 0] })
+    wifi_frame1 = WifiFrame.from_frame(frame1, WifiCard("wlan0", [0, 0]))
+    wifi_frame2 = WifiFrame.from_frame(frame2, WifiCard("wlan0", [0, 0]))
 
     # Assert
     assert wifi_frame1 != wifi_frame2
@@ -200,7 +201,7 @@ def test_wifi_frame_has_same_hash_with_different_rrsi_and_sniff_timestamp():
             'wlan_radio.data_rate': '54',
             'wlan_radio.timestamp': '1567757308'
         })
-    }), { 'location': [0, 0] })
+    }), WifiCard("wlan0", [0, 0]))
     # Copy frame 1 and change the signal_strength and sniff timestamp
 
     frame2 = copy.deepcopy(frame1)
@@ -224,7 +225,7 @@ def test_wifi_frame_has_same_hash_identical():
             'wlan_radio.data_rate': '54',
             'wlan_radio.timestamp': '1567757308'
         })
-    }), { 'location': [0, 0] })
+    }), WifiCard("wlan0", [0, 0]))
     frame2 = copy.deepcopy(frame1)
 
     assert frame1.__key__() == frame2.__key__()
@@ -244,7 +245,7 @@ def test_wifi_frame_has_different_hash():
             'wlan_radio.data_rate': '54',
             'wlan_radio.timestamp': '1567757308'
         })
-    }), { 'location': [0, 0] })
+    }), WifiCard("wlan0", [0, 0]))
     frame2 = copy.deepcopy(frame1)
     frame2.length = 341
 

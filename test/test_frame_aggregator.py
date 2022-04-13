@@ -1,11 +1,13 @@
 from time import sleep
 
 from iterators import TimeoutIterator
+from sympy import Point2D
 
 from src.frame_aggregator import frame_aggregator
-from src.frame_control_information import FrameControlInformation
-from src.wifi_frame import WifiFrame
-from src.wlan_radio_information import WlanRadioInformation
+from src.wifi.frame_control_information import FrameControlInformation
+from src.wifi.signal import Signal
+from src.wifi.wifi_frame import WifiFrame
+from src.wifi.wlan_radio_information import WlanRadioInformation
 
 
 def make_wifi_frame(sniff_timestamp, signal_strength, transmitter_address='00:00:00:00:00:01'):
@@ -18,7 +20,7 @@ def make_wifi_frame(sniff_timestamp, signal_strength, transmitter_address='00:00
             transmitter_address=transmitter_address,
         ),
         wlan_radio=WlanRadioInformation(
-            signals = [{'signal_strength': signal_strength, 'sniff_timestamp': sniff_timestamp}],
+            signals=[Signal(Point2D([0, 0]), signal_strength, sniff_timestamp)],
             data_rate=12,
             radio_timestamp=1200
         )
@@ -40,12 +42,12 @@ def test_frame_aggregator_combine_frames():
     assert len(combined_frames) == 1
     combined_frame = combined_frames[0]
     assert len(combined_frame.wlan_radio.signals) == 3
-    assert combined_frame.wlan_radio.signals[0]['sniff_timestamp'] == 1
-    assert combined_frame.wlan_radio.signals[1]['sniff_timestamp'] == 2
-    assert combined_frame.wlan_radio.signals[2]['sniff_timestamp'] == 3
-    assert combined_frame.wlan_radio.signals[0]['signal_strength'] == 5
-    assert combined_frame.wlan_radio.signals[1]['signal_strength'] == 6
-    assert combined_frame.wlan_radio.signals[2]['signal_strength'] == 7
+    assert combined_frame.wlan_radio.signals[0].sniff_timestamp == 1
+    assert combined_frame.wlan_radio.signals[1].sniff_timestamp == 2
+    assert combined_frame.wlan_radio.signals[2].sniff_timestamp == 3
+    assert combined_frame.wlan_radio.signals[0].signal_strength == 5
+    assert combined_frame.wlan_radio.signals[1].signal_strength == 6
+    assert combined_frame.wlan_radio.signals[2].signal_strength == 7
 
     # Rest of the combined frame should be equal to any of the test input frames
     # as the compare function does not care about signal_strength or sniff_timestamp

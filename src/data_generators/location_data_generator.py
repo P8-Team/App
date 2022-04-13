@@ -1,12 +1,15 @@
 from sympy import Point
 
 from src.distance_strength_calculations import mw_to_dbm, distance_to_signal_strength
-from src.wifi_frame import WifiFrame
-from src.wlan_radio_information import WlanRadioInformation
+from src.wifi.signal import Signal
+from src.wifi.wifi_frame import WifiFrame
+from src.wifi.wlan_radio_information import WlanRadioInformation
 
 
 class LocationGenerator:
-    def __init__(self, receiver_positions: list):
+    receiver_positions: list[Point]
+
+    def __init__(self, receiver_positions: list[Point]):
         """
 
         :param receiver_positions: List of positions for receivers
@@ -27,9 +30,11 @@ class LocationGenerator:
 
         wifi_element = WifiFrame()
         signal_strength = self.signal_strength_calculator(position, frequency, transmission_power)
-        data_rate = []
-        timestamp = []
-        wifi_element.wlan_radio = WlanRadioInformation(signal_strength, data_rate, timestamp)
+
+        signals = [Signal(element[0], element[1], 0) for element in zip(self.receiver_positions, signal_strength)]
+        data_rate = None
+        timestamp = None
+        wifi_element.wlan_radio = WlanRadioInformation(signals, data_rate, timestamp, frequency)
         return wifi_element
 
     def _positions_populator(self, positions):

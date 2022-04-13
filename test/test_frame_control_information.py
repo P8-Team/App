@@ -1,4 +1,4 @@
-from src.frame_control_information import FrameControlInformation
+from src.wifi.frame_control_information import FrameControlInformation
 from test.utils.wifi_test_utils import Layer
 import pandas as pd
 

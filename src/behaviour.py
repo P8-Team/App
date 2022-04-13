@@ -1,6 +1,6 @@
 from enum import Enum
 
-from src.wifi_frame import WifiFrame
+from src.wifi.wifi_frame import WifiFrame
 
 # Enum defining the possible results of classify
 Label = Enum('Label', 'Ok Undesired')
