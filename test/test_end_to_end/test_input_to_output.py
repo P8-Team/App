@@ -1,5 +1,7 @@
 from typing import List
 import pytest
+from sympy import Point2D
+
 from src.behaviour import Classifier, Label
 from src.pipeline_factory import PipelineFactory
 from src.wifi.wifi_frame import WifiFrame
@@ -9,18 +11,18 @@ from test.utils.wifi_frame_factory import frame_factory
 @pytest.fixture(autouse=True)
 def wifi_frames():
     return [
-        frame_factory(timestamp=0, location=[0, 1]),
-        frame_factory(timestamp=0.01, location=[1, 0]),
-        frame_factory(timestamp=0.02, location=[1, 1]),
-        frame_factory(timestamp=0.11, location=[0, 1]),
-        frame_factory(timestamp=0.12, location=[1, 0]),
-        frame_factory(timestamp=0.13, location=[1, 1]),
-        frame_factory(timestamp=0.23, location=[0, 1]),
-        frame_factory(timestamp=0.24, location=[1, 0]),
-        frame_factory(timestamp=0.24, location=[1, 1]),
-        frame_factory(timestamp=2.23, location=[0, 1]),
-        frame_factory(timestamp=2.23, location=[1, 0]),
-        frame_factory(timestamp=2.23, location=[1, 1]),
+        frame_factory(timestamp=0, location=Point2D([0, 1])),
+        frame_factory(timestamp=0.01, location=Point2D([1, 0])),
+        frame_factory(timestamp=0.02, location=Point2D([1, 1])),
+        frame_factory(timestamp=0.11, location=Point2D([0, 1])),
+        frame_factory(timestamp=0.12, location=Point2D([1, 0])),
+        frame_factory(timestamp=0.13, location=Point2D([1, 1])),
+        frame_factory(timestamp=0.23, location=Point2D([0, 1])),
+        frame_factory(timestamp=0.24, location=Point2D([1, 0])),
+        frame_factory(timestamp=0.24, location=Point2D([1, 1])),
+        frame_factory(timestamp=2.23, location=Point2D([0, 1])),
+        frame_factory(timestamp=2.23, location=Point2D([1, 0])),
+        frame_factory(timestamp=2.23, location=Point2D([1, 1])),
     ]
 
 

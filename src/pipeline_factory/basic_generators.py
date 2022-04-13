@@ -1,11 +1,13 @@
 import csv
 import io
 import json
+from typing import Generator
 
 import pyshark
 
 from src.distance_strength_calculations import calc_distance_from_dbm_signal_strength
 from src.location import location
+from src.wifi.wifi_frame import WifiFrame
 
 
 def json_generator(generator):
@@ -37,13 +39,13 @@ def csv_row_generator(generator, delimiter=';'):
 def pcap_file_generator(file_path):
     return pyshark.FileCapture(file_path)
 
-def append_location_to_wifi_frame(generator):
+def append_location_to_wifi_frame(generator: Generator[WifiFrame, None, None]) -> Generator[WifiFrame, None, None]:
     for item in generator:
         print(item.wlan_radio.__dict__)
         wifi_interface_with_distance = [
             [
-                signal.location[0],
-                signal.location[1],
+                signal.location.x,
+                signal.location.y,
                 calc_distance_from_dbm_signal_strength(20 if item.wlan_radio.frequency_mhz < 4000 else 30, signal.signal_strength, item.wlan_radio.frequency_mhz)
             ] for signal in item.wlan_radio.signals]
         item.location = location(wifi_interface_with_distance)
