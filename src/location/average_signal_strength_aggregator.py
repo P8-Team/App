@@ -1,3 +1,4 @@
+import math
 from typing import Generator
 
 from sympy import Point
@@ -6,22 +7,30 @@ from src.wifi.signal import Signal
 from src.wifi.wifi_frame import WifiFrame
 
 
-def average_signal_strength_on_location(signals: list[list[Signal]], location: Point) -> float:
+def average_and_variance_from_signal_strength_on_location(signals: list[list[Signal]], location: Point) \
+        -> tuple[float, float]:
     signal_strengths = []
     for signalGroup in signals:
         for signal in signalGroup:
             if signal.location == location:
                 signal_strengths.append(signal.signal_strength)
-    return sum(signal_strengths) / len(signal_strengths)
+
+    average = sum(signal_strengths) / len(signal_strengths)
+    variance = math.sqrt(
+        sum([math.pow(signal_strength - average, 2) for signal_strength in signal_strengths]) / len(signal_strengths)
+    )
+
+    return average, variance
 
 
 def average_signals(signals: list[list[Signal]]) -> list[Signal]:
     last_element = signals[-1]
     average_signals = []
     for signal_location in last_element:
-        average_signals.append(
-            Signal(signal_location.location, average_signal_strength_on_location(signals, signal_location.location),
-                   signal_location.sniff_timestamp))
+        average, variance = average_and_variance_from_signal_strength_on_location(signals, signal_location.location)
+        signal = Signal(signal_location.location, average, signal_location.sniff_timestamp)
+        signal.variance = variance
+        average_signals.append(signal)
     return average_signals
 
 

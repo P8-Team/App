@@ -2,6 +2,8 @@ from __future__ import annotations
 
 from src.frame_aggregator import frame_aggregator
 from src.frame_filter import FrameFilter
+from src.location.average_signal_strength_aggregator import generate_average_signal_strength
+from src.location.multi_lateration_least_non_linear_square_sum import append_location_generator
 from src.multiprocess_wifi_listener import multiprocess_wifi_listener
 from src.pipeline_factory.basic_generators import csv_row_generator, output_to_file_generator, \
     output_to_console_generator, json_generator, pcap_file_generator, append_location_to_wifi_frame
@@ -56,3 +58,11 @@ class PipelineFactory:
 
     def to_list(self):
         return list(self.generator)
+
+    def use_average_rssi_with_variance(self, max_rolling_windows_size=50):
+        self.generator = generate_average_signal_strength(self.generator, max_rolling_windows_size)
+        return self
+
+    def add_location_non_linear_least_square(self, do_draw = False):
+        self.generator = append_location_generator(self.generator, do_draw=do_draw)
+        return self

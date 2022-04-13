@@ -12,6 +12,8 @@ if __name__ == '__main__':
 
     generator = PipelineFactory.input_wifi_listeners(adapters)\
         .add_frame_aggregator(threshold=len(adapters))\
+        .use_average_rssi_with_variance()\
+        .add_location_non_linear_least_square()\
         .add_location_multilateration()\
         .add_classifier(Classifier(1))\
         .output_to_console()\

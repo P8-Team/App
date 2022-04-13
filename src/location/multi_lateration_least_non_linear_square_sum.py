@@ -1,30 +1,48 @@
 import math
+from typing import Iterable
 
 import numpy as np
-from scipy.optimize import least_squares
+from scipy.optimize import least_squares, OptimizeResult
 import matplotlib.pyplot as plt
 
 from src.distance_strength_calculations import calc_distance_from_dbm_signal_strength
 from src.wifi.wifi_frame import WifiFrame
 
-def non_linear_squared_sum_weighted():
-    pass
 
-def non_linear_squared_sum(x, anchors):
-    # get sum of squared distances from anchor points
-    # to the point x
-    return sum([math.pow((np.linalg.norm(x - anchor[0]) - anchor[1]), 2) for anchor in anchors])
+class Anchor:
+    location: np.ndarray
+    distance: float
+    variance: float
+    weight: float
+
+    def __init__(self, location: np.ndarray, distance: float, variance: float):
+        self.location = location
+        self.distance = distance
+        assert variance is not None
+        self.variance = variance
+        self.weight = self.calc_weight()
+
+    def calc_weight(self) -> float:
+        return 1 / (math.pow(self.distance, 4) * math.pow(self.variance, 4))
+
+
+def non_linear_squared_sum_weighted(x: np.ndarray, anchors: list[Anchor]) -> float:
+    return sum(
+        [anchor.weight * math.pow((np.linalg.norm(x - anchor.location) - anchor.distance), 2) for anchor in anchors]
+    )
 
 
 def append_location_from_anchors_with_distance(frame: WifiFrame, do_draw=False):
     frequency = frame.wlan_radio.frequency_mhz
     signals = frame.wlan_radio.signals
-    anchors = [[np.array(signal["location"]), signal["signal_strength"]] for signal in signals]
+    # todo where do we get transmission power from?
     transmission_power = 20 if frequency < 4000 else 30  # 20 is max for 2.4ghz, 30 for 5ghz.
-    # [[x,y],distance_dbm]
-    # convert to distance in meters
-    anchors = [[anchor[0], calc_distance_from_dbm_signal_strength(transmission_power, anchor[1], frequency)] for anchor
-               in anchors]
+
+    anchors = [Anchor(
+        np.array(signal.location.coordinates),
+        calc_distance_from_dbm_signal_strength(signal.signal_strength, transmission_power, frequency),
+        signal.variance
+    ) for signal in signals]
 
     res = get_least_squared_error(anchors)
 
@@ -36,9 +54,8 @@ def append_location_from_anchors_with_distance(frame: WifiFrame, do_draw=False):
     return frame
 
 
-def get_least_squared_error(anchors):
-    res = least_squares(non_linear_squared_sum, np.array([0, 0]), args=[anchors])
-    return res
+def get_least_squared_error(anchors: list[Anchor]) -> OptimizeResult:
+    return least_squares(non_linear_squared_sum_weighted, np.array([0, 0]), args=[anchors])
 
 
 def draw_plot_with_anchors_circles_and_estimate(anchors, estimate):
@@ -58,3 +75,8 @@ def draw_plot_with_anchors_circles_and_estimate(anchors, estimate):
 
     fig.set_size_inches(10, 10)
     plt.show()
+
+
+def append_location_generator(wifi_frame_generator: Iterable[WifiFrame], do_draw=False) -> Iterable[WifiFrame]:
+    for wifi_frame in wifi_frame_generator:
+        yield append_location_from_anchors_with_distance(wifi_frame, do_draw)

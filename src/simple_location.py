@@ -4,6 +4,7 @@ from src.utils import is_list_of_type
 from src.circle_factory import circle_factory_lst
 import itertools
 
+
 def location(reference_values):
     """
     Determine a position based on the distance from a number of reference_values
@@ -11,6 +12,7 @@ def location(reference_values):
     :return: Point representing the location
     """
     return common_intersection(circle_factory_lst(reference_values))
+
 
 def common_intersection(circles):
     if not is_list_of_type(circles, Circle):
@@ -34,8 +36,10 @@ def common_intersection(circles):
     else:
         return None
 
+
 def compare(a, b):
     return set(a.intersection(b))
+
 
 def angle_between_two_points(p1: Point, p2: Point):
     """

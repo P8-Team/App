@@ -5,6 +5,7 @@ class Signal:
     location: Point2D
     signal_strength: float
     sniff_timestamp: float
+    variance: float
 
     def __init__(self, location: Point2D, signal_strength:  float, sniff_timestamp: float):
         self.location = location
