@@ -1,6 +1,11 @@
 from enum import Enum
-
+import pandas as pd
 from src.wifi.wifi_frame import WifiFrame
+from tsfresh import extract_relevant_features
+from tsfresh.feature_extraction import ComprehensiveFCParameters
+from sklearn.model_selection import train_test_split
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.metrics import classification_report
 
 # Enum defining the possible results of classify
 Label = Enum('Label', 'Ok Undesired')
@@ -15,6 +20,7 @@ class Classifier:
         :param interval_seconds: The amount of time in seconds to aggregate frames to classify 
         """
         self.interval = interval_seconds
+        self.model = RandomForestClassifier()
 
     def classify(self, frame_gen):
         """
@@ -56,3 +62,20 @@ class Classifier:
         """
         if not isinstance(item, WifiFrame):
             raise ValueError('classify must be given generator that produces elements of type Frame')
+
+    def train(self, data, labels):
+        # Extract relevant features using tsfresh
+        features = extract_relevant_features(data, labels, column_id='transmitter_address', column_sort='radio_timestamp',
+                                         default_fc_parameters=ComprehensiveFCParameters())
+
+        # Split the data into training and test datag
+        input_train, input_test, labels_train, labels_test = train_test_split(features, labels)
+
+        self.model.fit(input_train, labels_train)
+
+        res = classification_report(labels_test, self.model.predict(input_test))
+        print(res)
+
+        return res
+
+        

@@ -1,5 +1,5 @@
 import pytest
-from src.behaviour import Classifier, Label
+from src.classifier import Classifier, Label
 
 # Function for turning list into generator
 from test.utils.wifi_frame_factory import frame_factory
