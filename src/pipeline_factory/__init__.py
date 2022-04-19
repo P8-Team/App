@@ -3,7 +3,7 @@ from __future__ import annotations
 from src.frame_aggregator import frame_aggregator
 from src.frame_filter import FrameFilter
 from src.location.average_signal_strength_aggregator import generate_average_signal_strength
-from src.location.multi_lateration_least_non_linear_square_sum import append_location_generator
+from src.location.multi_lateration_non_linear_least_square_sum import append_location_generator
 from src.multiprocess_wifi_listener import multiprocess_wifi_listener
 from src.pipeline_factory.basic_generators import csv_row_generator, output_to_file_generator, \
     output_to_console_generator, json_generator, pcap_file_generator, append_location_to_wifi_frame
