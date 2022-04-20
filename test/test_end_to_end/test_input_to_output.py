@@ -11,18 +11,18 @@ from test.utils.wifi_frame_factory import frame_factory
 @pytest.fixture(autouse=True)
 def wifi_frames():
     return [
-        frame_factory(timestamp=0, location=Point2D([0, 1])),
-        frame_factory(timestamp=0.01, location=Point2D([1, 0])),
-        frame_factory(timestamp=0.02, location=Point2D([1, 1])),
-        frame_factory(timestamp=0.11, location=Point2D([0, 1])),
-        frame_factory(timestamp=0.12, location=Point2D([1, 0])),
-        frame_factory(timestamp=0.13, location=Point2D([1, 1])),
-        frame_factory(timestamp=0.23, location=Point2D([0, 1])),
-        frame_factory(timestamp=0.24, location=Point2D([1, 0])),
-        frame_factory(timestamp=0.24, location=Point2D([1, 1])),
-        frame_factory(timestamp=2.23, location=Point2D([0, 1])),
-        frame_factory(timestamp=2.23, location=Point2D([1, 0])),
-        frame_factory(timestamp=2.23, location=Point2D([1, 1])),
+        frame_factory(timestamp=0, location=Point2D([0, 1]), fcs=1),
+        frame_factory(timestamp=0.01, location=Point2D([1, 0]), fcs=1),
+        frame_factory(timestamp=0.02, location=Point2D([1, 1]), fcs=1),
+        frame_factory(timestamp=0.11, location=Point2D([0, 1]), fcs=2),
+        frame_factory(timestamp=0.12, location=Point2D([1, 0]), fcs=2),
+        frame_factory(timestamp=0.13, location=Point2D([1, 1]), fcs=2),
+        frame_factory(timestamp=0.23, location=Point2D([0, 1]), fcs=3),
+        frame_factory(timestamp=0.24, location=Point2D([1, 0]), fcs=3),
+        frame_factory(timestamp=0.24, location=Point2D([1, 1]), fcs=3),
+        frame_factory(timestamp=2.23, location=Point2D([0, 1]), fcs=4),
+        frame_factory(timestamp=2.23, location=Point2D([1, 0]), fcs=4),
+        frame_factory(timestamp=2.23, location=Point2D([1, 1]), fcs=4),
     ]
 
 
