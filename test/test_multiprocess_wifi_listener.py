@@ -11,6 +11,8 @@ def test_multiprocess_wifi_listener_file_exists():
     wifi_listener_from_file(filepath,queue)
     first_element = queue.get()
     assert first_element.frame_control_information.transmitter_address == "7c:49:eb:40:22:2f"
+    queue.close()
+    queue.join_thread()
 
 
 def test_multiprocess_wifi_listener_file_not_exists():

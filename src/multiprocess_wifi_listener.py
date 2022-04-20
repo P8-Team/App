@@ -35,8 +35,10 @@ def wifi_listener_from_file(file_name: str, queue: Queue):
     print("Starting Listener on {}".format(file_name))
     wifi_card = WifiCard("file", Point2D(0, 0))
 
-    for frame in pyshark.FileCapture(file_name):
+    file = pyshark.FileCapture(file_name)
+    for frame in file:
         queue.put(WifiFrame.from_frame(frame, wifi_card))
+    file.close()
 
 def multiprocess_wifi_listener(wifi_card_list: list[WifiCard]) -> Generator[WifiFrame, None, None]:
     """
