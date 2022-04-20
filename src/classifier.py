@@ -1,7 +1,11 @@
 from enum import Enum
 import pandas as pd
+import numpy as np
+import tsfresh.feature_extraction.settings
+
 from src.wifi.wifi_frame import WifiFrame
 from tsfresh import extract_relevant_features
+from tsfresh import extract_features
 from tsfresh.feature_extraction import ComprehensiveFCParameters
 from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestClassifier
@@ -21,6 +25,7 @@ class Classifier:
         """
         self.interval = interval_seconds
         self.model = RandomForestClassifier()
+        self.feature_parameters = None  # tsfresh settings object, used in train and classify_interval
 
     def classify(self, frame_gen):
         """
@@ -29,7 +34,8 @@ class Classifier:
             An item first yielded when a frame that is in the next interval is received from frame_gen
 
         :param frame_gen: A generator that produces frames
-        """ 
+        """
+
         # Create generator that accumulates frames in an interval and yields lists of frames
         frame_acc = self.accumulate_frames(frame_gen)
         for frame_list in frame_acc:
@@ -53,8 +59,16 @@ class Classifier:
                 frames_in_interval.append(frame)
 
     def classify_interval(self, frames):
-        # Classify behaviour
-        return Label.Ok if len(frames) <= 2 else Label.Undesired
+        # Extract relevant features using tsfresh and a custom setting created during training
+        features = extract_features(frames, column_id='transmitter_address', column_sort='radio_timestamp',
+                                            default_fc_parameters=self.feature_parameters)
+
+        # Returns the identity(based on labels from training)
+        # Returns an error if the model has not been fitted
+        return np.argmax(self.model.predict(features))
+
+        # OLD CODE - Kept for testing, see test_behaviour
+        # return Label.Ok if len(frames) <= 2 else Label.Undesired
 
     def _verify_item_is_frame(self, item):
         """
@@ -68,7 +82,10 @@ class Classifier:
         features = extract_relevant_features(data, labels, column_id='transmitter_address', column_sort='radio_timestamp',
                                          default_fc_parameters=ComprehensiveFCParameters())
 
-        # Split the data into training and test datag
+        # Creates a setting object, used to filter features during classify_interval.
+        self.feature_parameters = tsfresh.feature_extraction.settings.from_columns(features)
+
+        # Split the data into training and test data
         input_train, input_test, labels_train, labels_test = train_test_split(features, labels)
 
         self.model.fit(input_train, labels_train)
