@@ -23,7 +23,6 @@ def test_it_calculates_rolling_average():
     # convert to list
     result = list(result)
     signal_strengths = [wifi_frame.wlan_radio.signals[0].signal_strength for wifi_frame in result]
-    variances = [wifi_frame.wlan_radio.signals[0].variance for wifi_frame in result]
 
     assert signal_strengths == [
         10, 15, 20, 25, 30, 40, 50, 60, 70, 80
