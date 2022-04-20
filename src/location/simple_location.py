@@ -1,7 +1,7 @@
 import math
 from sympy import Circle, Point
 from src.utils import is_list_of_type
-from src.circle_factory import circle_factory_lst
+from src.location.circle_factory import circle_factory_lst
 import itertools
 
 

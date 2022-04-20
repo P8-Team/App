@@ -5,7 +5,7 @@ import numpy as np
 from scipy.optimize import least_squares, OptimizeResult
 import matplotlib.pyplot as plt
 
-from src.distance_strength_calculations import calc_distance_from_dbm_signal_strength
+from src.location.distance_strength_calculations import calc_distance_from_dbm_signal_strength
 from src.wifi.wifi_frame import WifiFrame
 
 
@@ -23,6 +23,8 @@ class Anchor:
         self.weight = self.calc_weight()
 
     def calc_weight(self) -> float:
+        if self.distance == 0 or self.variance == 0:
+            return 1
         return 1 / (math.pow(self.distance, 4) * math.pow(self.variance, 4))
 
 

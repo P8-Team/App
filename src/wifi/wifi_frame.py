@@ -16,20 +16,26 @@ class WifiFrame:
     frame_control_information: FrameControlInformation
     wlan_radio: WlanRadioInformation
     length: int
+    fcs: int
 
-    def __init__(self, length: int = None, wlan_radio: WlanRadioInformation = None,
+    def __init__(self, length: int = None, fcs: int = None, wlan_radio: WlanRadioInformation = None,
                  frame_control_information: FrameControlInformation = None):
         self.frame_control_information = frame_control_information
         self.length = length
         self.wlan_radio = wlan_radio
+        self.fcs = fcs
 
     @classmethod
     def from_frame(cls, frame, wifi_card: WifiCard) -> WifiFrame:
         length = int(frame.length)
+        fcs = frame.wlan.get("fcs")
+        # print as integer
+        if fcs is not None:
+            fcs = int(fcs, 16)
         sniff_timestamp = float(frame.sniff_timestamp)
         wlan_radio = WlanRadioInformation.from_layer(frame.wlan_radio, wifi_card, sniff_timestamp)
         frame_control_information = FrameControlInformation.from_layer(frame.wlan)
-        return cls(length, wlan_radio, frame_control_information)
+        return cls(length, fcs, wlan_radio, frame_control_information)
 
     def __eq__(self, other: WifiFrame) -> bool:
         """
@@ -40,7 +46,8 @@ class WifiFrame:
         """
         return self.frame_control_information == other.frame_control_information and \
                self.length == other.length and \
-               self.wlan_radio == other.wlan_radio
+               self.wlan_radio == other.wlan_radio and \
+               self.fcs == other.fcs
 
     def __repr__(self) -> str:
         """
@@ -61,7 +68,7 @@ class WifiFrame:
             Calls __key__ on the frame_control_information object to avoid getting signal_strength in the comparison
         :return:
         """
-        return self.length, self.frame_control_information, self.wlan_radio.__key__()
+        return self.length, self.fcs, self.frame_control_information, self.wlan_radio.__key__()
 
     def __hash__(self) -> int:
         return hash(self.__key__())

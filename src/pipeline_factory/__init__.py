@@ -6,7 +6,7 @@ from src.location.average_signal_strength_aggregator import generate_average_sig
 from src.location.multi_lateration_non_linear_least_square_sum import append_location_generator
 from src.multiprocess_wifi_listener import multiprocess_wifi_listener
 from src.pipeline_factory.basic_generators import csv_row_generator, output_to_file_generator, \
-    output_to_console_generator, json_generator, pcap_file_generator, append_location_to_wifi_frame
+    output_to_console_generator, json_generator, pcap_file_generator, append_location_to_wifi_frame, filter
 from src.wifi.wifi_card import WifiCard
 
 
@@ -65,4 +65,8 @@ class PipelineFactory:
 
     def add_location_non_linear_least_square(self, do_draw = False):
         self.generator = append_location_generator(self.generator, do_draw=do_draw)
+        return self
+
+    def filter(self, filter_function):
+        self.generator = filter(self.generator,filter_function)
         return self
