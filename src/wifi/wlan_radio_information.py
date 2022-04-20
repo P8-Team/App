@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from src.wifi.signal import Signal
 from src.wifi.wifi_card import WifiCard
-
+import pandas as pd
 
 class WlanRadioInformation:
     signals: list[Signal]
@@ -63,3 +63,18 @@ class WlanRadioInformation:
             Returns the earliest timestamp of all the signals
         """
         return min(signal.sniff_timestamp for signal in self.signals)
+
+    def to_dataframe(self):
+        # Create flat dataframe containing all signals
+        sigdf = pd.concat(list(map(lambda x: x.to_dataframe(), self.signals)), ignore_index = True)
+        v = sigdf.unstack().to_frame().sort_index(level=1).T
+        v.columns = v.columns.map(lambda x: x[0] + '_' + str(x[1]))
+
+        # Get value of the remaining fields
+        var_dict = vars(self)
+        # Remove signals as that is already handled
+        del var_dict['signals']
+        # Create dataframe containing the field values
+        var_df = pd.DataFrame(var_dict, index = [0])
+        # Combine signals and other fields into complete dataframe
+        return pd.concat([v, var_df], axis = 1).infer_objects()
