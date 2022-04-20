@@ -1,3 +1,4 @@
+import pytest
 from sympy import Point2D
 
 from src.location.multi_lateration_non_linear_least_square_sum import append_location_from_anchors_with_distance
@@ -18,4 +19,4 @@ def test_it_calculates_location():
     # calculate the location
     res = append_location_from_anchors_with_distance(frame, do_draw=False)
 
-    assert res.location == [0.8389631665687186, 0.7858192567441246]
+    assert res.location == pytest.approx([0.8389631665687186, 0.7858192567441246])
