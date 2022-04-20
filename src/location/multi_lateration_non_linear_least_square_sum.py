@@ -23,6 +23,7 @@ class Anchor:
         self.weight = self.calc_weight()
 
     def calc_weight(self) -> float:
+        # The article does not mention this edge case. It is assumed that the weight is 1.
         if self.distance == 0 or self.variance == 0:
             return 1
         return 1 / (math.pow(self.distance, 4) * math.pow(self.variance, 4))
@@ -61,6 +62,10 @@ def get_least_squared_error(anchors: list[Anchor]) -> OptimizeResult:
 
 
 def draw_plot_with_anchors_circles_and_estimate(anchors, estimate):
+    """
+        Can be used to draw a plot with the anchors, their radius circles and the estimate.
+    """
+    # Limit plot size to the anchors circles and the estimate.
     limit_x_max = max([anchor.location[0] + anchor.distance for anchor in anchors])
     limit_x_min = min([anchor.location[0] - anchor.distance for anchor in anchors])
     limit_y_max = max([anchor.location[1] + anchor.distance for anchor in anchors])

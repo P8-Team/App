@@ -8,12 +8,12 @@ from src.wifi.wifi_frame import WifiFrame
 from src.wifi.wlan_radio_information import WlanRadioInformation
 
 
-def frame_factory(timestamp: float, location=None, signal_strength=-40, fcs=None):
+def frame_factory(timestamp: float, location=None, signal_strength=-40, frame_control_sequence=None):
     if location is None:
         location = Point2D([0, 0])
     return WifiFrame(
         100,
-        fcs if fcs is not None else uuid.uuid4().int,
+        frame_control_sequence if frame_control_sequence is not None else uuid.uuid4().int,
         WlanRadioInformation(
             signals=[Signal(location, signal_strength, timestamp)],
             frequency_mhz=2412,

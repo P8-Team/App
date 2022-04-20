@@ -35,7 +35,7 @@ def test_construct_wifi_frame():
 
     # Assert
     assert wifi_frame.length == 340
-    assert wifi_frame.fcs == 4660
+    assert wifi_frame.frame_control_sequence == 4660
     assert wifi_frame.frame_control_information.type == 0
     assert wifi_frame.frame_control_information.subtype == 4
     assert wifi_frame.frame_control_information.receiver_address == '00:0c:29:b7:d9:b0'
