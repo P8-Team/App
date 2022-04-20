@@ -1,5 +1,5 @@
 import math
-from typing import Generator
+from typing import Iterator
 
 from sympy import Point
 
@@ -10,8 +10,8 @@ from src.wifi.wifi_frame import WifiFrame
 def average_and_variance_from_signal_strength_on_location(signals: list[list[Signal]], location: Point) \
         -> tuple[float, float]:
     signal_strengths = []
-    for signalGroup in signals:
-        for signal in signalGroup:
+    for signal_group in signals:
+        for signal in signal_group:
             if signal.location == location:
                 signal_strengths.append(signal.signal_strength)
 
@@ -25,17 +25,17 @@ def average_and_variance_from_signal_strength_on_location(signals: list[list[Sig
 
 def average_signals(signals: list[list[Signal]]) -> list[Signal]:
     last_element = signals[-1]
-    average_signals = []
+    avg_signals = []
     for signal_location in last_element:
         average, variance = average_and_variance_from_signal_strength_on_location(signals, signal_location.location)
         signal = Signal(signal_location.location, average, signal_location.sniff_timestamp)
         signal.variance = variance
-        average_signals.append(signal)
-    return average_signals
+        avg_signals.append(signal)
+    return avg_signals
 
 
-def generate_average_signal_strength(wifi_frame_generator: Generator[WifiFrame, None, None],
-                                     max_rolling_window_size: int) -> Generator[WifiFrame, None, None]:
+def generate_average_signal_strength(wifi_frame_generator: Iterator[WifiFrame],
+                                     max_rolling_window_size: int) -> Iterator[WifiFrame]:
     # Keep a mapping from MAC address to a window of rolling recent signal strengths
     signal_strength_windows = {}
 

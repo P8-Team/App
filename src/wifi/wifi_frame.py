@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import json
 import pandas as pd
-from typing import Generator
+from typing import Generator, Iterator
 
 from src.wifi.frame_control_information import FrameControlInformation
 from src.wifi.wifi_card import WifiCard
@@ -58,7 +58,7 @@ class WifiFrame:
         return json.dumps(self, default=lambda o: o.__dict__, sort_keys=True, indent=4)
 
     @classmethod
-    def construct_from_generator(cls, generator: Generator) -> Generator[WifiFrame, None, None]:
+    def construct_from_generator(cls, generator: Generator) -> Iterator[WifiFrame]:
         for frame in generator:
             yield cls(frame)
 
