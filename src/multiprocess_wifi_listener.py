@@ -1,11 +1,12 @@
 from multiprocessing import Queue, Process
 from typing import Generator
+from os.path import exists
+from sympy import Point2D
 
 import pyshark
 
 from src.wifi.wifi_card import WifiCard
 from src.wifi.wifi_frame import WifiFrame
-
 
 def wifi_listener(wifi_card: WifiCard, queue: Queue) -> None:
     """
@@ -21,6 +22,23 @@ def wifi_listener(wifi_card: WifiCard, queue: Queue) -> None:
     for frame in pyshark.LiveCapture(interface=wifi_card.interface_name, debug=True):
         queue.put(WifiFrame.from_frame(frame, wifi_card))
 
+def wifi_listener_from_file(file_name: str, queue: Queue):
+    """
+        Starts a listener on a given file.
+    :param file_name: File path to the file
+    :param queue:
+    :return:
+    """
+
+    if not exists(file_name):
+        raise FileNotFoundError
+    print("Starting Listener on {}".format(file_name))
+    wifi_card = WifiCard("file", Point2D(0, 0))
+
+    file = pyshark.FileCapture(file_name)
+    for frame in file:
+        queue.put(WifiFrame.from_frame(frame, wifi_card))
+    file.close()
 
 def multiprocess_wifi_listener(wifi_card_list: list[WifiCard]) -> Generator[WifiFrame, None, None]:
     """
