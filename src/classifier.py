@@ -70,6 +70,20 @@ class Classifier:
         # OLD CODE - Kept for testing, see test_behaviour
         # return Label.Ok if len(frames) <= 2 else Label.Undesired
 
+    def classify_interval_confidence(self, frames):
+        # Extract relevant features using tsfresh and a custom setting created during training
+        features = extract_features(frames, column_id='transmitter_address', column_sort='radio_timestamp',
+                                    default_fc_parameters=self.feature_parameters)
+
+        # Array of the probability for each label for each frame.
+        prediction = self.model.predict_proba(features)
+
+        prediction_confidence = prediction.sum(axis=0)
+        prediction_labels = self.model.classes_
+
+        # Return the confidence for a given classification.
+
+
     def _verify_item_is_frame(self, item):
         """
         This method raises an error if the given item is not a frame
