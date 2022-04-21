@@ -32,3 +32,8 @@ def verify_type(type, obj, prefix = ''):
     raise TypeError('verify_type Expected type str but got ' + type(prefix))
   if not isinstance(obj, type):
     raise TypeError(prefix + ' Expected type ' + type + ' but got ' + type(obj))
+
+def chain_generators(*iterables):
+    for it in iterables:
+        for element in it:
+            yield element
