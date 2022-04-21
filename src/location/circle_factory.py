@@ -15,7 +15,6 @@ def circle_factory(point: Point, radius: float):
     """
     if not is_point(point):
         raise TypeError("First argument must be a sympy.Point.")
-    # TODO: Create type checking function is_number in the utils module
     if not (isinstance(radius, float) or isinstance(radius, int)):
         raise TypeError("Second argument must be a number.")
     return Circle(point, radius)
