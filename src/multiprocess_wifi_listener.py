@@ -1,7 +1,9 @@
 from multiprocessing import Queue, Process
 from typing import Iterator
 
+
 import pyshark
+from sympy import Point2D
 
 from src.wifi.wifi_card import WifiCard
 from src.wifi.wifi_frame import WifiFrame
@@ -20,6 +22,7 @@ def wifi_listener(wifi_card: WifiCard, queue: Queue) -> None:
 
     for frame in pyshark.LiveCapture(interface=wifi_card.interface_name, debug=True):
         queue.put(WifiFrame.from_frame(frame, wifi_card))
+
 
 
 def multiprocess_wifi_listener(wifi_card_list: list[WifiCard]) -> Iterator[WifiFrame]:
