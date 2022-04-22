@@ -4,6 +4,7 @@ from os.path import exists
 from sympy import Point2D
 import pandas as pd
 from pandas import DataFrame
+from hashlib import sha1
 
 import pyshark
 
@@ -45,8 +46,8 @@ def multiprocess_wifi_listener(wifi_card_list: list[WifiCard]) -> Generator[Wifi
 
 def frames_from_file_with_caching(file_path: str) -> Generator[WifiFrame, None, None]:
     cache_folder = "Data/cache"
-    if not exists(f'{cache_folder}/{file_path}.json'):
-        print('No cached file found. loading file')
+    if not exists(f'{cache_folder}/{sha1(file_path.encode("utf-8")).hexdigest()}.json'):
+        print('No cached dataframe found. loading frames from file')
         frames = frames_from_file(file_path)
         dfs = list()
         for item in frames:
@@ -56,13 +57,14 @@ def frames_from_file_with_caching(file_path: str) -> Generator[WifiFrame, None, 
         cache_dataframe(cache_folder, file_path, df)
         return df
     else:
+        print('Using cached dataframe')
         return load_cached_dataframe(cache_folder, file_path)
 
 def cache_dataframe(cache_folder: str, name: str, df: DataFrame) -> None:
-    df.to_json(f"{cache_folder}/{name}.json", orient='records', default_handler=str)
+    df.to_json(f"{cache_folder}/{sha1(name.encode('utf-8')).hexdigest()}.json", orient='records', default_handler=str)
 
 def load_cached_dataframe(cache_folder: str, name:str) -> DataFrame:
-    return pd.read_json(f"{cache_folder}/{name}.json", orient='records')
+    return pd.read_json(f"{cache_folder}/{sha1(name.encode('utf-8')).hexdigest()}.json", orient='records')
 
 def frames_from_file(file_path: str) -> Generator[WifiFrame, None, None]:
     """
@@ -73,7 +75,7 @@ def frames_from_file(file_path: str) -> Generator[WifiFrame, None, None]:
 
     if not exists(file_path):
         raise FileNotFoundError
-    print("Starting Listener on {}".format(file_path))
+    print("Reading frames from {}".format(file_path))
     wifi_card = WifiCard("file", Point2D(0, 0))
 
     file = pyshark.FileCapture(file_path)

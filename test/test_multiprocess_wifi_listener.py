@@ -3,6 +3,7 @@ import pandas as pd
 import json
 from os.path import exists
 import os
+from hashlib import sha1
 
 
 import pytest
@@ -25,8 +26,8 @@ def test_cache_dataframe():
     df = pd.DataFrame.from_dict(data)
     cache_dataframe("test/test_data/cache", "test", df)
 
-    assert exists("test/test_data/cache/test.json")
-    os.remove("test/test_data/cache/test.json")
+    assert exists(f"test/test_data/cache/{sha1('test'.encode('utf-8')).hexdigest()}.json")
+    os.remove(f"test/test_data/cache/{sha1('test'.encode('utf-8')).hexdigest()}.json")
 
 def test_load_cached_dataframe():
     data = {'col_1': [3, 2, 1, 0], 'col_2': ['a', 'b', 'c', 'd']}
@@ -36,4 +37,4 @@ def test_load_cached_dataframe():
     actual = load_cached_dataframe("test/test_data/cache", "test")
 
     pd.testing.assert_frame_equal(actual, expected)
-    os.remove("test/test_data/cache/test.json")
+    os.remove(f"test/test_data/cache/{sha1('test'.encode('utf-8')).hexdigest()}.json")

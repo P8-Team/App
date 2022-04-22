@@ -5,11 +5,14 @@ import tsfresh.feature_extraction.settings
 
 from src.wifi.wifi_frame import WifiFrame
 from tsfresh import extract_relevant_features
-from tsfresh import extract_features
+from tsfresh import extract_features, select_features
 from tsfresh.feature_extraction import ComprehensiveFCParameters
 from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import classification_report
+from tsfresh.utilities.dataframe_functions import impute
+from tsfresh.feature_selection.relevance import calculate_relevance_table
+from src.multiprocess_wifi_listener import frames_from_file_with_caching
 
 # Enum defining the possible results of classify
 Label = Enum('Label', 'Ok Undesired')
@@ -93,14 +96,20 @@ class Classifier:
 
     def train(self, data, labels):
         # Extract relevant features using tsfresh
-        features = extract_relevant_features(data, labels, column_id='transmitter_address', column_sort='radio_timestamp',
-                                         default_fc_parameters=ComprehensiveFCParameters())
+        #features = extract_relevant_features(data, labels, column_id='transmitter_address', column_sort='sniff_timestamp_0',
+        #                                 default_fc_parameters=ComprehensiveFCParameters())
 
+        #extracted_features = extract_features(data, column_id='transmitter_address', column_sort='sniff_timestamp_0',
+        #             default_fc_parameters=ComprehensiveFCParameters(), impute_function=impute)
+
+        #res = calculate_relevance_table(extracted_features, labels)
+
+        #features = select_features(extracted_features, labels)
         # Creates a setting object, used to filter features during classify_interval.
-        self.feature_parameters = tsfresh.feature_extraction.settings.from_columns(features)
+        #self.feature_parameters = tsfresh.feature_extraction.settings.from_columns(features)
 
         # Split the data into training and test data
-        input_train, input_test, labels_train, labels_test = train_test_split(features, labels)
+        input_train, input_test, labels_train, labels_test = train_test_split(data, labels)
 
         self.model.fit(input_train, labels_train)
 
@@ -109,4 +118,26 @@ class Classifier:
 
         return res
 
-        
+    def preprocess_data(self, df, labels):
+        # Select rows that contain data from one of the devices with a label
+        df = df[df['transmitter_address'].map(lambda x: labels.Address.str.contains(x).sum() == 1)]
+
+        # This is how the labels should be computed when using tsfresh
+        #correct_labels = labels.set_index('Address')
+
+        # Create a serie containing a label for each row
+        label_series = pd.DataFrame(df['transmitter_address']).set_index('transmitter_address').join(labels.set_index('Address')).squeeze()
+        # Drop radio timestamp as it is NaN for the file data
+        df = df.drop(['radio_timestamp'], axis='columns')
+        #df['sniff_timestamp_0'] = pd.to_datetime(df['sniff_timestamp_0'],unit='s')
+        # TODO: Change representation fo receiver_address to something like one hot encoding
+        df = df.drop(['receiver_address', 'transmitter_address'], axis='columns')
+
+        return df, label_series
+
+    def load_files(self, files):
+        dfs = list()
+        for file in files:
+            dfs.append(frames_from_file_with_caching(file))
+
+        return pd.concat(dfs)
