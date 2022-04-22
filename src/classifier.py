@@ -95,22 +95,12 @@ class Classifier:
         if not isinstance(item, WifiFrame):
             raise ValueError('classify must be given generator that produces elements of type Frame')
 
-    def train(self, data, labels):
-        # Extract relevant features using tsfresh
-        #features = extract_relevant_features(data, labels, column_id='transmitter_address', column_sort='sniff_timestamp_0',
-        #                                 default_fc_parameters=ComprehensiveFCParameters())
-
-        #extracted_features = extract_features(data, column_id='transmitter_address', column_sort='sniff_timestamp_0',
-        #             default_fc_parameters=ComprehensiveFCParameters(), impute_function=impute)
-
-        #res = calculate_relevance_table(extracted_features, labels)
-
-        #features = select_features(extracted_features, labels)
-        # Creates a setting object, used to filter features during classify_interval.
-        #self.feature_parameters = tsfresh.feature_extraction.settings.from_columns(features)
-
-        # Split the data into training and test data
-        input_train, input_test, labels_train, labels_test = train_test_split(data, labels)
+    def train(self):
+        labels = pd.read_csv("Data/new_labels.csv")
+        files = self.get_file_paths()
+        df = self.load_files(files)
+        data, label_series = self.preprocess_data(df, labels)
+        input_train, input_test, labels_train, labels_test = train_test_split(data, label_series)
 
         self.model.fit(input_train, labels_train)
 
@@ -122,16 +112,12 @@ class Classifier:
     def preprocess_data(self, df, labels):
         # Select rows that contain data from one of the devices with a label
         df = df[df['transmitter_address'].map(lambda x: labels.Address.str.contains(x).sum() == 1)]
-
-        # This is how the labels should be computed when using tsfresh
-        #correct_labels = labels.set_index('Address')
-
         # Create a serie containing a label for each row
         label_series = pd.DataFrame(df['transmitter_address']).set_index('transmitter_address').join(labels.set_index('Address')).squeeze()
         # Drop radio timestamp as it is NaN for the file data
         df = df.drop(['radio_timestamp'], axis='columns')
         #df['sniff_timestamp_0'] = pd.to_datetime(df['sniff_timestamp_0'],unit='s')
-        # TODO: Change representation fo receiver_address to something like one hot encoding
+        # TODO: Change representation of receiver_address to something like one hot encoding
         df = df.drop(['receiver_address', 'transmitter_address'], axis='columns')
 
         return df, label_series
@@ -142,3 +128,15 @@ class Classifier:
             dfs.append(frames_from_file_with_caching(file))
 
         return pd.concat(dfs)
+
+    def get_file_paths(self):
+        def add_path(folder):
+            return lambda name: f'Data/{folder}/{name}'
+
+        files = list()
+        files.extend(list(map(add_path('Google Nest'), ['dump1_2.4_ghz.pcapng', 'dump2_2.4_ghz.pcapng', 'dump1_5_ghz.pcapng', 'dump2_5_ghz.pcapng', 'dump3_5_ghz.pcapng', 'dump4_5_ghz.pcapng'])))
+        files.extend(list(map(add_path('LittleElf'), ['dump.pcapng', 'dump1.pcapng', 'dump2.pcapng', 'dump3.pcapng'])))
+        files.extend(list(map(add_path('NIkkei'), ['dump2.pcapng', 'dump3.pcapng', 'dump4.pcapng'])))
+        files.extend(list(map(add_path('TP-Link'), ['dump.pcapng', 'dump1.pcapng', 'dump2.pcapng', 'dump3.pcapng', 'dump4.pcapng', 'dump5.pcapng'])))
+
+        return files
