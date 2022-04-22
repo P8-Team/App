@@ -10,11 +10,11 @@ if __name__ == '__main__':
 
     adapters = [WifiCard(name, Point2D(wifi_card['location'])) for name, wifi_card in config['adapters'].items()]
 
-    generator = PipelineFactory.input_wifi_listeners(adapters) \
-        .filter(lambda frame: frame.frame_control_information.transmitter_address == "44:bb:3b:03:49:d6" ) \
-        .add_frame_aggregator(threshold=len(adapters))\
-        .use_average_rssi_with_variance()\
-        .add_location_non_linear_least_square(do_draw=True)\
-        .add_classifier(Classifier(1))\
-        .output_to_console()\
+    PipelineFactory.input_wifi_listeners(adapters) \
+        .filter(lambda frame: frame.frame_control_information.transmitter_address == "44:bb:3b:03:49:d6") \
+        .add_frame_aggregator(threshold=len(adapters)) \
+        .use_average_rssi_with_variance() \
+        .add_location_non_linear_least_square(do_draw=True) \
+        .add_classifier(Classifier(1)) \
+        .output_to_console() \
         .to_list()
