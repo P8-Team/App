@@ -88,3 +88,17 @@ def test_device_aggregator_given_device_updates_first_device_given():
     assert len(aggregated_devices[0].frames) == 2
     assert get_receiver_address(aggregated_devices[0].frames[0]) == "0"
     assert get_receiver_address(aggregated_devices[0].frames[1]) == "2"
+
+
+def test_device_aggregator_removes_frames_from_buffer_if_over_max():
+    devices = [
+        make_device(address_for_test_1, 1, "0"),
+        make_device(address_for_test_1, 1, "1"),
+        make_device(address_for_test_1, 1, "2")
+    ]
+
+    aggregated_devices = list(device_aggregator(devices, max_frame_buffer_size=2))
+
+    assert len(aggregated_devices[0].frames) == 2
+    assert get_receiver_address(aggregated_devices[0].frames[0]) == "1"
+    assert get_receiver_address(aggregated_devices[0].frames[1]) == "2"

@@ -8,6 +8,8 @@ from src.multiprocess_wifi_listener import multiprocess_wifi_listener
 from src.pipeline_factory.basic_generators import csv_row_generator, output_to_file_generator, \
     output_to_console_generator, json_generator, pcap_file_generator, append_location_to_wifi_frame, filter
 from src.wifi.wifi_card import WifiCard
+from src.device.frame_to_device_converter import frame_to_device_converter
+from src.device.device_aggregator import device_aggregator
 
 
 class PipelineFactory:
@@ -30,6 +32,14 @@ class PipelineFactory:
 
     def add_frame_aggregator(self, threshold=None, max_age_seconds=None, max_buffer_size=None):
         self.generator = frame_aggregator(self.generator, threshold, max_age_seconds, max_buffer_size)
+        return self
+
+    def add_frame_to_device_converter(self):
+        self.generator = frame_to_device_converter(self.generator)
+        return self
+
+    def add_device_aggregator(self):
+        self.generator = device_aggregator(self.generator)
         return self
 
     def add_location_multilateration(self):
