@@ -38,7 +38,8 @@ class WifiFrame:
         :param other:
         :return: boolean
         """
-        return self.frame_control_information == other.frame_control_information and \
+        return other is not None and \
+               self.frame_control_information == other.frame_control_information and \
                self.length == other.length and \
                self.wlan_radio == other.wlan_radio
 

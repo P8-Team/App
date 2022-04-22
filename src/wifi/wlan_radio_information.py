@@ -28,7 +28,7 @@ class WlanRadioInformation:
         """
         signal_strength = layer.get("wlan_radio.signal_dbm")
         signal_strength = float(signal_strength) if signal_strength is not None else None
-        signals = [Signal(wifi_card, signal_strength, sniff_timestamp)]
+        signals = [Signal(wifi_card.location, signal_strength, sniff_timestamp)]
         data_rate = layer.get("wlan_radio.data_rate")
         data_rate = float(data_rate) if data_rate is not None else None
         radio_timestamp = layer.get("wlan_radio.timestamp")
