@@ -76,3 +76,8 @@ class PipelineFactory:
     def filter(self, filter_function):
         self.generator = filter(self.generator, filter_function)
         return self
+
+    def add_location_multilateration(self):
+        self.generator = append_location_to_wifi_frame(self.generator)
+        return self
+
