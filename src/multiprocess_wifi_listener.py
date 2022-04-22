@@ -1,6 +1,6 @@
 from multiprocessing import Queue, Process
-from os.path import exists
-from typing import Generator
+from typing import Iterator
+
 
 import pyshark
 from sympy import Point2D
@@ -25,7 +25,7 @@ def wifi_listener(wifi_card: WifiCard, queue: Queue) -> None:
 
 
 
-def multiprocess_wifi_listener(wifi_card_list: list[WifiCard]) -> Generator[WifiFrame, None, None]:
+def multiprocess_wifi_listener(wifi_card_list: list[WifiCard]) -> Iterator[WifiFrame]:
     """
         Starts a listener on each Wi-Fi interface name in the provided list and collects it into a single generator.
     :param wifi_card_list:

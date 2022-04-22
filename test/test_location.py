@@ -1,7 +1,7 @@
 import pytest
 from sympy import Circle, Point
 
-from src.location import common_intersection, location, angle_between_two_points
+from src.location.simple_location import common_intersection, location, angle_between_two_points
 
 def test_common_intersection_returns_point_where_three_circles_overlap():
   circles = [

@@ -34,7 +34,7 @@ def wavelength(frequency):
 
 
 def distance_to_signal_strength(distance, frequency, transmission_power):
-    if not distance > 0:
+    if distance <= 0:
         raise TypeError("Distance should be more than 0")
     wl = wavelength(frequency)
 
