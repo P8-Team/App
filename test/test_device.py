@@ -2,6 +2,7 @@ import pytest
 from src.device.device import Device
 from src.wifi.wifi_frame import WifiFrame
 from src.wifi.frame_control_information import FrameControlInformation
+from src.wifi.signal import Signal
 from sympy import Point2D
 
 address_for_test = "00:00:00:00:00:01"
@@ -32,6 +33,17 @@ def test_device_uses_given_position():
     device = Device(address_for_test, [], position=position)
 
     assert device.position == position
+
+def test_device_uses_given_averaged_signals():
+    signals = [
+        Signal(Point2D(0, 0), 1, 0),
+        Signal(Point2D(1, 1), 2, 0),
+    ]
+
+    device = Device(address_for_test, [], averaged_signals=signals)
+
+    assert device.averaged_signals[0].signal_strength == 1
+    assert device.averaged_signals[1].signal_strength == 2
 
 
 def test_device_from_frame_returns_device_with_physical_address_and_frame():

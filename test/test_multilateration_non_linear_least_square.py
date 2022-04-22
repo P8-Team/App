@@ -1,22 +1,40 @@
 import pytest
 from sympy import Point2D
 
-from src.location.multi_lateration_non_linear_least_square_sum import append_location_from_anchors_with_distance
+from src.location.multi_lateration_non_linear_least_square_sum import calculate_position
 from src.wifi.signal import Signal
-from test.utils.wifi_frame_factory import frame_factory
+from src.device.device import Device
+from src.wifi.wifi_frame import WifiFrame
+from src.wifi.wlan_radio_information import WlanRadioInformation
+
+address_for_test = "00:00:00:00:00:01"
 
 
-def test_it_calculates_location():
-    frame = frame_factory(0)
+def test_calculate_position_from_device():
+    device = Device(address_for_test, [
+        WifiFrame(wlan_radio=WlanRadioInformation(frequency_mhz=2412))
+    ], averaged_signals=[
+        Signal(Point2D(0, 0), -20, 0, variance=1),
+        Signal(Point2D(0, 1), -22, 0, variance=1),
+        Signal(Point2D(1, 0), -23, 0, variance=1),
+    ])
 
-    # assign some signals
-    frame.wlan_radio.signals = [
-        Signal(Point2D(0,0), -20, 0, variance=1),
-        Signal(Point2D(0,1), -22, 0, variance=1),
-        Signal(Point2D(1,0), -23, 0, variance=1),
-    ]
+    calculate_position(device)
 
-    # calculate the location
-    res = append_location_from_anchors_with_distance(frame, do_draw=False)
+    assert device.position == pytest.approx([0.8389631665687186, 0.7858192567441246])
 
-    assert res.location == pytest.approx([0.8389631665687186, 0.7858192567441246])
+
+def test_calculate_position_from_device_with_identification():
+    device = Device(address_for_test, [
+        WifiFrame(wlan_radio=WlanRadioInformation(frequency_mhz=2412))
+    ],
+                    identification={"transmission_power": 10},
+                    averaged_signals=[
+                        Signal(Point2D(0, 0), -20, 0, variance=1),
+                        Signal(Point2D(0, 1), -22, 0, variance=1),
+                        Signal(Point2D(1, 0), -23, 0, variance=1),
+                    ])
+
+    calculate_position(device)
+
+    assert device.position == pytest.approx([0.22825998907501197, 0.3350799415348499])
