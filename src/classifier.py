@@ -63,9 +63,9 @@ class Classifier:
         features = extract_features(frames, column_id='transmitter_address', column_sort='radio_timestamp',
                                             default_fc_parameters=self.feature_parameters)
 
-        # Returns the identity(based on labels from training)
+        # Return the most common classification of all the frames as a single label(based on labels gained in training)
         # Returns an error if the model has not been fitted
-        return np.bincount(self.model.predict(features)).argmax()
+        return max(set(self.model.predict(features)), key=self.model.predict(features).count)
 
     def classify_interval_confidence(self, frames):
         # Extract relevant features using tsfresh and a custom setting created during training
