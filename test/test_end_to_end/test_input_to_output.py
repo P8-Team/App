@@ -73,3 +73,22 @@ def test_it_gets_location_in_combined_frames(wifi_frames: List[WifiFrame]):
 
     assert len(result) == 1
     assert result[0].location is not None
+
+
+
+
+def test_input_to_output():
+
+    generator = PipelineFactory(wifi_frames) \
+        .add_type_subtype_filter(whitelisted_types=[1], whitelisted_subtypes=[1]) \
+        .add_frame_aggregator(threshold=3) \
+        .add_frame_to_device_converter() \
+        .add_device_aggregator() \
+        .add_average_rssi_with_variance() \
+        .add_location_non_linear_least_square() \
+        .to_list()
+
+    assert len(generator) == 1
+
+
+
