@@ -42,10 +42,6 @@ class PipelineFactory:
         self.generator = device_aggregator(self.generator, max_frame_buffer_size)
         return self
 
-    def add_location_multilateration(self):
-        self.generator = append_location_to_wifi_frame(self.generator)
-        return self
-
     def add_classifier(self, classifier):
         self.generator = classifier.classify(self.generator)
         return self

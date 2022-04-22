@@ -85,6 +85,6 @@ def draw_plot_with_anchors_circles_and_estimate(anchors, estimate):
     plt.show()
 
 
-def append_location_generator(wifi_frame_generator: Iterable[WifiFrame], do_draw=False) -> Iterable[WifiFrame]:
-    for wifi_frame in wifi_frame_generator:
-        yield calculate_position(wifi_frame, do_draw)
+def append_location_generator(generator: Iterable[Device], do_draw=False) -> Iterable[Device]:
+    for device in generator:
+        yield calculate_position(device, do_draw)
