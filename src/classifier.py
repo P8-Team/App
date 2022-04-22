@@ -65,10 +65,7 @@ class Classifier:
 
         # Returns the identity(based on labels from training)
         # Returns an error if the model has not been fitted
-        return np.argmax(self.model.predict(features))
-
-        # OLD CODE - Kept for testing, see test_behaviour
-        # return Label.Ok if len(frames) <= 2 else Label.Undesired
+        return np.bincount(self.model.predict(features)).argmax()
 
     def classify_interval_confidence(self, frames):
         # Extract relevant features using tsfresh and a custom setting created during training
