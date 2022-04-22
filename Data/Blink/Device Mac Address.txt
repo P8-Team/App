@@ -1,5 +1,2 @@
 48:78:5E:BD:A9:44
-
-Signal strentgh:
-
--7
+Measured strenght:-7

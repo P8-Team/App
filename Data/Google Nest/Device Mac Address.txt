@@ -1,5 +1,2 @@
 44:BB:3B:03:49:D6
-
-Device strength:
-
--17
+Measured strenght:-17

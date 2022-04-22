@@ -1,4 +1,2 @@
 dc:29:19:94:b1:f8
-
-Measured:
--23
+Measured strenght:-23

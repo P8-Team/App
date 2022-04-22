@@ -1,5 +1,2 @@
 38:01:46:1D:BD:EC
-
-
-Strenth:
--17
+Measured strenght:-17
