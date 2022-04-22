@@ -78,11 +78,15 @@ class Classifier:
         # Array of the probability for each label for each frame.
         prediction = self.model.predict_proba(features)
 
-        prediction_confidence = prediction.sum(axis=0)
-        prediction_labels = self.model.classes_
+        # Summation of all frames.
+        summation = prediction.sum(axis=0)
 
-        # Return the confidence for a given classification.
+        # Returns the confidence for a given classification as a percentage.
+        return max(summation)/np.sum(summation)
 
+    def labels_in_model(self):
+        # Returns an array with the labels of the trained model.
+        return self.model.classes_
 
     def _verify_item_is_frame(self, item):
         """
