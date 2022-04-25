@@ -9,7 +9,10 @@ class DeviceLookup:
     def print_data(self):
         print(self.lookup_data)
 
-    def lookup_device_by_label(self, label):
+    def get_transmission_power_by_label(self, label):
+        return self.get_device_info_by_label(label)[0]
+
+    def get_device_info_by_label(self, label):
         # Returns a list with transmission power, mac address and device name for a given label
         return self.lookup_data.loc[label].values.tolist()
 
