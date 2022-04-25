@@ -1,10 +1,13 @@
+import os.path
+
 import pandas as pd
 
 
 class DeviceLookup:
 
     def __init__(self):
-        self.lookup_data = pd.read_csv(r'..\Data\hard_data.csv', index_col=['Labels'])
+        path_hard_data = os.path.normpath('/Data/hard_data.csv')
+        self.lookup_data = pd.read_csv(r'..{}'.format(path_hard_data), index_col=['Labels'])
 
     def print_data(self):
         print(self.lookup_data)
