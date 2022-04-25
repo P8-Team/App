@@ -1,7 +1,7 @@
 Labels,Transmission Power,Mac Address,Device Name
-Tp-link,-6,6C:5A:B0:42:02:58,
-Nikkei,-23,dc:29:19:94:b1:f8,
-LittleElf,-23,50:8A:06:3F:27:9B,
-GoogleNest,-17,44:BB:3B:03:49:D6,
-Blink,-7,48:78:5E:BD:A9:44,
-Nedis,-17,38:01:46:1D:BD:EC,
+Tp-link,-6,6C:5A:B0:42:02:58,TP-Link Tapo C200 camera
+Nikkei,-23,dc:29:19:94:b1:f8,Nikkei CAM2
+LittleElf,-23,50:8A:06:3F:27:9B,Littlelf Smart Home Camera
+GoogleNest,-17,44:BB:3B:03:49:D6,Google Nest Cam
+Blink,-7,48:78:5E:BD:A9:44,Blink Mini
+Nedis,-17,38:01:46:1D:BD:EC,Nedis SmartLife
