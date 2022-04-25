@@ -1,4 +1,5 @@
 import pytest
+import os.path
 import pandas as pd
 from src.device_lookup import DeviceLookup
 
@@ -12,7 +13,8 @@ def test_data_is_loaded():
 
 def test_find_selected_data():
     dl = DeviceLookup()
-    test_data = pd.read_csv(r'..\test\test_data\device_data.csv', index_col=['Labels'])
+    path_test_data = os.path.normpath('/test/test_data/device_data.csv')
+    test_data = pd.read_csv(r'..{}'.format(path_test_data), index_col=['Labels'])
     dl.lookup_data = pd.DataFrame(test_data)
 
     assert dl.all_mac_addresses() == ['42:R2:D2:C3:PO:42', 'A1:B2:C3:D4:E5:F6']
