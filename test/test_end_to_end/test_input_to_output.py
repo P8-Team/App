@@ -91,7 +91,6 @@ def test_it_classifies_wifi_frames_as_desired(wifi_frames: List[WifiFrame]):
         .add_type_subtype_filter(whitelisted_types=[1], whitelisted_subtypes=[1]) \
         .add_frame_aggregator(threshold=3) \
         .add_location_multilateration() \
-        .output_to_console() \
         .add_classifier(Classifier(1))
 
     # convert generator to list

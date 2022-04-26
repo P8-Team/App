@@ -30,10 +30,9 @@ class Anchor:
 
 
 def non_linear_squared_sum_weighted(x: np.ndarray, anchors: list[Anchor]) -> float:
-    s = sum(
+    return sum(
         [anchor.weight * math.pow((np.linalg.norm(x - anchor.location) - anchor.distance), 2) for anchor in anchors]
     )
-    return s
 
 
 def calculate_position(device: Device, do_draw=False):
@@ -61,7 +60,7 @@ def calculate_position(device: Device, do_draw=False):
 
 
 def get_least_squared_error(anchors: list[Anchor]) -> OptimizeResult:
-    return least_squares(non_linear_squared_sum_weighted, np.array([0, 0]), args=[anchors], verbose=2, gtol=None)
+    return least_squares(non_linear_squared_sum_weighted, np.array([0, 0]), args=[anchors], gtol=None)
 
 
 def draw_plot_with_anchors_circles_and_estimate(anchors, estimate):
