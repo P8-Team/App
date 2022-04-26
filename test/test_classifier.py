@@ -1,4 +1,3 @@
-from msilib.schema import Class
 import pytest
 from src.classifier import Classifier
 
