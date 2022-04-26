@@ -77,5 +77,5 @@ class WifiFrame:
 
     def to_dataframe(self):
         len_df = pd.DataFrame({'length': [self.length]})
-        return pd.concat([len_df, self.wlan_radio.to_dataframe(), self.frame_control_information.to_dataframe()], axis = 1)
-
+        return pd.concat([len_df, self.wlan_radio.to_dataframe(), self.frame_control_information.to_dataframe()],
+                         axis=1)

@@ -80,4 +80,3 @@ class PipelineFactory:
     def add_location_multilateration(self):
         self.generator = append_location_to_wifi_frame(self.generator)
         return self
-

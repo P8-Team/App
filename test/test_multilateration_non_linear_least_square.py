@@ -1,9 +1,9 @@
 import pytest
 from sympy import Point2D
 
+from src.device.device import Device
 from src.location.multi_lateration_non_linear_least_square_sum import calculate_position
 from src.wifi.signal import Signal
-from src.device.device import Device
 from src.wifi.wifi_frame import WifiFrame
 from src.wifi.wlan_radio_information import WlanRadioInformation
 

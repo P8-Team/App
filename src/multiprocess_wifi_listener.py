@@ -22,7 +22,6 @@ def wifi_listener(wifi_card: WifiCard, queue: Queue) -> None:
         queue.put(WifiFrame.from_frame(frame, wifi_card))
 
 
-
 def multiprocess_wifi_listener(wifi_card_list: list[WifiCard]) -> Iterator[WifiFrame]:
     """
         Starts a listener on each Wi-Fi interface name in the provided list and collects it into a single generator.

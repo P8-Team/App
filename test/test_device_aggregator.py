@@ -1,9 +1,7 @@
-import pytest
-
-from src.device.device_aggregator import device_aggregator
 from src.device.device import Device
-from src.wifi.wifi_frame import WifiFrame
+from src.device.device_aggregator import device_aggregator
 from src.wifi.frame_control_information import FrameControlInformation
+from src.wifi.wifi_frame import WifiFrame
 
 address_for_test_1 = "00:00:00:00:00:01"
 address_for_test_2 = "00:00:00:00:00:03"
@@ -103,5 +101,3 @@ def test_device_aggregator_removes_frames_from_buffer_if_over_max():
     assert len(aggregated_devices[0].frames) == 2
     assert get_receiver_address(aggregated_devices[0].frames[0]) == "2"
     assert get_receiver_address(aggregated_devices[0].frames[1]) == "3"
-
-

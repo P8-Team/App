@@ -1,10 +1,11 @@
-from src.location.average_signal_strength import calculate_average_signal_strength
-from test.utils.wifi_frame_factory import frame_factory
+from sympy import Point2D
+
 from src.device.device import Device
+from src.location.average_signal_strength import calculate_average_signal_strength
+from src.wifi.signal import Signal
 from src.wifi.wifi_frame import WifiFrame
 from src.wifi.wlan_radio_information import WlanRadioInformation
-from src.wifi.signal import Signal
-from sympy import Point2D
+from test.utils.wifi_frame_factory import frame_factory
 
 address_for_test_1 = "00:00:00:00:00:01"
 address_for_test_2 = "00:00:00:00:00:02"

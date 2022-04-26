@@ -1,8 +1,6 @@
-import pytest
-
+from src.device.frame_to_device_converter import frame_to_device_converter
 from src.wifi.frame_control_information import FrameControlInformation
 from src.wifi.wifi_frame import WifiFrame
-from src.device.frame_to_device_converter import frame_to_device_converter
 
 address_for_test_1 = "00:00:00:00:00:01"
 address_for_test_2 = "00:00:00:00:00:02"

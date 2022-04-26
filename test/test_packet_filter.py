@@ -1,7 +1,7 @@
 import uuid
 
-from src.wifi.frame_control_information import FrameControlInformation
 from src.frame_filter import FrameFilter
+from src.wifi.frame_control_information import FrameControlInformation
 from src.wifi.wifi_frame import WifiFrame
 
 

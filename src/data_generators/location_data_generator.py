@@ -1,4 +1,4 @@
-from sympy import Point, Point2D
+from sympy import Point2D
 
 from src.location.distance_strength_calculations import mw_to_dbm, distance_to_signal_strength
 from src.wifi.frame_control_information import FrameControlInformation

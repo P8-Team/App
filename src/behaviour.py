@@ -10,6 +10,7 @@ class Classifier:
     """
     A class for classifying the behavior of IoT devices
     """
+
     def __init__(self, interval_seconds):
         """
         :param interval_seconds: The amount of time in seconds to aggregate frames to classify 
@@ -23,7 +24,7 @@ class Classifier:
             An item first yielded when a frame that is in the next interval is received from frame_gen
 
         :param frame_gen: A generator that produces frames
-        """ 
+        """
         # Create generator that accumulates frames in an interval and yields lists of frames
         frame_acc = self.accumulate_frames(frame_gen)
         for frame_list in frame_acc:
@@ -37,7 +38,7 @@ class Classifier:
         frames_in_interval = [first]
         for frame in frame_gen:
             self._verify_item_is_frame(frame)
-                
+
             if frame.wlan_radio.get_earliest_sniff_timestamp() >= interval_end:
                 yield frames_in_interval
                 # Add frame to next interval use it to determine end of next interval

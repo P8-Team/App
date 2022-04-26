@@ -1,10 +1,10 @@
-import pytest
-from src.device.device import Device
-from src.wifi.wifi_frame import WifiFrame
-from src.wifi.frame_control_information import FrameControlInformation
-from src.wifi.wlan_radio_information import WlanRadioInformation
-from src.wifi.signal import Signal
 from sympy import Point2D
+
+from src.device.device import Device
+from src.wifi.frame_control_information import FrameControlInformation
+from src.wifi.signal import Signal
+from src.wifi.wifi_frame import WifiFrame
+from src.wifi.wlan_radio_information import WlanRadioInformation
 
 address_for_test = "00:00:00:00:00:01"
 

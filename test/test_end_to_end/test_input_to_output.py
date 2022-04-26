@@ -1,15 +1,16 @@
 from typing import List
+
 import pytest
 from sympy import Point2D
 
 from src.behaviour import Classifier, Label
+from src.data_generators.location_data_generator import LocationGenerator
 from src.pipeline_factory import PipelineFactory
-from src.wifi.wifi_frame import WifiFrame
-from test.utils.wifi_frame_factory import frame_factory
-from src.wifi.wlan_radio_information import WlanRadioInformation
 from src.wifi.frame_control_information import FrameControlInformation
 from src.wifi.signal import Signal
-from src.data_generators.location_data_generator import LocationGenerator
+from src.wifi.wifi_frame import WifiFrame
+from src.wifi.wlan_radio_information import WlanRadioInformation
+from test.utils.wifi_frame_factory import frame_factory
 
 address_for_test_1 = "00:00:00:00:00:01"
 address_for_test_2 = "00:00:00:00:00:02"
@@ -199,4 +200,3 @@ def test_input_to_output_device_changes_position():
     result = generator.to_list()
 
     assert result[-1].position == pytest.approx([3, 3], 0.5)
-

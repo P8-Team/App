@@ -68,7 +68,7 @@ class WlanRadioInformation:
 
     def to_dataframe(self):
         # Create flat dataframe containing all signals
-        sigdf = pd.concat(list(map(lambda x: x.to_dataframe(), self.signals)), ignore_index = True)
+        sigdf = pd.concat(list(map(lambda x: x.to_dataframe(), self.signals)), ignore_index=True)
         v = sigdf.unstack().to_frame().sort_index(level=1).T
         v.columns = v.columns.map(lambda x: x[0] + '_' + str(x[1]))
 
@@ -77,6 +77,6 @@ class WlanRadioInformation:
         # Remove signals as that is already handled
         del var_dict['signals']
         # Create dataframe containing the field values
-        var_df = pd.DataFrame(var_dict, index = [0])
+        var_df = pd.DataFrame(var_dict, index=[0])
         # Combine signals and other fields into complete dataframe
-        return pd.concat([v, var_df], axis = 1).infer_objects()
+        return pd.concat([v, var_df], axis=1).infer_objects()

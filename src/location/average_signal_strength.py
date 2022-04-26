@@ -8,7 +8,6 @@ from src.wifi.signal import Signal
 
 
 def calculate_average_signal_strength(generator: Iterable[Device]):
-
     for device in generator:
         signal_strengths = []
 

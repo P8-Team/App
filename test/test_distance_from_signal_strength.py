@@ -15,9 +15,10 @@ def test_mw_from_dbm():
 
 
 def test_calc_distance_from_mw_signal_strength():
-    assert calc_distance_from_mw_signal_strength(100, 100, 3000) == pytest.approx(1 / (40 * math.pi)) # 7 cm
-    assert calc_distance_from_mw_signal_strength(0.1, 0.001, 3000) == pytest.approx(0.001 / (0.004 * math.pi)) # 8 cm
-    assert calc_distance_from_mw_signal_strength(0.1, 0.0001, 2400) == pytest.approx(0.314557575653044) # 31 cm
+    assert calc_distance_from_mw_signal_strength(100, 100, 3000) == pytest.approx(1 / (40 * math.pi))  # 7 cm
+    assert calc_distance_from_mw_signal_strength(0.1, 0.001, 3000) == pytest.approx(0.001 / (0.004 * math.pi))  # 8 cm
+    assert calc_distance_from_mw_signal_strength(0.1, 0.0001, 2400) == pytest.approx(0.314557575653044)  # 31 cm
+
 
 def test_calc_distance_from_mw_signal_strength_real_data():
     # possible real data
@@ -34,7 +35,7 @@ def test_calc_distance_from_mw_signal_strength_real_data():
 
 
 def test_calc_distance_from_dbm_signal_strength():
-    assert calc_distance_from_dbm_signal_strength(30,-50,5800) == pytest.approx(41.16076114)
+    assert calc_distance_from_dbm_signal_strength(30, -50, 5800) == pytest.approx(41.16076114)
 
 
 def test_calc_distance_from_mw_signal_strength_with_zero_r_fails():
