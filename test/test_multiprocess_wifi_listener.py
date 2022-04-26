@@ -50,17 +50,21 @@ def test_map_to_frames():
 def test_cache_dataframe():
     data = {'col_1': [3, 2, 1, 0], 'col_2': ['a', 'b', 'c', 'd']}
     df = pd.DataFrame.from_dict(data)
-    cache_dataframe("test/test_data/cache", "test", df)
+    os.mkdir("cache")
+    cache_dataframe("cache", "test", df)
 
-    assert exists(f"test/test_data/cache/{sha1('test'.encode('utf-8')).hexdigest()}.json")
-    os.remove(f"test/test_data/cache/{sha1('test'.encode('utf-8')).hexdigest()}.json")
+    assert exists(f"cache/{sha1('test'.encode('utf-8')).hexdigest()}.json")
+    os.remove(f"cache/{sha1('test'.encode('utf-8')).hexdigest()}.json")
+    os.rmdir("cache")
 
 def test_load_cached_dataframe():
     data = {'col_1': [3, 2, 1, 0], 'col_2': ['a', 'b', 'c', 'd']}
     expected = pd.DataFrame.from_dict(data)
-    cache_dataframe("test/test_data/cache", "test", expected)
+    os.mkdir("cache")
+    cache_dataframe("cache", "test", expected)
 
-    actual = load_cached_dataframe("test/test_data/cache", "test")
+    actual = load_cached_dataframe("cache", "test")
 
     pd.testing.assert_frame_equal(actual, expected)
-    os.remove(f"test/test_data/cache/{sha1('test'.encode('utf-8')).hexdigest()}.json")
+    os.remove(f"cache/{sha1('test'.encode('utf-8')).hexdigest()}.json")
+    os.rmdir("cache")
