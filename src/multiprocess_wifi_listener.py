@@ -65,7 +65,7 @@ def frames_from_file_with_caching(file_path: str) -> Generator[WifiFrame, None, 
         print(f'Using cached dataframe for {file_path}')
         return load_cached_dataframe(cache_folder, file_path)
 
-def load_file(file_path: str) -> Generator[WifiFrame, None, None]:
+def load_file(file_path: str) -> list(WifiFrame):
     if not exists(file_path):
         raise FileNotFoundError
     file = pyshark.FileCapture(file_path)
