@@ -25,40 +25,6 @@ def wifi_frames():
         frame_factory(timestamp=2.23, location=Point2D([1, 1]), frame_control_sequence=4),
     ]
 
-
-def test_it_classifies_wifi_frames_as_undesired(wifi_frames: List[WifiFrame]):
-    # Then run the test
-    generator = PipelineFactory(wifi_frames) \
-        .add_type_subtype_filter(whitelisted_types=[1], whitelisted_subtypes=[1]) \
-        .add_frame_aggregator(threshold=3) \
-        .add_location_multilateration() \
-        .add_classifier(Classifier(1))
-
-    # convert generator to list
-    result = generator.to_list()
-
-    assert len(result) == 1
-    assert result[0] == Label.Undesired
-
-
-def test_it_classifies_wifi_frames_as_desired(wifi_frames: List[WifiFrame]):
-    # remove first 3 frames from wifi_frames
-    wifi_frames = wifi_frames[3:]
-    # Then run the test
-    generator = PipelineFactory(wifi_frames) \
-        .add_type_subtype_filter(whitelisted_types=[1], whitelisted_subtypes=[1]) \
-        .add_frame_aggregator(threshold=3) \
-        .add_location_multilateration() \
-        .output_to_console() \
-        .add_classifier(Classifier(1))
-
-    # convert generator to list
-    result = generator.to_list()
-
-    assert len(result) == 1
-    assert result[0] == Label.Ok
-
-
 def test_it_gets_location_in_combined_frames(wifi_frames: List[WifiFrame]):
     # get first 3 frames
     wifi_frames = wifi_frames[:3]
