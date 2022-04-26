@@ -136,7 +136,7 @@ class Classifier:
         files = list()
         files.extend(list(map(add_path('Google Nest'), ['dump1_2.4_ghz.pcapng', 'dump2_2.4_ghz.pcapng', 'dump1_5_ghz.pcapng', 'dump2_5_ghz.pcapng', 'dump3_5_ghz.pcapng', 'dump4_5_ghz.pcapng'])))
         files.extend(list(map(add_path('LittleElf'), ['dump.pcapng', 'dump1.pcapng', 'dump2.pcapng', 'dump3.pcapng'])))
-        files.extend(list(map(add_path('NIkkei'), ['dump2.pcapng', 'dump3.pcapng', 'dump4.pcapng'])))
+        files.extend(list(map(add_path('Nikkei'), ['dump2.pcapng', 'dump3.pcapng', 'dump4.pcapng'])))
         files.extend(list(map(add_path('TP-Link'), ['dump.pcapng', 'dump1.pcapng', 'dump2.pcapng', 'dump3.pcapng', 'dump4.pcapng', 'dump5.pcapng'])))
 
         return files
