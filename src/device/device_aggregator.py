@@ -1,9 +1,9 @@
-from typing import Iterator
+from typing import Iterable
 
 from src.device.device import Device
 
 
-def device_aggregator(generator: Iterator[Device], max_frame_buffer_size=50):
+def device_aggregator(generator: Iterable[Device], max_frame_buffer_size=50):
     known_devices = {}
 
     for new_device in generator:

@@ -1,5 +1,5 @@
 import math
-from typing import Iterator, Iterable
+from typing import Iterable
 
 from sympy import Point
 

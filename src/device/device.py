@@ -34,4 +34,7 @@ class Device:
         return hash(self.physical_address)
 
     def __repr__(self) -> str:
-        return f"{self.physical_address}: identification={self.identification}, position={self.position}"
+        return f"{self.frames[-1].wlan_radio.radio_timestamp} - {self.physical_address}: " \
+               f"identification={self.identification}, " \
+               f"position=({self.position.x}, {self.position.y}), " \
+               f"distance={self.position.distance(Point2D([0, 0]))}"

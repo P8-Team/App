@@ -2,6 +2,7 @@ import pytest
 from src.device.device import Device
 from src.wifi.wifi_frame import WifiFrame
 from src.wifi.frame_control_information import FrameControlInformation
+from src.wifi.wlan_radio_information import WlanRadioInformation
 from src.wifi.signal import Signal
 from sympy import Point2D
 
@@ -34,6 +35,7 @@ def test_device_uses_given_position():
 
     assert device.position == position
 
+
 def test_device_uses_given_averaged_signals():
     signals = [
         Signal(Point2D(0, 0), 1, 0),
@@ -53,3 +55,11 @@ def test_device_from_frame_returns_device_with_physical_address_and_frame():
 
     assert device.physical_address == address_for_test
     assert device.frames[0] == wifi_frame
+
+
+def test_device_prints_correctly():
+    device = Device("Address", [
+        WifiFrame(wlan_radio=WlanRadioInformation(radio_timestamp=0.1))
+    ], identification="TestIdentification", position=Point2D([0, 10]))
+
+    assert repr(device) == "0.1 - Address: identification=TestIdentification, position=(0, 10), distance=10"
