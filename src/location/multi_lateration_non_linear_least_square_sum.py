@@ -40,9 +40,11 @@ def calculate_position(device: Device, do_draw=False):
     frequency = device.frames[-1].wlan_radio.frequency_mhz
     signals = device.averaged_signals
 
-    # 20 is max for 2.4ghz, 30 for 5ghz.
-    transmission_power = device.identification["transmission_power"] if device.identification is not None \
-        else (20 if frequency < 4000 else 30)
+    if device.identification is not None:
+        transmission_power = device.identification["transmission_power"]
+    else:
+        # 20 is max for 2.4ghz, 30 for 5ghz.
+        transmission_power = 20 if frequency < 4000 else 30
 
     anchors = [Anchor(
         np.array(signal.location.coordinates, dtype=np.float64),

@@ -1,5 +1,5 @@
 import math
-from typing import Iterator
+from typing import Iterator, Iterable
 
 from sympy import Point
 
@@ -7,7 +7,7 @@ from src.device.device import Device
 from src.wifi.signal import Signal
 
 
-def calculate_average_signal_strength(generator: Iterator[Device]):
+def calculate_average_signal_strength(generator: Iterable[Device]):
 
     for device in generator:
         signal_strengths = []
