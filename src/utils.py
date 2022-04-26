@@ -1,5 +1,7 @@
 from types import FunctionType
+
 from sympy import Circle, Point
+
 
 def is_list(object) -> bool:
   return isinstance(object, list)

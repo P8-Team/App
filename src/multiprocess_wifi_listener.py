@@ -1,9 +1,7 @@
 from multiprocessing import Queue, Process
 from typing import Iterator
 
-
 import pyshark
-from sympy import Point2D
 
 from src.wifi.wifi_card import WifiCard
 from src.wifi.wifi_frame import WifiFrame

@@ -1,6 +1,7 @@
 from typing import Iterator
-from src.wifi.wifi_frame import WifiFrame
+
 from src.device.device import Device
+from src.wifi.wifi_frame import WifiFrame
 
 
 def frame_to_device_converter(generator: Iterator[WifiFrame]):

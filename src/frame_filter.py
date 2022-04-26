@@ -1,10 +1,6 @@
 class FrameFilter:
 
-    def __init__(
-            self,
-            whitelisted_types=None,
-            whitelisted_subtypes=None
-    ):
+    def __init__(self, whitelisted_types=None, whitelisted_subtypes=None):
         # https://en.wikipedia.org/wiki/802.11_Frame_Types
         if whitelisted_types is None:
             whitelisted_types = [2]
@@ -20,10 +16,10 @@ class FrameFilter:
         :return:
         """
         return FrameFilter.filter_generator(generator,
-                                     lambda frame:
-                                    self.filter_frames_by_subtypes(frame, self.whitelisted_subtypes)
-                                    and self.filter_frames_by_types(frame, self.whitelisted_types)
-                                     )
+                                            lambda frame:
+                                            self.filter_frames_by_subtypes(frame, self.whitelisted_subtypes)
+                                            and self.filter_frames_by_types(frame, self.whitelisted_types)
+                                            )
 
     @staticmethod
     def filter_generator(generator, filter_func):

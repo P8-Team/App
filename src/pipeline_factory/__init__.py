@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from src.device.device_aggregator import device_aggregator
+from src.device.frame_to_device_converter import frame_to_device_converter
 from src.frame_aggregator import frame_aggregator
 from src.frame_filter import FrameFilter
 from src.location.average_signal_strength import calculate_average_signal_strength
@@ -8,8 +10,6 @@ from src.multiprocess_wifi_listener import multiprocess_wifi_listener
 from src.pipeline_factory.basic_generators import csv_row_generator, output_to_file_generator, \
     output_to_console_generator, json_generator, pcap_file_generator, append_location_to_wifi_frame, filter
 from src.wifi.wifi_card import WifiCard
-from src.device.frame_to_device_converter import frame_to_device_converter
-from src.device.device_aggregator import device_aggregator
 
 
 class PipelineFactory:

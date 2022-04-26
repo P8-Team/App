@@ -1,8 +1,10 @@
 from __future__ import annotations
 
+import pandas as pd
+
 from src.wifi.signal import Signal
 from src.wifi.wifi_card import WifiCard
-import pandas as pd
+
 
 class WlanRadioInformation:
     signals: list[Signal]

@@ -1,13 +1,12 @@
 import math
 from typing import Iterable
 
+import matplotlib.pyplot as plt
 import numpy as np
 from scipy.optimize import least_squares, OptimizeResult
-import matplotlib.pyplot as plt
 
-from src.location.distance_strength_calculations import calc_distance_from_dbm_signal_strength
-from src.wifi.wifi_frame import WifiFrame
 from src.device.device import Device
+from src.location.distance_strength_calculations import calc_distance_from_dbm_signal_strength
 
 
 class Anchor:
@@ -31,9 +30,10 @@ class Anchor:
 
 
 def non_linear_squared_sum_weighted(x: np.ndarray, anchors: list[Anchor]) -> float:
-    return sum(
+    s = sum(
         [anchor.weight * math.pow((np.linalg.norm(x - anchor.location) - anchor.distance), 2) for anchor in anchors]
     )
+    return s
 
 
 def calculate_position(device: Device, do_draw=False):
@@ -52,14 +52,14 @@ def calculate_position(device: Device, do_draw=False):
 
     res = get_least_squared_error(anchors)
 
-    device.position = res.x.tolist()
+    device.set_position(res.x.tolist())
 
     if do_draw:
-        draw_plot_with_anchors_circles_and_estimate(anchors, res.x.tolist())
+        draw_plot_with_anchors_circles_and_estimate(anchors, device.position)
 
 
 def get_least_squared_error(anchors: list[Anchor]) -> OptimizeResult:
-    return least_squares(non_linear_squared_sum_weighted, np.array([0, 0]), args=[anchors])
+    return least_squares(non_linear_squared_sum_weighted, np.array([0, 0]), args=[anchors], verbose=2, gtol=None)
 
 
 def draw_plot_with_anchors_circles_and_estimate(anchors, estimate):
@@ -87,4 +87,5 @@ def draw_plot_with_anchors_circles_and_estimate(anchors, estimate):
 
 def append_location_generator(generator: Iterable[Device], do_draw=False) -> Iterable[Device]:
     for device in generator:
-        yield calculate_position(device, do_draw)
+        calculate_position(device, do_draw)
+        yield device

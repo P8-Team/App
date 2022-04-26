@@ -1,4 +1,5 @@
 from typing import Iterator
+
 from src.device.device import Device
 
 

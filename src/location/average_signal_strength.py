@@ -1,18 +1,23 @@
 import math
+from typing import Iterator
 
 from sympy import Point
 
-from src.wifi.signal import Signal
 from src.device.device import Device
+from src.wifi.signal import Signal
 
 
-def calculate_average_signal_strength(device: Device):
-    signal_strengths = []
+def calculate_average_signal_strength(generator: Iterator[Device]):
 
-    for frame in device.frames:
-        signal_strengths.append(frame.wlan_radio.signals)
+    for device in generator:
+        signal_strengths = []
 
-    device.averaged_signals = average_signals(signal_strengths)
+        for frame in device.frames:
+            signal_strengths.append(frame.wlan_radio.signals)
+
+        device.averaged_signals = average_signals(signal_strengths)
+
+        yield device
 
 
 def average_signals(signals: list[list[Signal]]) -> list[Signal]:

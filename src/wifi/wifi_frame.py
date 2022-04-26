@@ -1,8 +1,9 @@
 from __future__ import annotations
 
 import json
-import pandas as pd
 from typing import Generator, Iterator
+
+import pandas as pd
 
 from src.wifi.frame_control_information import FrameControlInformation
 from src.wifi.wifi_card import WifiCard
