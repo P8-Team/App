@@ -1,3 +1,5 @@
+import uuid
+
 from src.wifi.frame_control_information import FrameControlInformation
 from src.frame_filter import FrameFilter
 from src.wifi.wifi_frame import WifiFrame
@@ -12,7 +14,7 @@ def get_frame_filter():
 
 def get_wifi_frame(fc_type, subtype):
     frame_control_information = FrameControlInformation(fc_type, subtype)
-    return WifiFrame(0, None, frame_control_information)
+    return WifiFrame(0, uuid.uuid4().int, None, frame_control_information)
 
 
 def test_frame_filter_subtype_allowed():

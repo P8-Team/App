@@ -1,4 +1,5 @@
 import copy
+import uuid
 
 from sympy import Point2D
 
@@ -16,6 +17,7 @@ def test_construct_wifi_frame():
     # Arrange
     frame = Frame("340", "1647417907.513663000", {
         'wlan': Layer({
+            'fcs': '0x1234',
             'wlan.fc.type': '0',
             'wlan.fc.subtype': '4',
             'wlan.ra_resolved': '00:0c:29:b7:d9:b0',
@@ -33,6 +35,7 @@ def test_construct_wifi_frame():
 
     # Assert
     assert wifi_frame.length == 340
+    assert wifi_frame.frame_control_sequence == 4660
     assert wifi_frame.frame_control_information.type == 0
     assert wifi_frame.frame_control_information.subtype == 4
     assert wifi_frame.frame_control_information.receiver_address == '00:0c:29:b7:d9:b0'
@@ -280,7 +283,7 @@ def test_wifi_frame_to_dataframe():
         ],
         12, 1567757309, 44)
 
-    wifi_frame = WifiFrame(12, wlan_radio_information, frame_control_information)
+    wifi_frame = WifiFrame(12, uuid.uuid4().int, wlan_radio_information, frame_control_information)
 
     actual = wifi_frame.to_dataframe()
 

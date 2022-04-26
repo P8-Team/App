@@ -1,6 +1,6 @@
 from sympy import Point
 
-from src.distance_strength_calculations import mw_to_dbm, distance_to_signal_strength
+from src.location.distance_strength_calculations import mw_to_dbm, distance_to_signal_strength
 from src.wifi.signal import Signal
 from src.wifi.wifi_frame import WifiFrame
 from src.wifi.wlan_radio_information import WlanRadioInformation
