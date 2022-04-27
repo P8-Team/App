@@ -60,7 +60,6 @@ class Classifier:
         # Returns an error if the model has not been fitted
         classifications = self.model.predict(features).tolist()
         return max(classifications, key=classifications.count)
-        # return np.bincount(self.model.predict(features)).argmax() - Should have worked but give conversion error.
 
     def classify_interval_confidence(self, frames):
         features = self.extract_features_for_classification(frames)
