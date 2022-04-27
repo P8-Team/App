@@ -14,10 +14,6 @@ from tsfresh.utilities.dataframe_functions import impute
 from tsfresh.feature_selection.relevance import calculate_relevance_table
 from src.multiprocess_wifi_listener import frames_from_file_with_caching
 
-# Enum defining the possible results of classify
-Label = Enum('Label', 'Ok Undesired')
-
-
 class Classifier:
     """
     A class for classifying the behavior of IoT devices
@@ -28,7 +24,6 @@ class Classifier:
         """
         self.interval = interval_seconds
         self.model = RandomForestClassifier()
-        self.feature_parameters = None  # tsfresh settings object, used in train and classify_interval
 
     def classify(self, frame_gen):
         """
@@ -42,7 +37,7 @@ class Classifier:
         # Create generator that accumulates frames in an interval and yields lists of frames
         frame_acc = self.accumulate_frames(frame_gen)
         for frame_list in frame_acc:
-            yield self.classify_interval(frame_list)
+            yield self.classify_interval_label(frame_list)
 
     def accumulate_frames(self, frame_gen):
         # Get first element of generator and use it to determine end of interval
@@ -61,19 +56,17 @@ class Classifier:
             else:
                 frames_in_interval.append(frame)
 
-    def classify_interval(self, frames):
-        # Extract relevant features using tsfresh and a custom setting created during training
-        features = extract_features(frames, column_id='transmitter_address', column_sort='radio_timestamp',
-                                            default_fc_parameters=self.feature_parameters)
+    def classify_interval_label(self, frames):
+        features = self.extract_features_for_classification(frames)
 
         # Return the most common classification of all the frames as a single label(based on labels gained in training)
         # Returns an error if the model has not been fitted
-        return max(set(self.model.predict(features)), key=self.model.predict(features).count)
+        classifications = self.model.predict(features).tolist()
+        return max(classifications, key=classifications.count)
+        # return np.bincount(self.model.predict(features)).argmax() - Should have worked but give conversion error.
 
     def classify_interval_confidence(self, frames):
-        # Extract relevant features using tsfresh and a custom setting created during training
-        features = extract_features(frames, column_id='transmitter_address', column_sort='radio_timestamp',
-                                    default_fc_parameters=self.feature_parameters)
+        features = self.extract_features_for_classification(frames)
 
         # Array of the probability for each label for each frame.
         prediction = self.model.predict_proba(features)
@@ -83,6 +76,13 @@ class Classifier:
 
         # Returns the confidence for a given classification as a percentage.
         return max(summation)/np.sum(summation)
+
+    def extract_features_for_classification(self, frames):
+        dfs = list()
+        for item in frames:
+            dfs.append(item.to_dataframe())
+        df = pd.concat(dfs)
+        return self.drop_features(df)
 
     def labels_in_model(self):
         # Returns an array with the labels of the trained model.
@@ -114,13 +114,16 @@ class Classifier:
         df = df[df['transmitter_address'].map(lambda x: labels.Address.str.contains(x).sum() == 1)]
         # Create a serie containing a label for each row
         label_series = pd.DataFrame(df['transmitter_address']).set_index('transmitter_address').join(labels.set_index('Address')).squeeze()
+        return self.drop_features(df), label_series
+
+    def drop_features(self, df):
         # Drop radio timestamp as it is NaN for the file data
         df = df.drop(['radio_timestamp'], axis='columns')
-        #df['sniff_timestamp_0'] = pd.to_datetime(df['sniff_timestamp_0'],unit='s')
+        # df['sniff_timestamp_0'] = pd.to_datetime(df['sniff_timestamp_0'],unit='s')
         # TODO: Change representation of receiver_address to something like one hot encoding
         df = df.drop(['receiver_address', 'transmitter_address'], axis='columns')
-
-        return df, label_series
+        df['data_rate'] = df['data_rate'].fillna(0)
+        return df
 
     def load_files(self, files):
         dfs = list()

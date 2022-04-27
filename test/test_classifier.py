@@ -1,15 +1,20 @@
+import numpy as np
+import pandas as pd
 import pytest
-from src.classifier import Classifier
+from sklearn.model_selection import train_test_split
 
+from src.classifier import Classifier
 from src.wifi.wifi_card import WifiCard
 from src.wifi.wifi_frame import WifiFrame
+from test.utils.wifi_frame_factory import frame_factory
 from test.utils.wifi_test_utils import Frame, Layer
 from sympy import Point2D
-import pandas as pd
+
 
 def test_get_file_paths_returns_list_of_strings():
     classifier = Classifier(1)
     assert all(isinstance(x, str) for x in classifier.get_file_paths()) == True
+
 
 def test_preprocess_data():
     frame = Frame("340", "1647417907.513663000", {
@@ -36,3 +41,75 @@ def test_preprocess_data():
 
     assert result_labels == "test"
     assert len(result_df.columns) == 7
+
+
+def test_classifier_drops_features():
+    cl = Classifier(1)
+    frames_db = frame_factory(1).to_dataframe()
+    for i in range(1, 20):
+        frames_db = pd.concat([frames_db, frame_factory(i).to_dataframe()], axis=0)
+    dropped_columns = {'radio_timestamp', 'receiver_address', 'transmitter_address'}
+
+    frames_db_new = cl.drop_features(frames_db)
+
+    assert dropped_columns.issubset(frames_db.columns) == True
+    for column in dropped_columns:
+        assert {column}.issubset(frames_db_new) == False
+    assert {'data_rate'}.issubset(frames_db_new.columns) == True
+    assert frames_db['data_rate'].isnull().values.any() == True
+    assert frames_db_new['data_rate'].isnull().values.any() == False
+
+
+@pytest.fixture
+def cl():
+    cl = Classifier(1)
+
+    frames_db = frame_factory(1).to_dataframe()
+    for i in range(1, 20):
+        frames_db = pd.concat([frames_db, frame_factory(i).to_dataframe()], axis=0)
+
+    labels = pd.DataFrame.from_dict({'Address': ["00:00:00:00:00:01"], 'Label': ['test']})
+    training_data, label_series = cl.preprocess_data(frames_db, labels)
+
+    cl.model.fit(training_data, label_series)
+    return cl
+
+
+def test_classifier_extract_features(cl):
+    assert 1 == 1
+
+def test_classifier_has_labels(cl):
+    assert cl.labels_in_model()[0] is 'test'
+
+
+def test_classifier_returns_label_for_interval(cl):
+    frames = []
+    for i in range(0, 10):
+        frames.append(frame_factory(i))
+    possible_labels_list = cl.labels_in_model()
+
+    assert cl.classify_interval_label(frames) in possible_labels_list
+
+
+def test_classifier_return_confidence_for_interval(cl):
+    frames = []
+    for i in range(0, 10):
+        frames.append(frame_factory(i))
+    assert 0 <= cl.classify_interval_confidence(frames) <= 1
+
+
+def generator(items: list):
+    for item in items:
+        yield item
+
+
+def test_classifier_returns_label_for_classify(cl):
+    frame_gen = generator([frame_factory(1), frame_factory(2)])
+    possible_labels_list = cl.labels_in_model()
+    assert next(cl.classify(frame_gen)) in possible_labels_list
+
+def test_classifier_accumulate_frames(cl):
+    assert 1 == 1
+
+
+
