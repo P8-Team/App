@@ -40,6 +40,12 @@ def pcap_file_generator(file_path):
     return pyshark.FileCapture(file_path)
 
 
+def filter(generator: Iterator[WifiFrame], filter_function):
+    for item in generator:
+        if filter_function(item):
+            yield item
+
+
 def append_location_to_wifi_frame(generator: Iterator[WifiFrame]) -> Iterator[WifiFrame]:
     for item in generator:
         print(item.wlan_radio.__dict__)
@@ -52,9 +58,3 @@ def append_location_to_wifi_frame(generator: Iterator[WifiFrame]) -> Iterator[Wi
             ] for signal in item.wlan_radio.signals]
         item.location = location(wifi_interface_with_distance)
         yield item
-
-
-def filter(generator: Iterator[WifiFrame], filter_function):
-    for item in generator:
-        if filter_function(item):
-            yield item

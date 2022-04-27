@@ -1,6 +1,7 @@
 import copy
 import uuid
 
+import pandas as pd
 from sympy import Point2D
 
 from src.wifi.frame_control_information import FrameControlInformation
@@ -9,8 +10,6 @@ from src.wifi.wifi_card import WifiCard
 from src.wifi.wifi_frame import WifiFrame
 from src.wifi.wlan_radio_information import WlanRadioInformation
 from test.utils.wifi_test_utils import Frame, Layer
-
-import pandas as pd
 
 
 def test_construct_wifi_frame():

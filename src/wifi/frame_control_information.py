@@ -1,5 +1,7 @@
 from __future__ import annotations
+
 import pandas as pd
+
 
 class FrameControlInformation:
     type: int
@@ -42,4 +44,4 @@ class FrameControlInformation:
         return hash(self.__key__())
 
     def to_dataframe(self):
-        return pd.DataFrame(vars(self), index = [0])
+        return pd.DataFrame(vars(self), index=[0])

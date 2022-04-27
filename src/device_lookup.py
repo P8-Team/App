@@ -1,4 +1,5 @@
 import os.path
+
 import pandas as pd
 
 
@@ -21,4 +22,3 @@ class DeviceLookup:
     def all_mac_addresses(self):
         # Returns a list all mac addresses, representing all the devices we can identify
         return self.lookup_data['Mac Address'].values.tolist()
-
