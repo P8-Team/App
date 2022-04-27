@@ -233,13 +233,14 @@ def generate_tests_positions_and_check_for_failures(frame_generator: LocationGen
             failures = failures + 1
 
             # calculate_position(result[i], do_draw=True)
-            print(result[i].position, points[i])
+            # print(result[i].position, points[i])
 
     # print(number_of_positions)
 
     return failures
 
 
+@pytest.mark.slow
 def test_input_to_output_fixed_positions_huge_distance_no_rounding_within_centimeter():
     wifi_frame_generator = LocationGenerator([Point2D([0, 43.3]), Point2D([50, -43.3]), Point2D([-50, -43.3])],
                                              rounding=False)
@@ -247,6 +248,7 @@ def test_input_to_output_fixed_positions_huge_distance_no_rounding_within_centim
     assert generate_tests_positions_and_check_for_failures(wifi_frame_generator, precision=0.01) == 0
 
 
+@pytest.mark.slow
 def test_input_to_output_fixed_positions_large_distance_no_rounding_within_centimeter():
     wifi_frame_generator = LocationGenerator([Point2D([0, 4.33]), Point2D([5, -4.33]), Point2D([-5, -4.33])],
                                              rounding=False)
@@ -254,8 +256,17 @@ def test_input_to_output_fixed_positions_large_distance_no_rounding_within_centi
     assert generate_tests_positions_and_check_for_failures(wifi_frame_generator, precision=0.01) == 0
 
 
+@pytest.mark.slow
 def test_input_to_output_fixed_positions_small_distance_no_rounding_within_ten_meters():
     wifi_frame_generator = LocationGenerator([Point2D([0, 0.433]), Point2D([0.5, -0.433]), Point2D([-0.5, -0.433])],
                                              rounding=False)
 
     assert generate_tests_positions_and_check_for_failures(wifi_frame_generator, precision=10, bounds=5) == 0
+
+
+@pytest.mark.slow
+def test_input_to_output_fixed_positions_large_distance_with_rounding_within_two_meters():
+    wifi_frame_generator = LocationGenerator([Point2D([0, 4.33]), Point2D([5, -4.33]), Point2D([-5, -4.33])],
+                                             rounding=True)
+
+    assert generate_tests_positions_and_check_for_failures(wifi_frame_generator, precision=2) == 0

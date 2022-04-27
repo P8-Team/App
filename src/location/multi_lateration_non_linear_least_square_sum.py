@@ -53,7 +53,7 @@ def calculate_position(device: Device, do_draw=False):
 
     res = get_least_squared_error(anchors)
 
-    device.set_position(res.x.tolist())
+    device.position = res.x.tolist()
 
     if do_draw:
         draw_plot_with_anchors_circles_and_estimate(anchors, device.position)

@@ -33,7 +33,7 @@ def test_device_uses_given_position():
     position = Point2D(1, 5)
     device = Device(address_for_test, [], position=position)
 
-    assert device.position == position
+    assert device._position == position
 
 
 def test_device_uses_given_averaged_signals():
@@ -63,3 +63,12 @@ def test_device_prints_correctly():
     ], identification="TestIdentification", position=Point2D([0, 10]))
 
     assert repr(device) == "0.1 - Address: identification=TestIdentification, position=(0, 10), distance=10.0"
+
+
+def test_device_new_position_pushes_old_to_historic():
+    device = Device("1", [], position=Point2D(0, 0))
+
+    device.position = Point2D(1, 1)
+
+    assert device.historic_positions[0] == Point2D(0, 0)
+
