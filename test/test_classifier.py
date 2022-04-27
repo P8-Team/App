@@ -52,10 +52,10 @@ def test_classifier_drops_features():
 
     frames_db_new = cl.drop_features(frames_db)
 
-    assert dropped_columns.issubset(frames_db.columns) is True
+    assert dropped_columns.issubset(frames_db.columns) == True
     for column in dropped_columns:
-        assert {column}.issubset(frames_db_new) is False
-    assert {'data_rate'}.issubset(frames_db_new.columns) is True
+        assert {column}.issubset(frames_db_new) == False
+    assert {'data_rate'}.issubset(frames_db_new.columns) == True
     assert frames_db['data_rate'].isnull().values.any() == True
     assert frames_db_new['data_rate'].isnull().values.any() == False
 
