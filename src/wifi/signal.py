@@ -15,7 +15,6 @@ class Signal:
         self.variance = variance
 
     def to_dataframe(self):
-        return pd.DataFrame(data={
-            'location': [[self.location.x, self.location.y]], 'signal_strength': [self.signal_strength],
-            'sniff_timestamp': [self.sniff_timestamp]
+        return pd.DataFrame(data = {
+         'signal_strength': [self.signal_strength], 'sniff_timestamp': [self.sniff_timestamp]
         })
