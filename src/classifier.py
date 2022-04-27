@@ -23,9 +23,8 @@ class Classifier:
     def classify(self, frame_gen):
         """
         Classifies the behaviour of an IoT device based on a number of frames within a time interval
-        Note: This is a generator that yields an item for each time interval.
-            An item is first yielded when a frame that is in the next interval is received from frame_gen
-
+        Note: This is a generator that yields a label for each time interval.
+            A label is first yielded when a frame that is in the next interval is received from frame_gen
         :param frame_gen: A generator that produces frames
         """
 
