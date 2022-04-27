@@ -114,7 +114,6 @@ class Classifier:
         # Drop radio timestamp as it is NaN for the file data
         df = df.drop(['radio_timestamp'], axis='columns')
         # df['sniff_timestamp_0'] = pd.to_datetime(df['sniff_timestamp_0'],unit='s')
-        # TODO: Change representation of receiver_address to something like one hot encoding
         df = df.drop(['receiver_address', 'transmitter_address'], axis='columns')
         df['data_rate'] = df['data_rate'].fillna(0)
         return df
