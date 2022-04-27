@@ -2,7 +2,6 @@ from typing import List
 import pytest
 from sympy import Point2D
 
-from src.classifier import Classifier, Label
 from src.pipeline_factory import PipelineFactory
 from src.wifi.wifi_frame import WifiFrame
 from test.utils.wifi_frame_factory import frame_factory

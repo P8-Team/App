@@ -1,18 +1,12 @@
-from enum import Enum
-import pandas as pd
 import numpy as np
-import tsfresh.feature_extraction.settings
-
-from src.wifi.wifi_frame import WifiFrame
-from tsfresh import extract_relevant_features
-from tsfresh import extract_features, select_features
-from tsfresh.feature_extraction import ComprehensiveFCParameters
-from sklearn.model_selection import train_test_split
+import pandas as pd
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import classification_report
-from tsfresh.utilities.dataframe_functions import impute
-from tsfresh.feature_selection.relevance import calculate_relevance_table
+from sklearn.model_selection import train_test_split
+
 from src.multiprocess_wifi_listener import frames_from_file_with_caching
+from src.wifi.wifi_frame import WifiFrame
+
 
 class Classifier:
     """
