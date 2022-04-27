@@ -23,7 +23,7 @@ class Classifier:
         """
         Classifies the behaviour of an IoT device based on a number of frames within a time interval
         Note: This is a generator that yields an item for each time interval.
-            An item first yielded when a frame that is in the next interval is received from frame_gen
+            An item is first yielded when a frame that is in the next interval is received from frame_gen
 
         :param frame_gen: A generator that produces frames
         """
