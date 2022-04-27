@@ -10,21 +10,22 @@ from src.wifi.wlan_radio_information import WlanRadioInformation
 class LocationGenerator:
     receiver_positions: list[Point2D]
 
-    def __init__(self, receiver_positions: list[Point2D]):
+    def __init__(self, receiver_positions: list[Point2D], rounding=True):
         """
 
         :param receiver_positions: List of positions for receivers
         """
         self.receiver_positions = []
+        self.rounding = rounding
         self._positions_populator(receiver_positions)
 
-    def make_wifi_element(self, position: Point2D, frequency=2412, transmission_power=100,
+    def make_wifi_element(self, position: Point2D, frequency=2412, transmission_power_mw=100,
                           transmitter_address="00:00:00:00:00:01", receiver_address="00:00:00:00:00:02"):
         """
 
         :param position: The position of the transmitter, given as a sympy Point
         :param frequency: Frequency in mhz
-        :param transmission_power: Transmission power of the transmitter, defaults to 100
+        :param transmission_power_mw: Transmission power of the transmitter, defaults to 100, given in milli watts
         :param transmitter_address: The physical address of the device that transmitted the frame
         :param receiver_address: The physical address of the device that received the frame
         :return: Returns a new wifi_element containing the relevant information to generate calculate locations
@@ -35,7 +36,7 @@ class LocationGenerator:
         wifi_element = WifiFrame(frame_control_sequence=1,
                                  frame_control_information=FrameControlInformation(transmitter_address=transmitter_address,
                                                                                    receiver_address=receiver_address))
-        signal_strength = self.signal_strength_calculator(position, frequency, transmission_power)
+        signal_strength = self.signal_strength_calculator(position, frequency, transmission_power_mw)
 
         signals = [Signal(element[0], element[1], 0) for element in zip(self.receiver_positions, signal_strength)]
         data_rate = None
@@ -54,6 +55,9 @@ class LocationGenerator:
         for pos in self.receiver_positions:
             signal_strength = distance_to_signal_strength(point.distance(pos), frequency, transmission_power)
 
-            output.append(round((mw_to_dbm(signal_strength))))
+            if self.rounding:
+                output.append(round(mw_to_dbm(signal_strength)))
+            else:
+                output.append(mw_to_dbm(signal_strength))
 
         return output

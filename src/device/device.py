@@ -39,5 +39,5 @@ class Device:
     def __repr__(self) -> str:
         return f"{self.frames[-1].wlan_radio.radio_timestamp} - {self.physical_address}: " \
                f"identification={self.identification}, " \
-               f"position=({self.position.x}, {self.position.y}), " \
-               f"distance={self.position.distance(Point2D([0, 0]))}"
+               f"position=({self.position[0]}, {self.position[1]}), " \
+               f"distance={float(Point2D(self.position).distance(Point2D([0, 0])))}"

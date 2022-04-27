@@ -40,14 +40,14 @@ def calculate_position(device: Device, do_draw=False):
     signals = device.averaged_signals
 
     if device.identification is not None:
-        transmission_power = device.identification["transmission_power"]
+        transmission_power_dbm = device.identification["transmission_power_dbm"]
     else:
         # 20 is max for 2.4ghz, 30 for 5ghz.
-        transmission_power = 20 if frequency < 4000 else 30
+        transmission_power_dbm = 20 if frequency < 4000 else 30
 
     anchors = [Anchor(
         np.array(signal.location.coordinates, dtype=np.float64),
-        calc_distance_from_dbm_signal_strength(transmission_power, signal.signal_strength, frequency),
+        calc_distance_from_dbm_signal_strength(transmission_power_dbm, signal.signal_strength, frequency),
         signal.variance
     ) for signal in signals]
 
