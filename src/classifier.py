@@ -38,6 +38,7 @@ class Classifier:
         """
         Accumulates frames for a single device
         """
+
         # Get first element of generator and use it to determine end of interval
         first = next(frame_gen)
         self._verify_item_is_frame(first)
