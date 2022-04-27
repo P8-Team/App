@@ -61,7 +61,9 @@ class Classifier:
 
         # Return the most common classification of all the frames as a single label(based on labels gained in training)
         # Returns an error if the model has not been fitted
-        return max(set(self.model.predict(features)), key=self.model.predict(features).count)
+        classifications = self.model.predict(features).tolist()
+        return max(classifications, key=classifications.count)
+        # return np.bincount(self.model.predict(features)).argmax() - Should have worked but give conversion error.
 
     def classify_interval_confidence(self, frames):
         features = self.extract_features_for_classification(frames)
@@ -80,7 +82,7 @@ class Classifier:
         for item in frames:
             dfs.append(item.to_dataframe())
         df = pd.concat(dfs)
-        return self.dropped_features(df)
+        return self.drop_features(df)
 
     def labels_in_model(self):
         # Returns an array with the labels of the trained model.
@@ -112,15 +114,15 @@ class Classifier:
         df = df[df['transmitter_address'].map(lambda x: labels.Address.str.contains(x).sum() == 1)]
         # Create a serie containing a label for each row
         label_series = pd.DataFrame(df['transmitter_address']).set_index('transmitter_address').join(labels.set_index('Address')).squeeze()
-        self.dropped_features(df)
-        return df, label_series
+        return self.drop_features(df), label_series
 
-    def dropped_features(self, df):
+    def drop_features(self, df):
         # Drop radio timestamp as it is NaN for the file data
         df = df.drop(['radio_timestamp'], axis='columns')
         # df['sniff_timestamp_0'] = pd.to_datetime(df['sniff_timestamp_0'],unit='s')
         # TODO: Change representation of receiver_address to something like one hot encoding
         df = df.drop(['receiver_address', 'transmitter_address'], axis='columns')
+        df['data_rate'] = df['data_rate'].fillna(0)
         return df
 
     def load_files(self, files):
