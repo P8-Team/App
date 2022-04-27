@@ -76,7 +76,7 @@ def cl():
 
 
 def test_classifier_extract_features(cl):
-    assert 1 == 1
+    assert True
 
 def test_classifier_has_labels(cl):
     assert cl.labels_in_model()[0] is 'test'
@@ -109,7 +109,7 @@ def test_classifier_returns_label_for_classify(cl):
     assert next(cl.classify(frame_gen)) in possible_labels_list
 
 def test_classifier_accumulate_frames(cl):
-    assert 1 == 1
+    assert True
 
 
 

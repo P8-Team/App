@@ -1,18 +1,12 @@
-from enum import Enum
-import pandas as pd
 import numpy as np
-import tsfresh.feature_extraction.settings
-
-from src.wifi.wifi_frame import WifiFrame
-from tsfresh import extract_relevant_features
-from tsfresh import extract_features, select_features
-from tsfresh.feature_extraction import ComprehensiveFCParameters
-from sklearn.model_selection import train_test_split
+import pandas as pd
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import classification_report
-from tsfresh.utilities.dataframe_functions import impute
-from tsfresh.feature_selection.relevance import calculate_relevance_table
+from sklearn.model_selection import train_test_split
+
 from src.multiprocess_wifi_listener import frames_from_file_with_caching
+from src.wifi.wifi_frame import WifiFrame
+
 
 class Classifier:
     """
@@ -29,7 +23,7 @@ class Classifier:
         """
         Classifies the behaviour of an IoT device based on a number of frames within a time interval
         Note: This is a generator that yields an item for each time interval.
-            An item first yielded when a frame that is in the next interval is received from frame_gen
+            An item is first yielded when a frame that is in the next interval is received from frame_gen
 
         :param frame_gen: A generator that produces frames
         """
@@ -40,6 +34,9 @@ class Classifier:
             yield self.classify_interval_label(frame_list)
 
     def accumulate_frames(self, frame_gen):
+        """
+        Accumulates frames for a single device
+        """
         # Get first element of generator and use it to determine end of interval
         first = next(frame_gen)
         self._verify_item_is_frame(first)
@@ -63,7 +60,6 @@ class Classifier:
         # Returns an error if the model has not been fitted
         classifications = self.model.predict(features).tolist()
         return max(classifications, key=classifications.count)
-        # return np.bincount(self.model.predict(features)).argmax() - Should have worked but give conversion error.
 
     def classify_interval_confidence(self, frames):
         features = self.extract_features_for_classification(frames)
@@ -123,7 +119,6 @@ class Classifier:
         # Drop radio timestamp as it is NaN for the file data
         df = df.drop(['radio_timestamp'], axis='columns')
         # df['sniff_timestamp_0'] = pd.to_datetime(df['sniff_timestamp_0'],unit='s')
-        # TODO: Change representation of receiver_address to something like one hot encoding
         df = df.drop(['receiver_address', 'transmitter_address'], axis='columns')
         df['data_rate'] = df['data_rate'].fillna(0)
         return df
