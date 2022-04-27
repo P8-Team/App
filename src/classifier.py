@@ -12,6 +12,7 @@ class Classifier:
     """
     A class for classifying the behavior of IoT devices
     """
+
     def __init__(self, interval_seconds):
         """
         :param interval_seconds: The amount of time in seconds to aggregate frames to classify 
@@ -71,7 +72,7 @@ class Classifier:
         summation = prediction.sum(axis=0)
 
         # Returns the confidence for a given classification as a percentage.
-        return max(summation)/np.sum(summation)
+        return max(summation) / np.sum(summation)
 
     def extract_features_for_classification(self, frames):
         dfs = list()
@@ -83,7 +84,6 @@ class Classifier:
     def labels_in_model(self):
         # Returns an array with the labels of the trained model.
         return self.model.classes_
-
 
     @staticmethod
     def _verify_item_is_frame(item):
@@ -111,7 +111,8 @@ class Classifier:
         # Select rows that contain data from one of the devices with a label
         df = df[df['transmitter_address'].map(lambda x: labels.Address.str.contains(x).sum() == 1)]
         # Create a serie containing a label for each row
-        label_series = pd.DataFrame(df['transmitter_address']).set_index('transmitter_address').join(labels.set_index('Address')).squeeze()
+        label_series = pd.DataFrame(df['transmitter_address']).set_index('transmitter_address').join(
+            labels.set_index('Address')).squeeze()
         return self.drop_features(df), label_series
 
     @staticmethod
@@ -137,9 +138,13 @@ class Classifier:
             return lambda name: f'Data/{folder}/{name}'
 
         files = list()
-        files.extend(list(map(add_path('Google Nest'), ['dump1_2.4_ghz.pcapng', 'dump2_2.4_ghz.pcapng', 'dump1_5_ghz.pcapng', 'dump2_5_ghz.pcapng', 'dump3_5_ghz.pcapng', 'dump4_5_ghz.pcapng'])))
+        files.extend(list(map(add_path('Google Nest'),
+                              ['dump1_2.4_ghz.pcapng', 'dump2_2.4_ghz.pcapng', 'dump1_5_ghz.pcapng',
+                               'dump2_5_ghz.pcapng', 'dump3_5_ghz.pcapng', 'dump4_5_ghz.pcapng'])))
         files.extend(list(map(add_path('LittleElf'), ['dump.pcapng', 'dump1.pcapng', 'dump2.pcapng', 'dump3.pcapng'])))
         files.extend(list(map(add_path('Nikkei'), ['dump2.pcapng', 'dump3.pcapng', 'dump4.pcapng'])))
-        files.extend(list(map(add_path('TP-Link'), ['dump.pcapng', 'dump1.pcapng', 'dump2.pcapng', 'dump3.pcapng', 'dump4.pcapng', 'dump5.pcapng'])))
+        files.extend(list(map(add_path('TP-Link'),
+                              ['dump.pcapng', 'dump1.pcapng', 'dump2.pcapng', 'dump3.pcapng', 'dump4.pcapng',
+                               'dump5.pcapng'])))
 
         return files
