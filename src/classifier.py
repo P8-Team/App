@@ -47,7 +47,7 @@ class Classifier:
         frames_in_interval = [first]
         for frame in frame_gen:
             self._verify_item_is_frame(frame)
-                
+
             if frame.wlan_radio.get_earliest_sniff_timestamp() >= interval_end:
                 yield frames_in_interval
                 # Add frame to next interval use it to determine end of next interval
@@ -88,7 +88,9 @@ class Classifier:
         # Returns an array with the labels of the trained model.
         return self.model.classes_
 
-    def _verify_item_is_frame(self, item):
+
+    @staticmethod
+    def _verify_item_is_frame(item):
         """
         This method raises an error if the given item is not a frame
         """
@@ -116,7 +118,8 @@ class Classifier:
         label_series = pd.DataFrame(df['transmitter_address']).set_index('transmitter_address').join(labels.set_index('Address')).squeeze()
         return self.drop_features(df), label_series
 
-    def drop_features(self, df):
+    @staticmethod
+    def drop_features(df):
         # Drop radio timestamp as it is NaN for the file data
         df = df.drop(['radio_timestamp'], axis='columns')
         # df['sniff_timestamp_0'] = pd.to_datetime(df['sniff_timestamp_0'],unit='s')
@@ -125,14 +128,16 @@ class Classifier:
         df['data_rate'] = df['data_rate'].fillna(0)
         return df
 
-    def load_files(self, files):
+    @staticmethod
+    def load_files(files):
         dfs = list()
         for file in files:
             dfs.append(frames_from_file_with_caching(file))
 
         return pd.concat(dfs)
 
-    def get_file_paths(self):
+    @staticmethod
+    def get_file_paths():
         def add_path(folder):
             return lambda name: f'Data/{folder}/{name}'
 
