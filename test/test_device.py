@@ -71,4 +71,3 @@ def test_device_new_position_pushes_old_to_historic():
     device.position = Point2D(1, 1)
 
     assert device.historic_positions[0] == Point2D(0, 0)
-

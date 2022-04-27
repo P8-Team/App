@@ -1,15 +1,14 @@
-from multiprocessing import Queue
-import pandas as pd
-import json
-from os.path import exists
 import os
 from hashlib import sha1
-import pytest
-from src.multiprocess_wifi_listener import cache_dataframe, load_cached_dataframe, map_to_frames
-from test.utils.wifi_test_utils import Frame, Layer
-from src.wifi.wifi_frame import WifiFrame
-from src.wifi.wifi_card import WifiCard
+from os.path import exists
+
+import pandas as pd
 from sympy import Point2D
+
+from src.multiprocess_wifi_listener import cache_dataframe, load_cached_dataframe, map_to_frames
+from src.wifi.wifi_card import WifiCard
+from src.wifi.wifi_frame import WifiFrame
+from test.utils.wifi_test_utils import Frame, Layer
 
 frame1 = Frame("340", "1647417907.513663000", {
     'wlan': Layer({
@@ -41,11 +40,13 @@ frame2 = Frame("111", "1647417907.513663000", {
     })
 })
 
+
 def test_map_to_frames():
     wifi_card = WifiCard("test", Point2D(0, 0))
     expected = [WifiFrame.from_frame(frame1, wifi_card), WifiFrame.from_frame(frame2, wifi_card)]
     result = map_to_frames([frame1, frame2], wifi_card)
     assert result == expected
+
 
 def test_cache_dataframe():
     data = {'col_1': [3, 2, 1, 0], 'col_2': ['a', 'b', 'c', 'd']}
@@ -56,6 +57,7 @@ def test_cache_dataframe():
     assert exists(f"cache/{sha1('test'.encode('utf-8')).hexdigest()}.json")
     os.remove(f"cache/{sha1('test'.encode('utf-8')).hexdigest()}.json")
     os.rmdir("cache")
+
 
 def test_load_cached_dataframe():
     data = {'col_1': [3, 2, 1, 0], 'col_2': ['a', 'b', 'c', 'd']}

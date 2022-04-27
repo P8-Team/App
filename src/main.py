@@ -1,6 +1,5 @@
 from sympy import Point2D
 
-from src.classifier import Classifier
 from src.config_loader import load_config_file
 from src.pipeline_factory import PipelineFactory
 from src.wifi.wifi_card import WifiCard

@@ -69,6 +69,7 @@ def wifi_frames():
         frame_factory(timestamp=2.23, location=Point2D([1, 1]), frame_control_sequence=4),
     ]
 
+
 def test_it_gets_location_in_combined_frames(wifi_frames: List[WifiFrame]):
     # get first 3 frames
     wifi_frames = wifi_frames[:3]

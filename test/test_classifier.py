@@ -1,14 +1,12 @@
-import numpy as np
 import pandas as pd
 import pytest
-from sklearn.model_selection import train_test_split
+from sympy import Point2D
 
 from src.classifier import Classifier
 from src.wifi.wifi_card import WifiCard
 from src.wifi.wifi_frame import WifiFrame
 from test.utils.wifi_frame_factory import frame_factory
 from test.utils.wifi_test_utils import Frame, Layer
-from sympy import Point2D
 
 
 def test_get_file_paths_returns_list_of_strings():
@@ -78,6 +76,7 @@ def cl():
 def test_classifier_extract_features(cl):
     assert True
 
+
 def test_classifier_has_labels(cl):
     assert cl.labels_in_model()[0] is 'test'
 
@@ -108,8 +107,6 @@ def test_classifier_returns_label_for_classify(cl):
     possible_labels_list = cl.labels_in_model()
     assert next(cl.classify(frame_gen)) in possible_labels_list
 
+
 def test_classifier_accumulate_frames(cl):
     assert True
-
-
-

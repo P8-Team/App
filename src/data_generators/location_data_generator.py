@@ -34,8 +34,9 @@ class LocationGenerator:
             raise ValueError("Frequency should be greater than 0")
 
         wifi_element = WifiFrame(frame_control_sequence=1,
-                                 frame_control_information=FrameControlInformation(transmitter_address=transmitter_address,
-                                                                                   receiver_address=receiver_address))
+                                 frame_control_information=FrameControlInformation(
+                                     transmitter_address=transmitter_address,
+                                     receiver_address=receiver_address))
         signal_strength = self.signal_strength_calculator(position, frequency, transmission_power_mw)
 
         signals = [Signal(element[0], element[1], 0) for element in zip(self.receiver_positions, signal_strength)]

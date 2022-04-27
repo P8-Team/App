@@ -2,8 +2,9 @@ import types
 
 import pytest
 from sympy import Circle, Point
-from src.utils import is_list, is_list_of_type, is_type, is_circle, is_point, true_for_all, verify_type, chain_generators
-import types
+
+from src.utils import is_list, is_list_of_type, is_type, is_circle, is_point, true_for_all, verify_type, \
+    chain_generators
 
 
 class TestClass():
@@ -137,11 +138,12 @@ def test_verify_type_accepts_optional_parameter_that_becomes_message_prefix():
 
 
 def test_verify_type_throws_exception_if_optional_parameter_is_not_string():
-  with pytest.raises(TypeError):
-    verify_type(int, 1, ['not a string'])
+    with pytest.raises(TypeError):
+        verify_type(int, 1, ['not a string'])
+
 
 def test_chain_generators_chains_generators():
-  gen1 = (i for i in range(0, 2))
-  gen2 = (i for i in range(2,5))
+    gen1 = (i for i in range(0, 2))
+    gen2 = (i for i in range(2, 5))
 
-  assert list(chain_generators(gen1, gen2)) == [0,1,2,3,4]
+    assert list(chain_generators(gen1, gen2)) == [0, 1, 2, 3, 4]
