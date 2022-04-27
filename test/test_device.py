@@ -62,4 +62,4 @@ def test_device_prints_correctly():
         WifiFrame(wlan_radio=WlanRadioInformation(radio_timestamp=0.1))
     ], identification="TestIdentification", position=Point2D([0, 10]))
 
-    assert repr(device) == "0.1 - Address: identification=TestIdentification, position=(0, 10), distance=10"
+    assert repr(device) == "0.1 - Address: identification=TestIdentification, position=(0, 10), distance=10.0"
