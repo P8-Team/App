@@ -25,7 +25,7 @@ jobs:
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
     - name: Test with pytest
       run: |
-        pytest --cov --cov-report=xml
+        pytest --cov --cov-report=xml -m "not slow"
     - name: SonarCloud Scan
       uses: SonarSource/sonarcloud-github-action@master
       env:

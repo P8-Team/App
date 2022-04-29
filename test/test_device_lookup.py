@@ -1,6 +1,7 @@
-import pytest
 import os.path
+
 import pandas as pd
+
 from src.device_lookup import DeviceLookup
 
 
@@ -22,4 +23,3 @@ def test_find_selected_data():
     assert dl.get_transmission_power_by_label('LargeOrc') == -20
     assert dl.get_device_info_by_label('Wink') == [-10, 'A1:B2:C3:D4:E5:F6', 'Totally Not a Cam Camera']
     assert dl.get_transmission_power_by_label('Wink') == -10
-

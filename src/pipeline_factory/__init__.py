@@ -1,8 +1,10 @@
 from __future__ import annotations
 
+from src.device.device_aggregator import device_aggregator
+from src.device.frame_to_device_converter import frame_to_device_converter
 from src.frame_aggregator import frame_aggregator
 from src.frame_filter import FrameFilter
-from src.location.average_signal_strength_aggregator import generate_average_signal_strength
+from src.location.average_signal_strength import calculate_average_signal_strength
 from src.location.multi_lateration_non_linear_least_square_sum import append_location_generator
 from src.multiprocess_wifi_listener import multiprocess_wifi_listener
 from src.pipeline_factory.basic_generators import csv_row_generator, output_to_file_generator, \
@@ -32,8 +34,12 @@ class PipelineFactory:
         self.generator = frame_aggregator(self.generator, threshold, max_age_seconds, max_buffer_size)
         return self
 
-    def add_location_multilateration(self):
-        self.generator = append_location_to_wifi_frame(self.generator)
+    def add_frame_to_device_converter(self):
+        self.generator = frame_to_device_converter(self.generator)
+        return self
+
+    def add_device_aggregator(self, max_frame_buffer_size=50):
+        self.generator = device_aggregator(self.generator, max_frame_buffer_size)
         return self
 
     def add_classifier(self, classifier):
@@ -59,14 +65,18 @@ class PipelineFactory:
     def to_list(self):
         return list(self.generator)
 
-    def use_average_rssi_with_variance(self, max_rolling_windows_size=50):
-        self.generator = generate_average_signal_strength(self.generator, max_rolling_windows_size)
+    def add_average_rssi_with_variance(self):
+        self.generator = calculate_average_signal_strength(self.generator)
         return self
 
-    def add_location_non_linear_least_square(self, do_draw = False):
+    def add_location_non_linear_least_square(self, do_draw=False):
         self.generator = append_location_generator(self.generator, do_draw=do_draw)
         return self
 
     def filter(self, filter_function):
-        self.generator = filter(self.generator,filter_function)
+        self.generator = filter(self.generator, filter_function)
+        return self
+
+    def add_location_multilateration(self):
+        self.generator = append_location_to_wifi_frame(self.generator)
         return self

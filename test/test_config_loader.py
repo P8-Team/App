@@ -15,7 +15,7 @@ def test_config_loader_invalid_type():
 
 
 def test_config_loader_returns_valid_config():
-    data = yaml.dump({"adapters": {"wlan1": {"location": [0 , 0.433]}}})
+    data = yaml.dump({"adapters": {"wlan1": {"location": [0, 0.433]}}})
 
     config = load_config(data)
     assert config == {

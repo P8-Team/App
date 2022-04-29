@@ -1,8 +1,8 @@
+import shutil
 from os import path
 
 import yaml
 from jsonschema import validate
-import shutil
 
 schema = {
     "type": "object",

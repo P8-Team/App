@@ -164,11 +164,3 @@ def test_classifier_returns_label_for_interval(cl, frames):
 def test_classifier_return_confidence_for_interval(cl, frames):
     assert 0 <= cl.classify_interval_confidence(frames) <= 1
 
-
-
-
-
-
-
-
-
