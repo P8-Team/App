@@ -183,7 +183,9 @@ def generate_tests_positions_and_check_for_failures(frame_generator: LocationGen
         for y in range(-bounds, bounds + 1):
             points.append([x, y])
             wifi_frames.append(
-                frame_generator)
+                frame_generator.make_wifi_element(Point2D([x, y]),
+                                                  transmission_power_dbm=transmission_power_dbm,
+                                                  transmitter_address=str(number_of_positions)))
             number_of_positions = number_of_positions + 1
 
     generator = PipelineFactory(wifi_frames) \
