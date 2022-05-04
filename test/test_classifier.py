@@ -109,15 +109,6 @@ def test_classifier_returns_label_for_classify(cl):
     assert next(cl.classify(frame_gen)) in possible_labels_list
 
 
-def test_classifier_load_files(cl):
-    path = os.path.normpath('test/test_data/LittleFairy.pcapng')  # A copy of a LittleElf dump file
-    file_list = [path]
-    loaded_files = cl.load_files(file_list)
-
-    assert isinstance(loaded_files, pd.DataFrame) == True
-    assert loaded_files.size > 0
-
-
 @pytest.fixture
 def frames():
     frames = []
