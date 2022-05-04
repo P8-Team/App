@@ -69,8 +69,8 @@ class PipelineFactory:
         self.generator = calculate_average_signal_strength(self.generator)
         return self
 
-    def add_location_non_linear_least_square(self, do_draw=False):
-        self.generator = append_location_generator(self.generator, do_draw=do_draw)
+    def add_location_non_linear_least_square(self, path_loss_exponent, do_draw=False):
+        self.generator = append_location_generator(self.generator, path_loss_exponent, do_draw=do_draw)
         return self
 
     def filter(self, filter_function):
