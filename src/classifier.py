@@ -1,5 +1,7 @@
 import numpy as np
 import pandas as pd
+from joblib import dump, load
+import os
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import classification_report
 from sklearn.model_selection import train_test_split
@@ -148,3 +150,11 @@ class Classifier:
                                'dump5.pcapng'])))
 
         return files
+
+    def save_model(self, filename):
+        path_norm = os.path.normpath('Data/cache/savedModels/{}.joblib'.format(filename))
+        dump(self.model, path_norm)
+
+    def load_model(self, filename):
+        path_norm = os.path.normpath('Data/cache/savedModels/{}.joblib'.format(filename))
+        self.model = load(path_norm)

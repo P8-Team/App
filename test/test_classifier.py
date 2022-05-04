@@ -109,6 +109,19 @@ def test_classifier_returns_label_for_classify(cl):
     assert next(cl.classify(frame_gen)) in possible_labels_list
 
 
+def test_classifier_save_and_load_model(cl):
+    filename = 'testSave'
+    path_norm = os.path.normpath('Data/cache/savedModels/{}.joblib'.format(filename))
+    if os.path.exists(path_norm):
+        os.remove(path_norm)
+    cl.save_model(filename)
+    assert os.path.exists(path_norm) == True
+
+    cl.model = None
+    cl.load_model(filename)
+    assert cl.model is not None
+
+
 @pytest.fixture
 def frames():
     frames = []
