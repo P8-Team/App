@@ -19,7 +19,7 @@ class Signal:
 
     def to_dataframe(self):
         return pd.DataFrame(data={
-            'signal_strength': [self.signal_strength], 'sniff_timestamp': [self.sniff_timestamp]
+            'signal_strength': [self.signal_strength], 'timestamp_delta': [self.timestamp_delta]
         })
 
     def set_timestamp_delta_from_other_signal(self, other: Signal):

@@ -123,9 +123,9 @@ def test_compare_wlan_radio_information_different():
 def test_wlan_radio_information_to_dataframe():
     expected = pd.DataFrame(data=
     {
-        'signal_strength_0': [1], 'sniff_timestamp_0': [1567757309],
-        'signal_strength_1': [2], 'sniff_timestamp_1': [1567757309],
-        'signal_strength_2': [3], 'sniff_timestamp_2': [1567757309],
+        'signal_strength_0': [1], 'timestamp_delta_0': [None],
+        'signal_strength_1': [2], 'timestamp_delta_1': [None],
+        'signal_strength_2': [3], 'timestamp_delta_2': [None],
         'data_rate': [12], 'radio_timestamp': [1567757309], 'frequency_mhz': [44]
     })
 
