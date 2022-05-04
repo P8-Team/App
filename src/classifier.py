@@ -114,7 +114,7 @@ class Classifier:
         # Create a serie containing a label for each row
         label_series = pd.DataFrame(df['transmitter_address']).set_index('transmitter_address').join(
             labels.set_index('Address')).squeeze()
-        return self.drop_features(df), label_series
+        return self.drop_features(df).dropna(), label_series
 
     @staticmethod
     def drop_features(df):
