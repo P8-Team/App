@@ -159,3 +159,4 @@ config.yml
 
 #Pytest coverage
 coverage.xml
+Data/cache/
