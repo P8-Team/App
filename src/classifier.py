@@ -1,9 +1,14 @@
+from typing import Iterable
+
 import numpy as np
 import pandas as pd
+
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import classification_report
 from sklearn.model_selection import train_test_split
 
+from src.device.device import Device
+from src.device_lookup import DeviceLookup
 from src.multiprocess_wifi_listener import frames_from_file_with_caching
 from src.wifi.wifi_frame import WifiFrame
 
@@ -15,36 +20,49 @@ class Classifier:
 
     def __init__(self, interval_seconds):
         """
-        :param interval_seconds: The amount of time in seconds to aggregate frames to classify 
+        param interval_seconds: The amount of time in seconds to aggregate frames to classify
         """
         self.interval = interval_seconds
         self.model = RandomForestClassifier()
 
-    def classify(self, frame_gen):
+    def classify(self, generator: Iterable[Device]):
         """
-        Classifies the behaviour of an IoT device based on a number of frames within a time interval
-        Note: This is a generator that yields an item for each time interval.
-            An item is first yielded when a frame that is in the next interval is received from frame_gen
+        Identifies an IoT device based on a number of frames within a time interval
+        Note: This is a generator that yields a label a single device, as a result of labeling time intervals.
 
-        :param frame_gen: A generator that produces frames
+        param device: A devices
         """
+        device_lookup = DeviceLookup()
 
-        # Create generator that accumulates frames in an interval and yields lists of frames
-        frame_acc = self.accumulate_frames(frame_gen)
-        for frame_list in frame_acc:
-            yield self.classify_interval_label(frame_list)
+        for device in generator:
+            interval_classification_with_threshold = list()
 
-    def accumulate_frames(self, frame_gen):
+            # Accumulate frames from a device in intervals and produce a list with lists of label and confidence for
+            # classification of an interval
+            frame_acc = self.accumulate_frames(device.frames)
+            for frame_list in frame_acc:
+                interval_classification_with_threshold.append([self.classify_interval_label(frame_list),
+                                                               self.classify_interval_confidence(frame_list)])
+
+            # Determines the classification of the device based on classification of frame intervals with high
+            # confidence (>= 0.6)
+            label = self.determine_device_classification(interval_classification_with_threshold)
+
+            # Looks up transmission power and name of device
+            device.identification = device_lookup.get_device_info_by_label(label)
+
+            yield device
+
+    def accumulate_frames(self, frames):
         """
-        Accumulates frames for a single device
+        Accumulates frames for a single device into intervals of frames
         """
-
-        # Get first element of generator and use it to determine end of interval
-        first = next(frame_gen)
+        # Get first element of frames and use it to determine end of interval
+        first = next(iter(frames))
         self._verify_item_is_frame(first)
         interval_end = first.wlan_radio.get_earliest_sniff_timestamp() + self.interval
         frames_in_interval = [first]
-        for frame in frame_gen:
+        for frame in frames:
             self._verify_item_is_frame(frame)
 
             if frame.wlan_radio.get_earliest_sniff_timestamp() >= interval_end:
@@ -74,6 +92,18 @@ class Classifier:
 
         # Returns the confidence for a given classification as a percentage.
         return max(summation) / np.sum(summation)
+
+    def determine_device_classification(self, interval_classifications_with_confidence):
+        classifications_with_high_confidence = list()
+        threshold = 0.6
+
+        # find all classifications with a confidence higher than 0.6
+        for classification in interval_classifications_with_confidence:
+            if classification[1] >= threshold:
+                classifications_with_high_confidence.append(classification[0])
+
+        # Returns the classification (label) with maximum occurrences
+        return max(classifications_with_high_confidence, key=classifications_with_high_confidence.count)
 
     def extract_features_for_classification(self, frames):
         dfs = list()
