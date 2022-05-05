@@ -7,7 +7,7 @@ if __name__ == '__main__':
 
     cl = Classifier(1)
     cl.train()
-    cl.save_model('trainedModelMikaelPC')
+    cl.save_model('trainedModelStudieBærbar')
 
     toc = time.perf_counter()
 
