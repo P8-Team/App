@@ -14,6 +14,7 @@ if __name__ == '__main__':
         .add_frame_aggregator(threshold=len(adapters)) \
         .add_frame_to_device_converter() \
         .add_device_aggregator() \
+        .add_classifier() \
         .add_average_rssi_with_variance() \
         .add_location_non_linear_least_square(do_draw=True) \
         .output_to_console() \
