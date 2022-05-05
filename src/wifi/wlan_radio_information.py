@@ -72,11 +72,9 @@ class WlanRadioInformation:
         v = sigdf.unstack().to_frame().sort_index(level=1).T
         v.columns = v.columns.map(lambda x: x[0] + '_' + str(x[1]))
 
-        # Get value of the remaining fields
-        var_dict = vars(self)
-        # Remove signals as that is already handled
-        del var_dict['signals']
         # Create dataframe containing the field values
-        var_df = pd.DataFrame(var_dict, index=[0])
+        var_df = pd.DataFrame(
+            {"data_rate": self.data_rate, "radio_timestamp": self.radio_timestamp, "frequency_mhz": self.frequency_mhz},
+            index=[0])
         # Combine signals and other fields into complete dataframe
         return pd.concat([v, var_df], axis=1).infer_objects()
