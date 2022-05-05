@@ -3,6 +3,7 @@ from typing import Iterable
 
 import matplotlib.pyplot as plt
 import numpy as np
+from matplotlib import cm
 from scipy.optimize import least_squares, OptimizeResult
 
 from src.device.device import Device
@@ -55,12 +56,70 @@ def calculate_position(device: Device, do_draw=False):
 
     device.position = res.x.tolist()
 
+    fig, ax = plt.subplots(subplot_kw={"projection": "3d"})
+
+    X = np.arange(-4, 8, 0.1)
+    Y = np.arange(-4, 8, 0.1)
+    X, Y = np.meshgrid(X, Y)
+
+    Z = np.zeros(X.shape)
+
+
+    for i in range(X.shape[0]):
+        for j in range(X.shape[1]):
+            Z[i, j] = non_linear_squared_sum_weighted(np.array([X[i, j], Y[i, j]]), anchors)
+
+    ax.plot_surface(X, Y, Z, rstride=5, cstride=5, cmap=cm.hsv,
+                    linewidth=50, antialiased=True)
+    # ax.invert_zaxis()
+    plt.show()
+
+    plt.style.use('_mpl-gallery-nogrid')
+    fig, ax = plt.subplots()
+    ax.set_title('Least Squared Error')
+    ax.set_xlabel('X')
+    ax.set_ylabel('Y')
+    ax.imshow(Z, cmap=plt.cm.gist_rainbow, interpolation='nearest')
+    plt.show()
+
+    levels = np.geomspace(Z.min(), Z.max(), 10)
+    # levels = np.linspace(Z.min(), 0.01, 8)
+    # levels = np.logspace(0, Z.max(), 256)
+
+    # plot
+    fig, ax = plt.subplots()
+
+    ax.contourf(X, Y, Z, levels=levels)
+
+    plt.show()
+
+    fig, axs = plt.subplots(1, 2, figsize=(6, 3), sharey=True)
+    axs[0].set_xlim(-4,8)
+    axs[0].set_ylim(-4,8)
+    for anchor in anchors:
+        axs[0].scatter(anchor.location[0], anchor.location[1], s=100, marker='o', color='y')
+        axs[0].add_artist(plt.Circle((anchor.location[0], anchor.location[1]), anchor.distance, color='r', fill=False))
+
+    axs[0].scatter(device.position[0], device.position[1], s=100, marker='o', color='g')
+
+    axs[1].set_xlim(-4,8)
+    axs[1].set_ylim(-4,8)
+    for anchor in anchors:
+        axs[1].scatter(anchor.location[0], anchor.location[1], s=100, marker='o', color='y')
+        axs[1].add_artist(plt.Circle((anchor.location[0], anchor.location[1]), anchor.distance, color='r', fill=False))
+
+    axs[1].scatter(device.position[0], device.position[1], s=100, marker='o', color='g')
+
+    # fig.set_size_inches(10, 10)
+    plt.show()
+
+
     if do_draw:
         draw_plot_with_anchors_circles_and_estimate(anchors, device.position)
 
 
 def get_least_squared_error(anchors: list[Anchor]) -> OptimizeResult:
-    return least_squares(non_linear_squared_sum_weighted, np.array([0, 0]), args=[anchors], gtol=None)
+    return least_squares(non_linear_squared_sum_weighted, np.array([0, 0]), args=[anchors], gtol=None, verbose=2)
 
 
 def draw_plot_with_anchors_circles_and_estimate(anchors, estimate):
@@ -74,8 +133,8 @@ def draw_plot_with_anchors_circles_and_estimate(anchors, estimate):
     limit_y_min = min([anchor.location[1] - anchor.distance for anchor in anchors])
 
     fig, ax = plt.subplots()
-    ax.set_xlim(limit_x_min, limit_x_max)
-    ax.set_ylim(limit_y_min, limit_y_max)
+    ax.set_xlim(-4,8)
+    ax.set_ylim(-4,8)
     for anchor in anchors:
         ax.scatter(anchor.location[0], anchor.location[1], s=100, marker='o', color='y')
         ax.add_artist(plt.Circle((anchor.location[0], anchor.location[1]), anchor.distance, color='r', fill=False))
