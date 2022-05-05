@@ -16,6 +16,6 @@ if __name__ == '__main__':
         .add_device_aggregator() \
         .add_classifier() \
         .add_average_rssi_with_variance() \
-        .add_location_non_linear_least_square(do_draw=True) \
+        .add_location_non_linear_least_square(3, do_draw=True) \
         .output_to_console() \
         .to_list()

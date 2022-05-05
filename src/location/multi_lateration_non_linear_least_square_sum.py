@@ -35,7 +35,7 @@ def non_linear_squared_sum_weighted(x: np.ndarray, anchors: list[Anchor]) -> flo
     )
 
 
-def calculate_position(device: Device, do_draw=False):
+def calculate_position(device: Device, path_loss_exponent, do_draw=False):
     frequency = device.frames[-1].wlan_radio.frequency_mhz
     signals = device.averaged_signals
 
@@ -47,7 +47,7 @@ def calculate_position(device: Device, do_draw=False):
 
     anchors = [Anchor(
         np.array(signal.location.coordinates, dtype=np.float64),
-        calc_distance_from_dbm_signal_strength(transmission_power_dbm, signal.signal_strength, frequency),
+        calc_distance_from_dbm_signal_strength(transmission_power_dbm, signal.signal_strength, path_loss_exponent),
         signal.variance
     ) for signal in signals]
 
@@ -86,7 +86,7 @@ def draw_plot_with_anchors_circles_and_estimate(anchors, estimate):
     plt.show()
 
 
-def append_location_generator(generator: Iterable[Device], do_draw=False) -> Iterable[Device]:
+def append_location_generator(generator: Iterable[Device], path_loss_exponent, do_draw=False) -> Iterable[Device]:
     for device in generator:
-        calculate_position(device, do_draw)
+        calculate_position(device, path_loss_exponent, do_draw)
         yield device
