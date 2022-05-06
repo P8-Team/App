@@ -131,12 +131,6 @@ def test_classifier_accumulate_frames():
     assert len(accumulated_frames) == 4
 
 
-def test_classifier_returns_label_for_classify(cl):
-    frame_gen = generator([frame_factory(1), frame_factory(2), frame_factory(3), frame_factory(4)])
-    possible_labels_list = cl.labels_in_model()
-    assert next(cl.classify(frame_gen)) in possible_labels_list
-
-
 def test_classifier_save_and_load_model(cl):
     filename = 'testSave'
     path_norm = os.path.normpath('Data/cache/savedModels/{}.joblib'.format(filename))
