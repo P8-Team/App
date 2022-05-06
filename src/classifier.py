@@ -1,5 +1,7 @@
 import numpy as np
 import pandas as pd
+from joblib import dump, load
+import os
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import classification_report
 from sklearn.model_selection import train_test_split
@@ -23,9 +25,8 @@ class Classifier:
     def classify(self, frame_gen):
         """
         Classifies the behaviour of an IoT device based on a number of frames within a time interval
-        Note: This is a generator that yields an item for each time interval.
-            An item is first yielded when a frame that is in the next interval is received from frame_gen
-
+        Note: This is a generator that yields a label for each time interval.
+            A label is first yielded when a frame that is in the next interval is received from frame_gen
         :param frame_gen: A generator that produces frames
         """
 
@@ -149,3 +150,11 @@ class Classifier:
                                'dump5.pcapng'])))
 
         return files
+
+    def save_model(self, filename):
+        path_norm = os.path.normpath('Data/cache/savedModels/{}.joblib'.format(filename))
+        dump(self.model, path_norm)
+
+    def load_model(self, filename):
+        path_norm = os.path.normpath('Data/cache/savedModels/{}.joblib'.format(filename))
+        self.model = load(path_norm)
