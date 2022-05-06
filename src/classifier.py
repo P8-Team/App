@@ -45,10 +45,15 @@ class Classifier:
             for frame_list in frame_acc:
                 interval_classification_with_threshold.append([self.classify_interval_label(frame_list),
                                                                self.classify_interval_confidence(frame_list)])
-
+            if not interval_classification_with_threshold:
+                yield device
+                continue
             # Determines the classification of the device based on classification of frame intervals with high
             # confidence (>= 0.6)
             label = self.determine_device_classification(interval_classification_with_threshold)
+            if label is None:
+                yield device
+                continue
 
             # Looks up transmission power and name of device
             device.identification = device_lookup.get_device_info_by_label(label)
@@ -103,7 +108,8 @@ class Classifier:
         for classification in interval_classifications_with_confidence:
             if classification[1] >= threshold:
                 classifications_with_high_confidence.append(classification[0])
-
+        if not classifications_with_high_confidence:
+            return None
         # Returns the classification (label) with maximum occurrences
         return max(classifications_with_high_confidence, key=classifications_with_high_confidence.count)
 
