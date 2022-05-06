@@ -10,3 +10,4 @@ pandas==1.4.2
 sklearn==0.0
 matplotlib
 scipy
+flake8
