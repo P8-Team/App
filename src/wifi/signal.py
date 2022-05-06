@@ -16,6 +16,5 @@ class Signal:
 
     def to_dataframe(self):
         return pd.DataFrame(data={
-            'location': [[self.location.x, self.location.y]], 'signal_strength': [self.signal_strength],
-            'sniff_timestamp': [self.sniff_timestamp]
+            'signal_strength': [self.signal_strength], 'sniff_timestamp': [self.sniff_timestamp]
         })
