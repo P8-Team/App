@@ -17,11 +17,6 @@ class Signal:
         self.variance = variance
         self.timestamp_delta = None
 
-    def to_dataframe(self):
-        return pd.DataFrame(data={
-            'signal_strength': [self.signal_strength], 'timestamp_delta': [self.timestamp_delta]
-        })
-
     def set_timestamp_delta_from_other_signal(self, other: Signal):
         self.timestamp_delta = self.sniff_timestamp_delta(other, self)
 

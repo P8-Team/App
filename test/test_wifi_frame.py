@@ -259,13 +259,11 @@ def test_wifi_frame_has_different_hash():
     assert hash(frame1) != hash(frame2)
 
 
-def test_wifi_frame_to_dataframe():
+def test_wifi_frame_to_dataframe_without_timestamp_delta():
     expected = pd.DataFrame(data=
     {
         'length': 12,
-        'signal_strength_0': [1], 'timestamp_delta_0': [None],
-        'signal_strength_1': [2], 'timestamp_delta_1': [None],
-        'signal_strength_2': [3], 'timestamp_delta_2': [None],
+        'timestamp_delta': [None],
         'data_rate': [12], 'radio_timestamp': [1567757309], 'frequency_mhz': [44],
         'type': [0],
         'subtype': [10],
@@ -279,6 +277,42 @@ def test_wifi_frame_to_dataframe():
             Signal(Point2D(1, 1), 1, 1567757309),
             Signal(Point2D(2, 2), 2, 1567757309),
             Signal(Point2D(3, 3), 3, 1567757309)
+        ],
+        12, 1567757309, 44)
+
+    wifi_frame = WifiFrame(12, uuid.uuid4().int, wlan_radio_information, frame_control_information)
+
+    actual = wifi_frame.to_dataframe()
+
+    pd.testing.assert_frame_equal(actual, expected)
+
+def test_wifi_frame_to_dataframe_with_timestamp_delta():
+    expected = pd.DataFrame(data=
+    {
+        'length': 12,
+        'timestamp_delta': [8],
+        'data_rate': [12], 'radio_timestamp': [1567757309], 'frequency_mhz': [44],
+        'type': [0],
+        'subtype': [10],
+        'receiver_address': ['b4:de:31:9c:f0:8a'],
+        'transmitter_address': ['50:e0:85:3f:77:5e']
+    })
+
+    frame_control_information = FrameControlInformation(0, 10, 'b4:de:31:9c:f0:8a', '50:e0:85:3f:77:5e')
+    previous_signal = Signal(Point2D(1,1), 1, 1567757299)
+
+    signal1 = Signal(Point2D(1, 1), 1, 1567757307)
+    signal2 = Signal(Point2D(2, 2), 2, 1567757308)
+    signal3 = Signal(Point2D(3, 3), 3, 1567757309)
+    signal1.set_timestamp_delta_from_other_signal(previous_signal)
+    signal2.set_timestamp_delta_from_other_signal(previous_signal)
+    signal3.set_timestamp_delta_from_other_signal(previous_signal)
+
+    wlan_radio_information = WlanRadioInformation(
+        [
+            signal1,
+            signal2,
+            signal3
         ],
         12, 1567757309, 44)
 

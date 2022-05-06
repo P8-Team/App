@@ -120,12 +120,10 @@ def test_compare_wlan_radio_information_different():
     assert wlan_radio_information1 != wlan_radio_information2
 
 
-def test_wlan_radio_information_to_dataframe():
+def test_wlan_radio_information_to_dataframe_without_timestamp_delta():
     expected = pd.DataFrame(data=
     {
-        'signal_strength_0': [1], 'timestamp_delta_0': [None],
-        'signal_strength_1': [2], 'timestamp_delta_1': [None],
-        'signal_strength_2': [3], 'timestamp_delta_2': [None],
+        'timestamp_delta': [None],
         'data_rate': [12], 'radio_timestamp': [1567757309], 'frequency_mhz': [44]
     })
 
@@ -140,3 +138,115 @@ def test_wlan_radio_information_to_dataframe():
     actual = wlan_radio_information.to_dataframe()
 
     pd.testing.assert_frame_equal(actual, expected)
+
+def test_wlan_radio_information_to_dataframe_with_timestamp_delta():
+    expected = pd.DataFrame(data=
+    {
+        'timestamp_delta': [10],
+        'data_rate': [12], 'radio_timestamp': [1567757309], 'frequency_mhz': [44]
+    })
+
+    previous_signal = Signal(Point2D(1,1), 1, 1567757299)
+
+    signal1 = Signal(Point2D(1, 1), 1, 1567757309)
+    signal2 = Signal(Point2D(2, 2), 2, 1567757309)
+    signal3 = Signal(Point2D(3, 3), 3, 1567757309)
+    signal1.set_timestamp_delta_from_other_signal(previous_signal)
+    signal2.set_timestamp_delta_from_other_signal(previous_signal)
+    signal3.set_timestamp_delta_from_other_signal(previous_signal)
+
+    wlan_radio_information = WlanRadioInformation(
+        [
+            signal1,
+            signal2,
+            signal3
+        ],
+        12, 1567757309, 44)
+
+    actual = wlan_radio_information.to_dataframe()
+
+    pd.testing.assert_frame_equal(actual, expected)
+
+
+def test_wlan_radio_information_to_dataframe_uses_lowest_timestamp_delta():
+    expected = pd.DataFrame(data=
+    {
+        'timestamp_delta': [8],
+        'data_rate': [12], 'radio_timestamp': [1567757309], 'frequency_mhz': [44]
+    })
+
+    previous_signal = Signal(Point2D(1,1), 1, 1567757299)
+
+    signal1 = Signal(Point2D(1, 1), 1, 1567757307)
+    signal2 = Signal(Point2D(2, 2), 2, 1567757308)
+    signal3 = Signal(Point2D(3, 3), 3, 1567757309)
+    signal1.set_timestamp_delta_from_other_signal(previous_signal)
+    signal2.set_timestamp_delta_from_other_signal(previous_signal)
+    signal3.set_timestamp_delta_from_other_signal(previous_signal)
+
+    wlan_radio_information = WlanRadioInformation(
+        [
+            signal1,
+            signal2,
+            signal3
+        ],
+        12, 1567757309, 44)
+
+    actual = wlan_radio_information.to_dataframe()
+
+    pd.testing.assert_frame_equal(actual, expected)
+
+def test_wlan_radio_information_smallest_timestamp_delta_returns_none_if_no_deltas():
+    signal1 = Signal(Point2D(1, 1), 1, 1567757307)
+    signal2 = Signal(Point2D(2, 2), 2, 1567757308)
+    signal3 = Signal(Point2D(3, 3), 3, 1567757309)
+
+    wlan_radio_information = WlanRadioInformation(
+        [
+            signal1,
+            signal2,
+            signal3
+        ],
+        12, 1567757309, 44)
+
+    assert wlan_radio_information.get_smallest_timestamp_delta() == None
+
+def test_wlan_radio_information_smallest_timestamp_delta_returns_delta_if_some_deltas_are_not_none():
+    previous_signal = Signal(Point2D(1,1), 1, 1567757299)
+
+    signal1 = Signal(Point2D(1, 1), 1, 1567757307)
+    signal2 = Signal(Point2D(2, 2), 2, 1567757308.5)
+    signal3 = Signal(Point2D(3, 3), 3, 1567757309)
+
+    signal2.set_timestamp_delta_from_other_signal(previous_signal)
+
+    wlan_radio_information = WlanRadioInformation(
+        [
+            signal1,
+            signal2,
+            signal3
+        ],
+        12, 1567757309, 44)
+
+    assert wlan_radio_information.get_smallest_timestamp_delta() == 9.5
+
+def test_wlan_radio_information_smallest_timestamp_delta_returns_smallest_some_deltas_are_not_none():
+    previous_signal = Signal(Point2D(1,1), 1, 1567757299)
+
+    signal1 = Signal(Point2D(1, 1), 1, 1567757309)
+    signal2 = Signal(Point2D(2, 2), 2, 1567757308.5)
+    signal3 = Signal(Point2D(3, 3), 3, 1567757307)
+
+    signal1.set_timestamp_delta_from_other_signal(previous_signal)
+    signal2.set_timestamp_delta_from_other_signal(previous_signal)
+    signal3.set_timestamp_delta_from_other_signal(previous_signal)
+
+    wlan_radio_information = WlanRadioInformation(
+        [
+            signal1,
+            signal2,
+            signal3
+        ],
+        12, 1567757309, 44)
+
+    assert wlan_radio_information.get_smallest_timestamp_delta() == 8

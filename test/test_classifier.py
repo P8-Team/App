@@ -38,7 +38,7 @@ def test_preprocess_data():
     result_df, result_labels = classifier.preprocess_data(wifi_frame.to_dataframe(), labels)
 
     assert result_labels == "test"
-    assert len(result_df.columns) == 7
+    assert len(result_df.columns) == 6
 
 
 def test_classifier_drops_features():
