@@ -51,19 +51,12 @@ for anchor in anchors:
         )
     )
 
-# add legend
 axs[0].legend(["Estimated position", "Anchor node", "Anchor range circle"], loc='upper right')
 axs[1].legend(["Estimated position", "Anchor node", "Anchor range circle"], loc='upper right')
-
-# add title
 axs[0].set_title("True-range multi-lateration")
 axs[1].set_title("Pseudo-range multi-lateration")
-
-# add grid
 axs[0].grid(True)
 axs[1].grid(True)
-
-# axis labels
 axs[0].set_xlabel("x (m)")
 axs[0].set_ylabel("y (m)")
 axs[1].set_xlabel("x (m)")
