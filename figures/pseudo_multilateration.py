@@ -4,16 +4,14 @@ from matplotlib import pyplot as plt
 from src.location.multi_lateration_non_linear_least_square_sum import Anchor
 
 anchors = [
-    Anchor(location=np.array([-0.5,-0.433]), distance=4.5, variance=1),
-    Anchor(location=np.array([0.5,-0.433]), distance=3.82, variance=1),
-    Anchor(location=np.array([0,0.433]), distance=3.56, variance=1),
+    Anchor(location=np.array([-0.5, -0.433]), distance=4.5, variance=1),
+    Anchor(location=np.array([0.5, -0.433]), distance=3.82, variance=1),
+    Anchor(location=np.array([0, 0.433]), distance=3.56, variance=1),
 ]
 
-position = np.array([2.82,2.6])
-
+position = np.array([2.82, 2.6])
 
 fig, axs = plt.subplots(1, 2, figsize=(14, 7), sharey=True)
-
 
 axs[0].set_xlim(-6, 6)
 axs[0].set_ylim(-6, 6)
@@ -30,15 +28,13 @@ for anchor in anchors:
         )
     )
 
-
 anchors = [
-    Anchor(location=np.array([-0.5,-0.433]), distance=4.75, variance=1),
-    Anchor(location=np.array([0.5,-0.433]), distance=3.63, variance=1),
-    Anchor(location=np.array([0,0.433]), distance=3.68, variance=1),
+    Anchor(location=np.array([-0.5, -0.433]), distance=4.75, variance=1),
+    Anchor(location=np.array([0.5, -0.433]), distance=3.63, variance=1),
+    Anchor(location=np.array([0, 0.433]), distance=3.68, variance=1),
 ]
 
-position = np.array([2.82,2.6])
-
+position = np.array([2.82, 2.6])
 
 axs[1].set_xlim(-6, 6)
 axs[1].set_ylim(-6, 6)
@@ -54,7 +50,6 @@ for anchor in anchors:
             linestyle='--'
         )
     )
-
 
 # add legend
 axs[0].legend(["Estimated position", "Anchor node", "Anchor range circle"], loc='upper right')
