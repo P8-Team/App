@@ -6,6 +6,7 @@ from sympy import Point2D
 
 from src.classifier import Classifier
 from src.data_generators.location_data_generator import LocationGenerator
+from src.device.device import Device
 from src.location.distance_strength_calculations import dbm_to_mw
 from src.pipeline_factory import PipelineFactory
 from src.wifi.frame_control_information import FrameControlInformation
@@ -210,35 +211,28 @@ def generate_tests_positions_and_check_for_failures(frame_generator: LocationGen
 
     return failures
 
-def test_input_to_output_with_location_generator_small_distance_between_anchors_classifier():
-    wifi_frame_generator = LocationGenerator([Point2D([0, 0.433]), Point2D([0.5, -0.433]), Point2D([-0.5, -0.433])])
+# def test_input_to_output_with_location_generator_small_distance_between_anchors_with_classifier():
+#     wifi_frame_generator = LocationGenerator([Point2D([0, 0.433])])
+#
+#     wifi_frames = [
+#         wifi_frame_generator.make_wifi_element(Point2D([3, 3]), transmission_power_dbm=20),
+#         wifi_frame_generator.make_wifi_element(Point2D([3, 3]), transmission_power_dbm=20, snifftimestamp=1)
+#     ]
+#
+#     cl = Classifier(1)
+#     cl.load_model('trainedModelMikaelPC')
+#
+#     generator = PipelineFactory(wifi_frames) \
+#         .add_frame_to_device_converter() \
+#         .add_device_aggregator() \
+#         .add_classifier(cl) \
+#         .add_average_rssi_with_variance() \
+#         .add_location_non_linear_least_square(4)
+#
+#     result = generator.to_list()
+#
+#     assert result[-1].position == pytest.approx([3, 3], position_precision)
 
-    wifi_frames = [
-        wifi_frame_generator.make_wifi_element(Point2D([3, 3]), transmission_power_mw=dbm_to_mw(20)),
-        wifi_frame_generator.make_wifi_element(Point2D([3, 3]), transmission_power_mw=dbm_to_mw(20))
-    ]
-
-    cl = Classifier(1)
-
-    frames_db = frame_factory(1).to_dataframe()
-    for i in range(1, 20):
-        frames_db = pd.concat([frames_db, frame_factory(i).to_dataframe()], axis=0)
-
-    labels = pd.DataFrame.from_dict({'Address': ["00:00:00:00:00:01"], 'Label': ['test']})
-    training_data, label_series = cl.preprocess_data(frames_db, labels)
-
-    cl.model.fit(training_data, label_series)
-
-    generator = PipelineFactory(wifi_frames) \
-        .add_frame_to_device_converter() \
-        .add_device_aggregator() \
-        .add_classifier() \
-        .add_average_rssi_with_variance() \
-        .add_location_non_linear_least_square(do_draw=False)
-
-    result = generator.to_list()
-
-    assert result[-1].position == pytest.approx([3, 3], position_precision)
 
 @pytest.mark.slow
 def test_input_to_output_fixed_positions_huge_distance_no_rounding_within_centimeter():
