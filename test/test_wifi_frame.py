@@ -11,6 +11,8 @@ from src.wifi.wifi_frame import WifiFrame
 from src.wifi.wlan_radio_information import WlanRadioInformation
 from test.utils.wifi_test_utils import Frame, Layer
 
+default_transmitter_address = '50:e0:85:3f:77:5e'
+default_receiver_address = 'b4:de:31:9c:f0:8a'
 
 def test_construct_wifi_frame():
     # Arrange
@@ -267,11 +269,11 @@ def test_wifi_frame_to_dataframe_without_timestamp_delta():
         'data_rate': [12], 'radio_timestamp': [1567757309], 'frequency_mhz': [44],
         'type': [0],
         'subtype': [10],
-        'receiver_address': ['b4:de:31:9c:f0:8a'],
-        'transmitter_address': ['50:e0:85:3f:77:5e']
+        'receiver_address': [default_receiver_address],
+        'transmitter_address': [default_transmitter_address]
     })
 
-    frame_control_information = FrameControlInformation(0, 10, 'b4:de:31:9c:f0:8a', '50:e0:85:3f:77:5e')
+    frame_control_information = FrameControlInformation(0, 10, default_receiver_address, default_transmitter_address)
     wlan_radio_information = WlanRadioInformation(
         [
             Signal(Point2D(1, 1), 1, 1567757309),
@@ -294,11 +296,11 @@ def test_wifi_frame_to_dataframe_with_timestamp_delta():
         'data_rate': [12], 'radio_timestamp': [1567757309], 'frequency_mhz': [44],
         'type': [0],
         'subtype': [10],
-        'receiver_address': ['b4:de:31:9c:f0:8a'],
-        'transmitter_address': ['50:e0:85:3f:77:5e']
+        'receiver_address': [default_receiver_address],
+        'transmitter_address': [default_transmitter_address]
     })
 
-    frame_control_information = FrameControlInformation(0, 10, 'b4:de:31:9c:f0:8a', '50:e0:85:3f:77:5e')
+    frame_control_information = FrameControlInformation(0, 10, default_receiver_address, default_transmitter_address)
     previous_signal = Signal(Point2D(1,1), 1, 1567757299)
 
     signal1 = Signal(Point2D(1, 1), 1, 1567757307)

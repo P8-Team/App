@@ -78,7 +78,7 @@ def test_classifier_extract_features(cl):
 
 
 def test_classifier_has_labels(cl):
-    assert cl.labels_in_model()[0] is 'test'
+    assert cl.labels_in_model()[0] == 'test'
 
 
 def test_classifier_returns_label_for_interval(cl):
