@@ -75,4 +75,4 @@ axs[1].set_xlabel("x (m)")
 axs[1].set_ylabel("y (m)")
 
 # save as svg
-plt.savefig("pseudo_multilateration.pdf")
+plt.savefig("render/pseudo_multilateration.pdf")
