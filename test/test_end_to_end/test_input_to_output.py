@@ -216,7 +216,7 @@ def generate_tests_positions_and_check_for_failures(frame_generator: LocationGen
 #
 #     wifi_frames = [
 #         wifi_frame_generator.make_wifi_element(Point2D([3, 3]), transmission_power_dbm=20),
-#         wifi_frame_generator.make_wifi_element(Point2D([3, 3]), transmission_power_dbm=20, snifftimestamp=1)
+#         wifi_frame_generator.make_wifi_element(Point2D([3, 3]), transmission_power_dbm=20, sniff_timestamp=1)
 #     ]
 #
 #     cl = Classifier(1)
