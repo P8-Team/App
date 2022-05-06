@@ -211,27 +211,28 @@ def generate_tests_positions_and_check_for_failures(frame_generator: LocationGen
 
     return failures
 
-# def test_input_to_output_with_location_generator_small_distance_between_anchors_with_classifier():
-#     wifi_frame_generator = LocationGenerator([Point2D([0, 0.433])])
-#
-#     wifi_frames = [
-#         wifi_frame_generator.make_wifi_element(Point2D([3, 3]), transmission_power_dbm=20),
-#         wifi_frame_generator.make_wifi_element(Point2D([3, 3]), transmission_power_dbm=20, sniff_timestamp=1)
-#     ]
-#
-#     cl = Classifier(1)
-#     cl.load_model('trainedModelMikaelPC')
-#
-#     generator = PipelineFactory(wifi_frames) \
-#         .add_frame_to_device_converter() \
-#         .add_device_aggregator() \
-#         .add_classifier(cl) \
-#         .add_average_rssi_with_variance() \
-#         .add_location_non_linear_least_square(4)
-#
-#     result = generator.to_list()
-#
-#     assert result[-1].position == pytest.approx([3, 3], position_precision)
+def test_input_to_output_with_location_generator_small_distance_between_anchors_with_classifier():
+    wifi_frame_generator = LocationGenerator([Point2D([0, 0.433])])
+
+    wifi_frames = [
+        wifi_frame_generator.make_wifi_element(Point2D([3, 3]), transmission_power_dbm=20, sniff_timestamp=1),
+        wifi_frame_generator.make_wifi_element(Point2D([3, 3]), transmission_power_dbm=20, sniff_timestamp=2),
+        wifi_frame_generator.make_wifi_element(Point2D([3, 3]), transmission_power_dbm=20, sniff_timestamp=100)
+    ]
+
+    cl = Classifier(3)
+    cl.load_model('trainedModelMikaelPC')
+
+    generator = PipelineFactory(wifi_frames) \
+        .add_frame_to_device_converter() \
+        .add_device_aggregator() \
+        .add_classifier(cl) \
+        .add_average_rssi_with_variance() \
+        .add_location_non_linear_least_square(4)
+
+    result = generator.to_list()
+
+    assert result[-1].position == pytest.approx([3, 3], position_precision)
 
 
 @pytest.mark.slow

@@ -65,7 +65,8 @@ class Classifier:
         Accumulates frames for a single device into intervals of frames
         """
         # Get first element of frames and use it to determine end of interval
-        first = next(iter(frames))
+        frames = iter(frames)
+        first = next(frames)
         self._verify_item_is_frame(first)
         interval_end = first.wlan_radio.get_earliest_sniff_timestamp() + self.interval
         frames_in_interval = [first]
@@ -152,7 +153,7 @@ class Classifier:
         # Create a serie containing a label for each row
         label_series = pd.DataFrame(df['transmitter_address']).set_index('transmitter_address').join(
             labels.set_index('Address')).squeeze()
-        return self.drop_features(df).dropna(), label_series
+        return self.drop_features(df), label_series
 
     @staticmethod
     def drop_features(df):
@@ -161,7 +162,7 @@ class Classifier:
         # df['sniff_timestamp_0'] = pd.to_datetime(df['sniff_timestamp_0'],unit='s')
         df = df.drop(['receiver_address', 'transmitter_address'], axis='columns')
         df['data_rate'] = df['data_rate'].fillna(0)
-        return df
+        return df.dropna()
 
     @staticmethod
     def load_files(files):

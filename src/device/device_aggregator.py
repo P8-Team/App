@@ -16,12 +16,11 @@ def device_aggregator(generator: Iterable[Device], max_frame_buffer_size=50):
     for new_device in generator:
         if new_device in known_devices:
             known_devices[new_device].frames.extend(new_device.frames)
-            __set_timestamp_deltas(known_devices[new_device].frames)
             while len(known_devices[new_device].frames) > max_frame_buffer_size:
                 known_devices[new_device].frames.pop(0)
         else:
             known_devices[new_device] = new_device
-
+        __set_timestamp_deltas(known_devices[new_device].frames)
         yield known_devices[new_device]
 
 def __set_timestamp_deltas(frames: list[WifiFrame]):
