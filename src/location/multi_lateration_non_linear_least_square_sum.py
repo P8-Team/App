@@ -40,7 +40,7 @@ def calculate_position(device: Device, path_loss_exponent, do_draw=False):
     signals = device.averaged_signals
 
     if device.identification is not None:
-        transmission_power_dbm = int(device.identification[1])
+        transmission_power_dbm = int(device.identification[0])
     else:
         # 20 is max for 2.4ghz, 30 for 5ghz.
         transmission_power_dbm = 20 if frequency < 4000 else 30
