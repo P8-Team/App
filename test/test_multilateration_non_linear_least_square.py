@@ -29,7 +29,7 @@ def test_calculate_position_from_device_with_identification():
     device = Device(address_for_test, [
         WifiFrame(wlan_radio=WlanRadioInformation(frequency_mhz=2412))
     ],
-                    identification={"transmission_power_dbm": 10},
+                    identification=['10'],
                     averaged_signals=[
                         Signal(Point2D(0, 0), -20, 0, variance=1),
                         Signal(Point2D(0, 1), -20, 0, variance=1),

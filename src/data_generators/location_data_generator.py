@@ -23,7 +23,7 @@ class LocationGenerator:
         self._positions_populator(receiver_positions)
 
     def make_wifi_element(self, position: Point2D, frequency=2412, transmission_power_dbm=20,
-                          transmitter_address="00:00:00:00:00:01", receiver_address="00:00:00:00:00:02"):
+                          transmitter_address="00:00:00:00:00:01", receiver_address="00:00:00:00:00:02", sniff_timestamp=0):
         """
 
         :param position: The position of the transmitter, given as a sympy Point
@@ -39,10 +39,10 @@ class LocationGenerator:
         wifi_element = WifiFrame(frame_control_sequence=1,
                                  frame_control_information=FrameControlInformation(
                                      transmitter_address=transmitter_address,
-                                     receiver_address=receiver_address))
+                                     receiver_address=receiver_address, fc_type=1, subtype=1), length=2)
         signal_strength = self.signal_strength_calculator(position, transmission_power_dbm)
 
-        signals = [Signal(element[0], element[1], 0) for element in zip(self.receiver_positions, signal_strength)]
+        signals = [Signal(element[0], element[1], sniff_timestamp) for element in zip(self.receiver_positions, signal_strength)]
         data_rate = None
         timestamp = None
         wifi_element.wlan_radio = WlanRadioInformation(signals, data_rate, timestamp, frequency)

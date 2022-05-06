@@ -1,6 +1,9 @@
+import os.path
 import pandas as pd
 import pytest
 from src.classifier import Classifier
+from src.device.device import Device
+from src.device_lookup import DeviceLookup
 from src.wifi.wifi_card import WifiCard
 from src.wifi.wifi_frame import WifiFrame
 from test.utils.wifi_frame_factory import frame_factory
@@ -94,11 +97,36 @@ def test_classifier_return_confidence_for_interval(cl):
     assert 0 <= cl.classify_interval_confidence(frames) <= 1
 
 
+def test_classifier_return_most_frequent_label_with_high_confidence(cl):
+    assert cl.determine_device_classification(
+        [['Nedis',0.6],['test',0.7],['test',0.8],['Nedis',0.2],['Nedis',0.5]]) == 'test'
+
+
 def generator(items: list):
     for item in items:
         yield item
 
 
+def test_classifier_returns_device():
+    cl = Classifier(1)
+
+    frames_db = frame_factory(1).to_dataframe()
+    for i in range(1, 20):
+        frames_db = pd.concat([frames_db, frame_factory(i).to_dataframe()], axis=0)
+
+    labels = pd.DataFrame.from_dict({'Address': ["00:00:00:00:00:01"], 'Label': ['Nikkei']})
+    training_data, label_series = cl.preprocess_data(frames_db, labels)
+
+    cl.model.fit(training_data, label_series)
+
+    device = Device("00:00:00:00:00:01", [
+        frame_factory(1), frame_factory(2),
+    ])
+
+    result = list(cl.classify([device]))
+    assert result[0] == device
+
+    
 def test_classifier_accumulate_frames():
     cl = Classifier(2)
     frame_gen = generator([frame_factory(0), frame_factory(0.5), frame_factory(1), frame_factory(1.9),
@@ -107,12 +135,6 @@ def test_classifier_accumulate_frames():
     for e in accumulated_frames:
         assert isinstance(e, WifiFrame)
     assert len(accumulated_frames) == 4
-
-
-def test_classifier_returns_label_for_classify(cl):
-    frame_gen = generator([frame_factory(1), frame_factory(2), frame_factory(3), frame_factory(4)])
-    possible_labels_list = cl.labels_in_model()
-    assert next(cl.classify(frame_gen)) in possible_labels_list
 
 
 def test_classifier_save_and_load_model(cl):
