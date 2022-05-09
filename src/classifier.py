@@ -11,9 +11,14 @@ from sklearn.model_selection import train_test_split
 
 from src.device.device import Device
 from src.device_lookup import DeviceLookup
-from src.multiprocess_wifi_listener import frames_from_file_with_caching
+from src.multiprocess_wifi_listener import frames_from_file_with_caching, cache_dataframe
 from src.wifi.wifi_frame import WifiFrame
-
+from src.wifi.wifi_card import WifiCard
+from src.multiprocess_wifi_listener import map_to_frames, load_file
+from sympy import Point2D
+from utils import chain_generators
+from device.device_aggregator import device_aggregator
+from device.frame_to_device_converter import frame_to_device_converter
 
 class Classifier:
     """
@@ -136,7 +141,18 @@ class Classifier:
     def train(self):
         labels = pd.read_csv("Data/new_labels.csv")
         files = self.get_file_paths()
-        df = self.load_files(files)
+
+        frames = []
+        for file_path in files:
+            frames = chain_generators(map_to_frames(load_file(file_path), WifiCard("file", Point2D(0, 0))), frames)
+        devices = device_aggregator(frame_to_device_converter(frames), 50)
+
+        dfs = list()
+        for device in devices:
+            dfs.append(list(map(lambda frame: frame.to_dataframe(), device.frames)))
+        df = pd.concat(dfs)
+
+        cache_dataframe("Data/cache", 'unprocessed_training_data', df)
         data, label_series = self.preprocess_data(df, labels)
         input_train, input_test, labels_train, labels_test = train_test_split(data, label_series)
 
@@ -150,7 +166,10 @@ class Classifier:
     def preprocess_data(self, df, labels):
         # Select rows that contain data from one of the devices with a label
         df = df[df['transmitter_address'].map(lambda x: labels.Address.str.contains(x).sum() == 1)]
+        # Drop radio timestamp as it is NaN for the file data
+        df = df.drop(['radio_timestamp'], axis='columns')
         # Create a serie containing a label for each row
+        #df = df.dropna()
         label_series = pd.DataFrame(df['transmitter_address']).set_index('transmitter_address').join(
             labels.set_index('Address')).squeeze()
         return self.drop_features(df), label_series
@@ -158,7 +177,7 @@ class Classifier:
     @staticmethod
     def drop_features(df):
         # Drop radio timestamp as it is NaN for the file data
-        df = df.drop(['radio_timestamp'], axis='columns')
+        df = df.drop(['radio_timestamp'], axis='columns', errors='ignore')
         # df['sniff_timestamp_0'] = pd.to_datetime(df['sniff_timestamp_0'],unit='s')
         df = df.drop(['receiver_address', 'transmitter_address'], axis='columns')
         df['data_rate'] = df['data_rate'].fillna(0)
