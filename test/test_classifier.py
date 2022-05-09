@@ -39,11 +39,7 @@ def test_preprocess_data():
 
     classifier = Classifier(1)
 
-    # If any fields are None, the preprocessor removes the row, resulting in no rows for this test
-    dataframe = wifi_frame.to_dataframe()
-    dataframe = dataframe.fillna(1)
-
-    result_df, result_labels = classifier.preprocess_data(dataframe, labels)
+    result_df, result_labels = classifier.preprocess_data(wifi_frame.to_dataframe(), labels)
 
     assert result_labels == "test"
     assert len(result_df.columns) == 6
@@ -64,6 +60,7 @@ def test_classifier_drops_features():
 
 
 def test_classifier_correct_null_values():
+    # TODO: Think the test need to be changed as code flow of classifier has changed slightly
     cl = Classifier(1)
     frames_db = frame_factory(1).to_dataframe()
     for i in range(1, 20):
