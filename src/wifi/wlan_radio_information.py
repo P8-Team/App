@@ -78,11 +78,12 @@ class WlanRadioInformation:
         all_timestamp_deltas_none = all(signal.timestamp_delta == None for signal in self.signals)
 
         minimum_timestamp_delta = None if all_timestamp_deltas_none \
-                                       else min(signal.timestamp_delta for signal in self.signals)
+            else min(signal.timestamp_delta for signal in self.signals)
         df = pd.DataFrame(data=
         {
             'timestamp_delta': [minimum_timestamp_delta],
-            'data_rate': [self.data_rate], 'radio_timestamp': [self.radio_timestamp], 'frequency_mhz': [self.frequency_mhz]
+            'data_rate': [self.data_rate], 'radio_timestamp': [self.radio_timestamp],
+            'frequency_mhz': [self.frequency_mhz]
         })
 
         return df

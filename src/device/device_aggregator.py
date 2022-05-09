@@ -23,6 +23,7 @@ def device_aggregator(generator: Iterable[Device], max_frame_buffer_size=50):
         __set_timestamp_deltas(known_devices[new_device].frames)
         yield known_devices[new_device]
 
+
 def __set_timestamp_deltas(frames: list[WifiFrame]):
     # Given list [1,2,3,4], this loop creates two new lists
     # [1,2,3]

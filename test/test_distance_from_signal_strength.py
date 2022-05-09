@@ -17,9 +17,12 @@ def test_mw_from_dbm():
 
 
 def test_calc_distance_from_mw_signal_strength_free_space_path_loss_():
-    assert calc_distance_from_mw_signal_strength_free_space_path_loss(100, 100, 3000) == pytest.approx(1 / (40 * math.pi))  # 7 cm
-    assert calc_distance_from_mw_signal_strength_free_space_path_loss(0.1, 0.001, 3000) == pytest.approx(0.001 / (0.004 * math.pi))  # 8 cm
-    assert calc_distance_from_mw_signal_strength_free_space_path_loss(0.1, 0.0001, 2400) == pytest.approx(0.314557575653044)  # 31 cm
+    assert calc_distance_from_mw_signal_strength_free_space_path_loss(100, 100, 3000) == pytest.approx(
+        1 / (40 * math.pi))  # 7 cm
+    assert calc_distance_from_mw_signal_strength_free_space_path_loss(0.1, 0.001, 3000) == pytest.approx(
+        0.001 / (0.004 * math.pi))  # 8 cm
+    assert calc_distance_from_mw_signal_strength_free_space_path_loss(0.1, 0.0001, 2400) == pytest.approx(
+        0.314557575653044)  # 31 cm
 
 
 def test_calc_distance_free_space_path_loss_from_mw_signal_strength_real_data():
@@ -29,11 +32,14 @@ def test_calc_distance_free_space_path_loss_from_mw_signal_strength_real_data():
     # 1000mW tranmission, -50dBm signal, 5800Mhz frequency
     assert calc_distance_from_mw_signal_strength_free_space_path_loss(1000, 0.00001, 5800) == pytest.approx(41.16076114)
     # 1000mW tranmission, -60dBm signal, 5800Mhz frequency
-    assert calc_distance_from_mw_signal_strength_free_space_path_loss(1000, 0.0000001, 5800) == pytest.approx(411.6076114)
+    assert calc_distance_from_mw_signal_strength_free_space_path_loss(1000, 0.0000001, 5800) == pytest.approx(
+        411.6076114)
     # 1000mW tranmission, -70dBm signal, 5800Mhz frequency
-    assert calc_distance_from_mw_signal_strength_free_space_path_loss(1000, 0.00000001, 5800) == pytest.approx(1301.6175544)
+    assert calc_distance_from_mw_signal_strength_free_space_path_loss(1000, 0.00000001, 5800) == pytest.approx(
+        1301.6175544)
     # 1000mW tranmission, -80dBm signal, 5800Mhz frequency
-    assert calc_distance_from_mw_signal_strength_free_space_path_loss(1000, 0.000000001, 5800) == pytest.approx(4116.0761144)
+    assert calc_distance_from_mw_signal_strength_free_space_path_loss(1000, 0.000000001, 5800) == pytest.approx(
+        4116.0761144)
 
 
 def test_calc_distance_from_dbm_signal_strength_real_data():

@@ -14,6 +14,7 @@ from test.utils.wifi_test_utils import Frame, Layer
 default_transmitter_address = '50:e0:85:3f:77:5e'
 default_receiver_address = 'b4:de:31:9c:f0:8a'
 
+
 def test_construct_wifi_frame():
     # Arrange
     frame = Frame("340", "1647417907.513663000", {
@@ -288,6 +289,7 @@ def test_wifi_frame_to_dataframe_without_timestamp_delta():
 
     pd.testing.assert_frame_equal(actual, expected)
 
+
 def test_wifi_frame_to_dataframe_with_timestamp_delta():
     expected = pd.DataFrame(data=
     {
@@ -301,7 +303,7 @@ def test_wifi_frame_to_dataframe_with_timestamp_delta():
     })
 
     frame_control_information = FrameControlInformation(0, 10, default_receiver_address, default_transmitter_address)
-    previous_signal = Signal(Point2D(1,1), 1, 1567757299)
+    previous_signal = Signal(Point2D(1, 1), 1, 1567757299)
 
     signal1 = Signal(Point2D(1, 1), 1, 1567757307)
     signal2 = Signal(Point2D(2, 2), 2, 1567757308)

@@ -36,8 +36,10 @@ def wavelength(frequency):
     """
     return 300 / frequency
 
+
 def distance_to_signal_strength(distance, transmission_power, path_loss_exponent):
-    return -10*path_loss_exponent*math.log(distance, 10)+transmission_power
+    return -10 * path_loss_exponent * math.log(distance, 10) + transmission_power
+
 
 def distance_to_signal_strength_free_space_path_loss(distance, frequency, transmission_power):
     if distance <= 0:

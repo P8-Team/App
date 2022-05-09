@@ -1,13 +1,10 @@
 from typing import List
 
-import pandas as pd
 import pytest
 from sympy import Point2D
 
 from src.classifier import Classifier
 from src.data_generators.location_data_generator import LocationGenerator
-from src.device.device import Device
-from src.location.distance_strength_calculations import dbm_to_mw
 from src.pipeline_factory import PipelineFactory
 from src.wifi.frame_control_information import FrameControlInformation
 from src.wifi.signal import Signal
@@ -210,6 +207,7 @@ def generate_tests_positions_and_check_for_failures(frame_generator: LocationGen
     # print(number_of_positions)
 
     return failures
+
 
 def test_input_to_output_with_location_generator_small_distance_between_anchors_with_classifier():
     wifi_frame_generator = LocationGenerator([Point2D([0, 0.433])])

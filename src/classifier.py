@@ -1,10 +1,9 @@
+import os
 from typing import Iterable
-from joblib import dump, load
 
 import numpy as np
 import pandas as pd
-import os
-
+from joblib import dump, load
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import classification_report
 from sklearn.model_selection import train_test_split
@@ -13,12 +12,7 @@ from src.device.device import Device
 from src.device_lookup import DeviceLookup
 from src.multiprocess_wifi_listener import frames_from_file_with_caching, cache_dataframe
 from src.wifi.wifi_frame import WifiFrame
-from src.wifi.wifi_card import WifiCard
-from src.multiprocess_wifi_listener import map_to_frames, load_file
-from sympy import Point2D
-from utils import chain_generators
-from device.device_aggregator import device_aggregator
-from device.frame_to_device_converter import frame_to_device_converter
+
 
 class Classifier:
     """
@@ -139,25 +133,42 @@ class Classifier:
             raise ValueError('classify must be given generator that produces elements of type Frame')
 
     def train(self):
+
         labels = pd.read_csv("Data/new_labels.csv")
         files = self.get_file_paths()
 
-        frames = []
-        for file_path in files:
-            frames = chain_generators(map_to_frames(load_file(file_path), WifiCard("file", Point2D(0, 0))), frames)
-        devices = device_aggregator(frame_to_device_converter(frames), 50)
-
         dfs = list()
-        for device in devices:
-            dfs.append(list(map(lambda frame: frame.to_dataframe(), device.frames)))
+        for file in files:
+            dfs.append(frames_from_file_with_caching(file))
         df = pd.concat(dfs)
 
         cache_dataframe("Data/cache", 'unprocessed_training_data', df)
+
+        # print("First for loop")
+        # frames = []
+        # for file_path in files:
+        #     frames = chain_generators(map_to_frames(load_file(file_path), WifiCard("file", Point2D(0, 0))), frames)
+        # devices = device_aggregator(frame_to_device_converter(frames), 50)
+        #
+        # print("Second for loop")
+        # dfs = []
+        # for device in devices:
+        #     dfs.extend(list(map(lambda frame: frame.to_dataframe(), device.frames)))
+        # df = pd.concat(dfs)
+        #
+        # print("Caching unprocessed training")
+        # cache_dataframe("Data/cache", 'unprocessed_training_data', df)
+
+        print("Processing")
         data, label_series = self.preprocess_data(df, labels)
+
+        print("Split")
         input_train, input_test, labels_train, labels_test = train_test_split(data, label_series)
 
+        print("Fitting")
         self.model.fit(input_train, labels_train)
 
+        print("Report")
         res = classification_report(labels_test, self.model.predict(input_test))
         print(res)
 
@@ -168,11 +179,16 @@ class Classifier:
         df = df[df['transmitter_address'].map(lambda x: labels.Address.str.contains(x).sum() == 1)]
         # Drop radio timestamp as it is NaN for the file data
         df = df.drop(['radio_timestamp'], axis='columns')
-        # Create a serie containing a label for each row
-        #df = df.dropna()
+        # Create a series containing a label for each row
+
+        df['data_rate'] = df['data_rate'].fillna(0)
+        df = df.dropna()
+
         label_series = pd.DataFrame(df['transmitter_address']).set_index('transmitter_address').join(
             labels.set_index('Address')).squeeze()
-        return self.drop_features(df), label_series
+        df = self.drop_features(df)
+
+        return df, label_series
 
     @staticmethod
     def drop_features(df):
@@ -180,8 +196,8 @@ class Classifier:
         df = df.drop(['radio_timestamp'], axis='columns', errors='ignore')
         # df['sniff_timestamp_0'] = pd.to_datetime(df['sniff_timestamp_0'],unit='s')
         df = df.drop(['receiver_address', 'transmitter_address'], axis='columns')
-        df['data_rate'] = df['data_rate'].fillna(0)
-        return df.dropna()
+        # df['data_rate'] = df['data_rate'].fillna(0)
+        return df
 
     @staticmethod
     def load_files(files):
@@ -205,13 +221,16 @@ class Classifier:
         files.extend(list(map(add_path('TP-Link'),
                               ['dump.pcapng', 'dump1.pcapng', 'dump2.pcapng', 'dump3.pcapng', 'dump4.pcapng',
                                'dump5.pcapng'])))
+        files.extend(list(map(add_path('Blink'), ['dump1.pcapng', 'dump2.pcapng', 'dump4.pcapng'])))
+        files.extend(list(map(add_path('Nedis'), ['dump.pcapng', 'dump1.pcapng', 'dump2.pcapng',
+                                                  'dump3.pcapng', 'dump4.pcapng', 'dump5.pcapng'])))
 
         return files
 
     def save_model(self, filename):
-        path_norm = os.path.normpath('Data/cache/savedModels/{}.joblib'.format(filename))
+        path_norm = os.path.normpath(f'Data/cache/savedModels/{filename}.joblib')
         dump(self.model, path_norm)
 
     def load_model(self, filename):
-        path_norm = os.path.normpath('Data/cache/savedModels/{}.joblib'.format(filename))
+        path_norm = os.path.normpath(f'Data/cache/savedModels/{filename}.joblib')
         self.model = load(path_norm)

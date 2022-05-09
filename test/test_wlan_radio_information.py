@@ -139,6 +139,7 @@ def test_wlan_radio_information_to_dataframe_without_timestamp_delta():
 
     pd.testing.assert_frame_equal(actual, expected)
 
+
 def test_wlan_radio_information_to_dataframe_with_timestamp_delta():
     expected = pd.DataFrame(data=
     {
@@ -146,7 +147,7 @@ def test_wlan_radio_information_to_dataframe_with_timestamp_delta():
         'data_rate': [12], 'radio_timestamp': [1567757309], 'frequency_mhz': [44]
     })
 
-    previous_signal = Signal(Point2D(1,1), 1, 1567757299)
+    previous_signal = Signal(Point2D(1, 1), 1, 1567757299)
 
     signal1 = Signal(Point2D(1, 1), 1, 1567757309)
     signal2 = Signal(Point2D(2, 2), 2, 1567757309)
@@ -175,7 +176,7 @@ def test_wlan_radio_information_to_dataframe_uses_lowest_timestamp_delta():
         'data_rate': [12], 'radio_timestamp': [1567757309], 'frequency_mhz': [44]
     })
 
-    previous_signal = Signal(Point2D(1,1), 1, 1567757299)
+    previous_signal = Signal(Point2D(1, 1), 1, 1567757299)
 
     signal1 = Signal(Point2D(1, 1), 1, 1567757307)
     signal2 = Signal(Point2D(2, 2), 2, 1567757308)
@@ -196,6 +197,7 @@ def test_wlan_radio_information_to_dataframe_uses_lowest_timestamp_delta():
 
     pd.testing.assert_frame_equal(actual, expected)
 
+
 def test_wlan_radio_information_smallest_timestamp_delta_returns_none_if_no_deltas():
     signal1 = Signal(Point2D(1, 1), 1, 1567757307)
     signal2 = Signal(Point2D(2, 2), 2, 1567757308)
@@ -211,8 +213,9 @@ def test_wlan_radio_information_smallest_timestamp_delta_returns_none_if_no_delt
 
     assert wlan_radio_information.get_smallest_timestamp_delta() == None
 
+
 def test_wlan_radio_information_smallest_timestamp_delta_returns_delta_if_some_deltas_are_not_none():
-    previous_signal = Signal(Point2D(1,1), 1, 1567757299)
+    previous_signal = Signal(Point2D(1, 1), 1, 1567757299)
 
     signal1 = Signal(Point2D(1, 1), 1, 1567757307)
     signal2 = Signal(Point2D(2, 2), 2, 1567757308.5)
@@ -230,8 +233,9 @@ def test_wlan_radio_information_smallest_timestamp_delta_returns_delta_if_some_d
 
     assert wlan_radio_information.get_smallest_timestamp_delta() == 9.5
 
+
 def test_wlan_radio_information_smallest_timestamp_delta_returns_smallest_some_deltas_are_not_none():
-    previous_signal = Signal(Point2D(1,1), 1, 1567757299)
+    previous_signal = Signal(Point2D(1, 1), 1, 1567757299)
 
     signal1 = Signal(Point2D(1, 1), 1, 1567757309)
     signal2 = Signal(Point2D(2, 2), 2, 1567757308.5)

@@ -148,10 +148,10 @@ def test_chain_generators_chains_generators():
 
     assert list(chain_generators(gen1, gen2)) == [0, 1, 2, 3, 4]
 
+
 def test_chain_generators_chains_nested_chains():
     gen1 = (i for i in range(0, 2))
     gen2 = (i for i in range(2, 5))
     gen3 = (i for i in range(6, 8))
 
     assert list(chain_generators(chain_generators(gen1, gen2), gen3)) == [0, 1, 2, 3, 4, 6, 7]
-

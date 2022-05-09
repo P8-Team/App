@@ -1,7 +1,6 @@
 from sympy import Point2D
 
-from src.location.distance_strength_calculations import mw_to_dbm, distance_to_signal_strength_free_space_path_loss, \
-    distance_to_signal_strength
+from src.location.distance_strength_calculations import distance_to_signal_strength
 from src.wifi.frame_control_information import FrameControlInformation
 from src.wifi.signal import Signal
 from src.wifi.wifi_frame import WifiFrame
@@ -23,7 +22,8 @@ class LocationGenerator:
         self._positions_populator(receiver_positions)
 
     def make_wifi_element(self, position: Point2D, frequency=2412, transmission_power_dbm=20,
-                          transmitter_address="00:00:00:00:00:01", receiver_address="00:00:00:00:00:02", sniff_timestamp=0):
+                          transmitter_address="00:00:00:00:00:01", receiver_address="00:00:00:00:00:02",
+                          sniff_timestamp=0):
         """
 
         :param position: The position of the transmitter, given as a sympy Point
@@ -42,7 +42,8 @@ class LocationGenerator:
                                      receiver_address=receiver_address, fc_type=1, subtype=1), length=2)
         signal_strength = self.signal_strength_calculator(position, transmission_power_dbm)
 
-        signals = [Signal(element[0], element[1], sniff_timestamp) for element in zip(self.receiver_positions, signal_strength)]
+        signals = [Signal(element[0], element[1], sniff_timestamp) for element in
+                   zip(self.receiver_positions, signal_strength)]
         data_rate = None
         timestamp = None
         wifi_element.wlan_radio = WlanRadioInformation(signals, data_rate, timestamp, frequency)

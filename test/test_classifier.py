@@ -1,15 +1,16 @@
+import os
 import os.path
+
 import pandas as pd
 import pytest
+from sympy import Point2D
+
 from src.classifier import Classifier
 from src.device.device import Device
-from src.device_lookup import DeviceLookup
 from src.wifi.wifi_card import WifiCard
 from src.wifi.wifi_frame import WifiFrame
 from test.utils.wifi_frame_factory import frame_factory
 from test.utils.wifi_test_utils import Frame, Layer
-from sympy import Point2D
-import os
 
 
 def test_get_file_paths_returns_list_of_strings():
@@ -38,7 +39,11 @@ def test_preprocess_data():
 
     classifier = Classifier(1)
 
-    result_df, result_labels = classifier.preprocess_data(wifi_frame.to_dataframe(), labels)
+    # If any fields are None, the preprocessor removes the row, resulting in no rows for this test
+    dataframe = wifi_frame.to_dataframe()
+    dataframe = dataframe.fillna(1)
+
+    result_df, result_labels = classifier.preprocess_data(dataframe, labels)
 
     assert result_labels == "test"
     assert len(result_df.columns) == 6
@@ -90,6 +95,7 @@ def cl():
 def test_classifier_has_labels(cl):
     assert cl.labels_in_model()[0] == 'test'
 
+
 def test_classifier_return_confidence_for_interval(cl):
     frames = []
     for i in range(0, 10):
@@ -99,7 +105,7 @@ def test_classifier_return_confidence_for_interval(cl):
 
 def test_classifier_return_most_frequent_label_with_high_confidence(cl):
     assert cl.determine_device_classification(
-        [['Nedis',0.6],['test',0.7],['test',0.8],['Nedis',0.2],['Nedis',0.5]]) == 'test'
+        [['Nedis', 0.6], ['test', 0.7], ['test', 0.8], ['Nedis', 0.2], ['Nedis', 0.5]]) == 'test'
 
 
 def generator(items: list):
@@ -126,7 +132,7 @@ def test_classifier_returns_device():
     result = list(cl.classify([device]))
     assert result[0] == device
 
-    
+
 def test_classifier_accumulate_frames():
     cl = Classifier(2)
     frame_gen = generator([frame_factory(0), frame_factory(0.5), frame_factory(1), frame_factory(1.9),

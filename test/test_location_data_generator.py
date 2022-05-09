@@ -1,7 +1,9 @@
 import pytest
 from sympy import Point2D
 
-from src.data_generators.location_data_generator import LocationGenerator, mw_to_dbm, distance_to_signal_strength_free_space_path_loss
+from src.data_generators.location_data_generator import LocationGenerator
+from src.location.distance_strength_calculations import distance_to_signal_strength_free_space_path_loss
+from src.location.distance_strength_calculations import mw_to_dbm
 from src.wifi.wifi_frame import WifiFrame
 from src.wifi.wlan_radio_information import WlanRadioInformation
 
