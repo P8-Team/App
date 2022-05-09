@@ -1,5 +1,7 @@
 ---
 adapters:
-  wlan0: { location: [0, 0.433] }
-  wlan1: { location: [0.5, -0.433] }
-  wlan2: { location: [-0.5, -0.433] }
+  wlan1: { location: [-1, -0.58] }
+  wlan2: { location: [1, -0.58] }
+  wlan3: { location: [0, 1.15] }
+
+

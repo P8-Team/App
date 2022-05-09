@@ -85,11 +85,17 @@ class Classifier:
 
         # Return the most common classification of all the frames as a single label(based on labels gained in training)
         # Returns an error if the model has not been fitted
+        if features.size < 1:
+            return None
+
         classifications = self.model.predict(features).tolist()
         return max(classifications, key=classifications.count)
 
     def classify_interval_confidence(self, frames):
         features = self.extract_features_for_classification(frames)
+
+        if features.size < 1:
+            return 0
 
         # Array of the probability for each label for each frame.
         prediction = self.model.predict_proba(features)
