@@ -35,6 +35,8 @@ def test_preprocess_data():
     })
 
     wifi_frame = WifiFrame.from_frame(frame, WifiCard("wlan0", Point2D(0, 0)))
+    wifi_frame.wlan_radio.signals[0].timestamp_delta = 10
+    wifi_frame.wlan_radio.frequency_mhz = 2
     labels = pd.DataFrame.from_dict({'Address': ["00:0c:29:b7:d9:b1"], 'Label': ['test']})
 
     classifier = Classifier(1)
