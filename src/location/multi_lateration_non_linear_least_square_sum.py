@@ -44,7 +44,7 @@ def calculate_position(device: Device, path_loss_exponent, do_draw=False):
         transmission_power_dbm = int(device.identification[0])
     else:
         # 20 is max for 2.4ghz, 30 for 5ghz.
-        transmission_power_dbm = 20 if frequency < 4000 else 30
+        transmission_power_dbm = -15.5 if frequency < 4000 else -10
 
     anchors = [Anchor(
         np.array(signal.location.coordinates, dtype=np.float64),
@@ -62,7 +62,6 @@ def calculate_position(device: Device, path_loss_exponent, do_draw=False):
 
 def get_least_squared_error(anchors: list[Anchor]) -> OptimizeResult:
     return least_squares(non_linear_squared_sum_weighted, np.array([0, 0]), args=[anchors], gtol=None)
-
 
 
 def draw_plot_with_anchors_circles_and_estimate(anchors, estimate):

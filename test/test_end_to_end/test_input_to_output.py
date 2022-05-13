@@ -18,6 +18,8 @@ address_for_test_3 = "00:00:00:00:00:03"
 
 position_precision = 0.5
 
+transmission_power = -15.5
+
 
 @pytest.fixture(autouse=True)
 def input_to_output_wifi_frames():
@@ -118,8 +120,8 @@ def test_input_to_output_with_location_generator_small_distance_between_anchors(
     wifi_frame_generator = LocationGenerator([Point2D([0, 0.433]), Point2D([0.5, -0.433]), Point2D([-0.5, -0.433])])
 
     wifi_frames = [
-        wifi_frame_generator.make_wifi_element(Point2D([3, 3]), transmission_power_dbm=20),
-        wifi_frame_generator.make_wifi_element(Point2D([3, 3]), transmission_power_dbm=20)
+        wifi_frame_generator.make_wifi_element(Point2D([3, 3])),
+        wifi_frame_generator.make_wifi_element(Point2D([3, 3]))
     ]
 
     generator = PipelineFactory(wifi_frames) \
@@ -137,8 +139,8 @@ def test_input_to_output_with_location_generator_large_distance_between_anchors(
     wifi_frame_generator = LocationGenerator([Point2D([0, 4.33]), Point2D([5, -4.33]), Point2D([-5, -4.33])])
 
     wifi_frames = [
-        wifi_frame_generator.make_wifi_element(Point2D([3, 3]), transmission_power_dbm=20),
-        wifi_frame_generator.make_wifi_element(Point2D([3, 3]), transmission_power_dbm=20)
+        wifi_frame_generator.make_wifi_element(Point2D([3, 3])),
+        wifi_frame_generator.make_wifi_element(Point2D([3, 3]))
     ]
 
     generator = PipelineFactory(wifi_frames) \
@@ -156,8 +158,8 @@ def test_input_to_output_device_changes_position():
     wifi_frame_generator = LocationGenerator([Point2D([0, 4.33]), Point2D([5, -4.33]), Point2D([-5, -4.33])])
 
     wifi_frames = [
-        wifi_frame_generator.make_wifi_element(Point2D([2, 2]), transmission_power_dbm=20),
-        wifi_frame_generator.make_wifi_element(Point2D([4, 4]), transmission_power_dbm=20)
+        wifi_frame_generator.make_wifi_element(Point2D([2, 2])),
+        wifi_frame_generator.make_wifi_element(Point2D([4, 4]))
     ]
 
     generator = PipelineFactory(wifi_frames) \
@@ -175,7 +177,7 @@ def test_input_to_output_device_changes_position():
 
 
 def generate_tests_positions_and_check_for_failures(frame_generator: LocationGenerator,
-                                                    precision=1.0, bounds=10, transmission_power_dbm=20):
+                                                    precision=1.0, bounds=10):
     points = []
     wifi_frames = []
     number_of_positions = 0
@@ -184,7 +186,7 @@ def generate_tests_positions_and_check_for_failures(frame_generator: LocationGen
             points.append([x, y])
             wifi_frames.append(
                 frame_generator.make_wifi_element(Point2D([x, y]),
-                                                  transmission_power_dbm=transmission_power_dbm,
+                                                  transmission_power_dbm=transmission_power,
                                                   transmitter_address=str(number_of_positions)))
             number_of_positions = number_of_positions + 1
 
@@ -211,13 +213,15 @@ def generate_tests_positions_and_check_for_failures(frame_generator: LocationGen
 
 def test_input_to_output_with_location_generator_large_distance_between_anchors_with_classifier():
     wifi_frame_generator = LocationGenerator([Point2D([0, 4.33]), Point2D([5, -4.33]), Point2D([-5, -4.33])],
-                                             rounding=False)
+                                             rounding=True)
 
     wifi_frames = [
-        wifi_frame_generator.make_wifi_element(Point2D([3, 3]), transmission_power_dbm=-23, sniff_timestamp=1, receiver_address="0"),
-        wifi_frame_generator.make_wifi_element(Point2D([3, 3]), transmission_power_dbm=-23, sniff_timestamp=2, receiver_address="1"),
-        wifi_frame_generator.make_wifi_element(Point2D([3, 3]), transmission_power_dbm=-23, sniff_timestamp=100, receiver_address="2"),
-        wifi_frame_generator.make_wifi_element(Point2D([3, 3]), transmission_power_dbm=-23, sniff_timestamp=200, receiver_address="3"),
+        wifi_frame_generator.make_wifi_element(Point2D([3, 3]), transmission_power_dbm=-23, sniff_timestamp=1,
+                                               receiver_address="0"),
+        wifi_frame_generator.make_wifi_element(Point2D([3, 3]), transmission_power_dbm=-23, sniff_timestamp=2,
+                                               receiver_address="1"),
+        wifi_frame_generator.make_wifi_element(Point2D([3, 3]), transmission_power_dbm=-23, sniff_timestamp=100,
+                                               receiver_address="2"),
     ]
 
     cl = Classifier(3)
