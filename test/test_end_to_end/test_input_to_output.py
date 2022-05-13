@@ -210,7 +210,8 @@ def generate_tests_positions_and_check_for_failures(frame_generator: LocationGen
 
 
 def test_input_to_output_with_location_generator_small_distance_between_anchors_with_classifier():
-    wifi_frame_generator = LocationGenerator([Point2D([0, 0.433])])
+    wifi_frame_generator = LocationGenerator([Point2D([0, 4.33]), Point2D([5, -4.33]), Point2D([-5, -4.33])],
+                                             rounding=False)
 
     wifi_frames = [
         wifi_frame_generator.make_wifi_element(Point2D([3, 3]), transmission_power_dbm=20, sniff_timestamp=1),
@@ -219,14 +220,14 @@ def test_input_to_output_with_location_generator_small_distance_between_anchors_
     ]
 
     cl = Classifier(3)
-    cl.load_model('trainedModelMikaelPC')
+    cl.load_model('trainedModel')
 
     generator = PipelineFactory(wifi_frames) \
         .add_frame_to_device_converter() \
         .add_device_aggregator() \
         .add_classifier(cl) \
         .add_average_rssi_with_variance() \
-        .add_location_non_linear_least_square(4)
+        .add_location_non_linear_least_square(3)
 
     result = generator.to_list()
 

@@ -85,11 +85,17 @@ class Classifier:
 
         # Return the most common classification of all the frames as a single label(based on labels gained in training)
         # Returns an error if the model has not been fitted
+        if features.size < 1:
+            return None
+
         classifications = self.model.predict(features).tolist()
         return max(classifications, key=classifications.count)
 
     def classify_interval_confidence(self, frames):
         features = self.extract_features_for_classification(frames)
+
+        if features.size < 1:
+            return 0
 
         # Array of the probability for each label for each frame.
         prediction = self.model.predict_proba(features)
@@ -113,12 +119,7 @@ class Classifier:
         # Returns the classification (label) with maximum occurrences
         return max(classifications_with_high_confidence, key=classifications_with_high_confidence.count)
 
-    def extract_features_for_classification(self, frames):
-        dfs = list()
-        for item in frames:
-            dfs.append(item.to_dataframe())
-        df = pd.concat(dfs)
-        return self.drop_features(df)
+
 
     def labels_in_model(self):
         # Returns an array with the labels of the trained model.
@@ -173,6 +174,16 @@ class Classifier:
         print(res)
 
         return res
+
+    def extract_features_for_classification(self, frames):
+        dfs = list()
+        for item in frames:
+            dfs.append(item.to_dataframe())
+        df = pd.concat(dfs)
+        df = self.drop_features(df)
+        df['data_rate'] = df['data_rate'].fillna(0)
+        df = df.dropna()
+        return df
 
     def preprocess_data(self, df, labels):
         # Select rows that contain data from one of the devices with a label
