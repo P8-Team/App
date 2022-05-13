@@ -5,7 +5,7 @@ from typing import Iterator
 
 import pyshark
 
-from src.location.distance_strength_calculations import calc_distance_from_dbm_signal_strength
+from src.location.distance_strength_calculations import signal_strength_dbm_to_distance
 from src.location.simple_location import location
 from src.wifi.wifi_frame import WifiFrame
 
@@ -53,8 +53,8 @@ def append_location_to_wifi_frame(generator: Iterator[WifiFrame]) -> Iterator[Wi
             [
                 signal.location.x,
                 signal.location.y,
-                calc_distance_from_dbm_signal_strength(20 if item.wlan_radio.frequency_mhz < 4000 else 30,
-                                                       signal.signal_strength, item.wlan_radio.frequency_mhz)
+                signal_strength_dbm_to_distance(20 if item.wlan_radio.frequency_mhz < 4000 else 30,
+                                                signal.signal_strength, item.wlan_radio.frequency_mhz)
             ] for signal in item.wlan_radio.signals]
         item.location = location(wifi_interface_with_distance)
         yield item

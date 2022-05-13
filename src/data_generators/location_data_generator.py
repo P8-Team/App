@@ -21,7 +21,7 @@ class LocationGenerator:
         self.path_loss_exponent = path_loss_exponent
         self._positions_populator(receiver_positions)
 
-    def make_wifi_element(self, position: Point2D, frequency=2412, transmission_power_dbm=20,
+    def make_wifi_element(self, position: Point2D, frequency=2412, transmission_power_dbm=-15.5,
                           transmitter_address="00:00:00:00:00:01", receiver_address="00:00:00:00:00:02",
                           sniff_timestamp=0):
         """
