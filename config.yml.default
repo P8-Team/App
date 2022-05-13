@@ -3,5 +3,8 @@ adapters:
   wlan1: { location: [-1, -0.58] }
   wlan2: { location: [1, -0.58] }
   wlan3: { location: [0, 1.15] }
-
-
+hard_data_file: "Data/hard_data.csv"
+labels_file: "Data/new_labels.csv"
+classifier_interval: 3
+device_buffer_size: 50
+path_loss_exponent: 3

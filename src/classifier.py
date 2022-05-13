@@ -19,12 +19,13 @@ class Classifier:
     A class for classifying the behavior of IoT devices
     """
 
-    def __init__(self, interval_seconds):
+    def __init__(self, config):
         """
         param interval_seconds: The amount of time in seconds to aggregate frames to classify
         """
-        self.interval = interval_seconds
+        self.interval = config['classifier_interval']
         self.model = RandomForestClassifier()
+        self.config = config
 
     def classify(self, generator: Iterable[Device]):
         """
@@ -33,7 +34,7 @@ class Classifier:
 
         param device: A devices
         """
-        device_lookup = DeviceLookup()
+        device_lookup = DeviceLookup(self.config['hard_data_file'])
 
         for device in generator:
             interval_classification_with_threshold = list()
@@ -119,8 +120,6 @@ class Classifier:
         # Returns the classification (label) with maximum occurrences
         return max(classifications_with_high_confidence, key=classifications_with_high_confidence.count)
 
-
-
     def labels_in_model(self):
         # Returns an array with the labels of the trained model.
         return self.model.classes_
@@ -135,7 +134,7 @@ class Classifier:
 
     def train(self):
 
-        labels = pd.read_csv("Data/new_labels.csv")
+        labels = pd.read_csv(self.config["labels_path"])
         files = self.get_file_paths()
 
         dfs = list()
@@ -144,21 +143,6 @@ class Classifier:
         df = pd.concat(dfs)
 
         cache_dataframe("Data/cache", 'unprocessed_training_data', df)
-
-        # print("First for loop")
-        # frames = []
-        # for file_path in files:
-        #     frames = chain_generators(map_to_frames(load_file(file_path), WifiCard("file", Point2D(0, 0))), frames)
-        # devices = device_aggregator(frame_to_device_converter(frames), 50)
-        #
-        # print("Second for loop")
-        # dfs = []
-        # for device in devices:
-        #     dfs.extend(list(map(lambda frame: frame.to_dataframe(), device.frames)))
-        # df = pd.concat(dfs)
-        #
-        # print("Caching unprocessed training")
-        # cache_dataframe("Data/cache", 'unprocessed_training_data', df)
 
         print("Processing")
         data, label_series = self.preprocess_data(df, labels)
@@ -205,9 +189,7 @@ class Classifier:
     def drop_features(df):
         # Drop radio timestamp as it is NaN for the file data
         df = df.drop(['radio_timestamp'], axis='columns', errors='ignore')
-        # df['sniff_timestamp_0'] = pd.to_datetime(df['sniff_timestamp_0'],unit='s')
         df = df.drop(['receiver_address', 'transmitter_address'], axis='columns')
-        # df['data_rate'] = df['data_rate'].fillna(0)
         return df
 
     @staticmethod
@@ -220,6 +202,8 @@ class Classifier:
 
     @staticmethod
     def get_file_paths():
+
+        # TODO Lav dette til en config.
         def add_path(folder):
             return lambda name: f'Data/{folder}/{name}'
 

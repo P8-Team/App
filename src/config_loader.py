@@ -24,7 +24,23 @@ schema = {
                     }
                 }
             }
+        },
+        "hard_data_file": {
+            "type": "string"
+        },
+        "labels_file": {
+            "type": "string"
+        },
+        "classifier_interval": {
+            "type": "number"
+        },
+        "device_buffer_size": {
+            "type": "number"
+        },
+        "path_loss_exponent": {
+            "type": "number"
         }
+
     }
 }
 
@@ -40,7 +56,7 @@ def load_config_file(file_path):
 
 def load_config(config_stream):
     """
-    Loads the configuration yml file, validates if with json schema and returns the config object
+    Loads the configuration yml file, validates it with json schema and returns the config object
     :param config_stream: stream containing data from config file
     :return: config object
     """

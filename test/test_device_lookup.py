@@ -6,14 +6,14 @@ from src.device_lookup import DeviceLookup
 
 
 def test_data_is_loaded():
-    dl = DeviceLookup()
+    dl = DeviceLookup('Data/hard_data.csv')
     assert dl.lookup_data is not None
     assert type(dl.lookup_data) is pd.DataFrame
     assert dl.lookup_data.empty is False
 
 
 def test_find_selected_data():
-    dl = DeviceLookup()
+    dl = DeviceLookup('Data/hard_data.csv')
     path_test_data = os.path.normpath('test/test_data/device_data.csv')
     test_data = pd.read_csv(r'{}'.format(path_test_data), index_col=['Labels'])
     dl.lookup_data = pd.DataFrame(test_data)

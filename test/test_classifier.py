@@ -14,7 +14,7 @@ from test.utils.wifi_test_utils import Frame, Layer
 
 
 def test_get_file_paths_returns_list_of_strings():
-    classifier = Classifier(1)
+    classifier = Classifier({'hard_data_file': 'Data/hard_data.csv', 'classifier_interval': 1})
     assert all(isinstance(x, str) for x in classifier.get_file_paths()) == True
 
 
@@ -39,7 +39,7 @@ def test_preprocess_data():
     wifi_frame.wlan_radio.frequency_mhz = 2
     labels = pd.DataFrame.from_dict({'Address': ["00:0c:29:b7:d9:b1"], 'Label': ['test']})
 
-    classifier = Classifier(1)
+    classifier = Classifier({'hard_data_file': 'Data/hard_data.csv', 'classifier_interval': 1})
 
     result_df, result_labels = classifier.preprocess_data(wifi_frame.to_dataframe(), labels)
 
@@ -48,7 +48,7 @@ def test_preprocess_data():
 
 
 def test_classifier_drops_features():
-    cl = Classifier(1)
+    cl = Classifier({'hard_data_file': 'Data/hard_data.csv', 'classifier_interval': 1})
     frames_db = frame_factory(1).to_dataframe()
     for i in range(1, 20):
         frames_db = pd.concat([frames_db, frame_factory(i).to_dataframe()], axis=0)
@@ -78,7 +78,7 @@ def test_classifier_drops_features():
 
 @pytest.fixture
 def cl():
-    cl = Classifier(2)
+    cl = Classifier({'hard_data_file': 'Data/hard_data.csv', 'classifier_interval': 2})
 
     frames_df = frame_factory(1).to_dataframe()
     for i in range(1, 20):
@@ -113,7 +113,7 @@ def generator(items: list):
 
 
 def test_classifier_returns_device():
-    cl = Classifier(1)
+    cl = Classifier({'hard_data_file': 'Data/hard_data.csv', 'classifier_interval': 1})
 
     frames_db = frame_factory(1).to_dataframe()
     for i in range(1, 20):
@@ -133,7 +133,7 @@ def test_classifier_returns_device():
 
 
 def test_classifier_accumulate_frames():
-    cl = Classifier(2)
+    cl = Classifier({'hard_data_file': 'Data/hard_data.csv', 'classifier_interval': 2})
     frame_gen = generator([frame_factory(0), frame_factory(0.5), frame_factory(1), frame_factory(1.9),
                            frame_factory(2), frame_factory(2.1), frame_factory(2.5), frame_factory(3)])
     accumulated_frames = next(cl.accumulate_frames(frame_gen))
@@ -177,7 +177,7 @@ def test_classifier_extract_correct_features(cl, frames):
 
 
 def test_classifier_extracting_same_features_ignoring_labels(frames):
-    cl = Classifier(1)
+    cl = Classifier({'hard_data_file': 'Data/hard_data.csv', 'classifier_interval': 1})
 
     frames_df = frame_factory(1).to_dataframe()
     for i in range(2, 20):
