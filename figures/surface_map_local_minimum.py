@@ -7,8 +7,8 @@ from matplotlib import cm
 
 def make_surface_plot(fig, anchors: list[Anchor]):
     axs = fig.add_subplot(1, 2, 2, projection='3d')
-    X = np.arange(-7, 10, 0.1)
-    Y = np.arange(-7, 10, 0.1)
+    X = np.arange(-7, 8, 0.1)
+    Y = np.arange(-7, 8, 0.1)
     X, Y = np.meshgrid(X, Y)
 
     Z = np.zeros(X.shape)
@@ -17,8 +17,21 @@ def make_surface_plot(fig, anchors: list[Anchor]):
         for j in range(X.shape[1]):
             Z[i, j] = non_linear_squared_sum_weighted(np.array([X[i, j], Y[i, j]]), anchors)
 
+    # invert z-axis
+
+
     axs.plot_surface(X, Y, Z, rstride=5, cstride=5, cmap=cm.hsv,
-                     linewidth=50, antialiased=True)
+                     linewidth=50, antialiased=True, alpha=0.5, zorder=1)
+    axs.set_xlabel("x (m)")
+    axs.set_ylabel("y (m)")
+    axs.set_zlabel("Residual")
+    # add estimated location as a vertical line
+    position = get_least_squared_error(anchors).x.tolist()
+    residual = non_linear_squared_sum_weighted(np.array(position), anchors)
+    # set a point
+    axs.scatter(position[0], position[1], residual, s=100, marker='o', color='g')
+    # axs.plot([position[0], position[0]], [position[1], position[1]], [0, 50], "k", alpha=1, linewidth=2.5,
+    #          zorder=2)
 
 
 def make_circle_plot(fig, anchors):
