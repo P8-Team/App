@@ -24,7 +24,8 @@ class Anchor:
 
     def calc_weight(self) -> float:
         # The article does not mention this edge case. It is assumed that the weight is 1.
-        if self.distance == 0 or self.variance == 0:
+
+        if math.isclose(self.distance, 0, abs_tol=1e-8) or math.isclose(self.variance, 0, abs_tol=1e-10):
             return 1
         return 1 / (math.pow(self.distance, 4) * math.pow(self.variance, 4))
 
@@ -60,7 +61,7 @@ def calculate_position(device: Device, path_loss_exponent, do_draw=False):
 
 
 def get_least_squared_error(anchors: list[Anchor]) -> OptimizeResult:
-    return least_squares(non_linear_squared_sum_weighted, np.array([0, 0]), args=[anchors], gtol=None, verbose=2)
+    return least_squares(non_linear_squared_sum_weighted, np.array([0, 0]), args=[anchors], gtol=None)
 
 
 
