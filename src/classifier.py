@@ -119,8 +119,6 @@ class Classifier:
         # Returns the classification (label) with maximum occurrences
         return max(classifications_with_high_confidence, key=classifications_with_high_confidence.count)
 
-
-
     def labels_in_model(self):
         # Returns an array with the labels of the trained model.
         return self.model.classes_
