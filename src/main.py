@@ -13,7 +13,7 @@ if __name__ == '__main__':
     adapters = [WifiCard(name, Point2D(wifi_card['location'])) for name, wifi_card in config['adapters'].items()]
 
     cl = Classifier(3)
-    cl.load_model('trainedModel')
+    cl.load_model('test-trainedModel')
 
     PipelineFactory.input_wifi_listeners(adapters) \
         .add_frame_aggregator(threshold=len(adapters)) \
