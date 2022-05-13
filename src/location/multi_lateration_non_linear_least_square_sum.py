@@ -6,7 +6,7 @@ import numpy as np
 from scipy.optimize import least_squares, OptimizeResult
 
 from src.device.device import Device
-from src.location.distance_strength_calculations import calc_distance_from_dbm_signal_strength
+from src.location.distance_strength_calculations import signal_strength_dbm_to_distance
 
 
 class Anchor:
@@ -47,7 +47,7 @@ def calculate_position(device: Device, path_loss_exponent, do_draw=False):
 
     anchors = [Anchor(
         np.array(signal.location.coordinates, dtype=np.float64),
-        calc_distance_from_dbm_signal_strength(transmission_power_dbm, signal.signal_strength, path_loss_exponent),
+        signal_strength_dbm_to_distance(transmission_power_dbm, signal.signal_strength, path_loss_exponent),
         signal.variance
     ) for signal in signals]
 
@@ -60,7 +60,8 @@ def calculate_position(device: Device, path_loss_exponent, do_draw=False):
 
 
 def get_least_squared_error(anchors: list[Anchor]) -> OptimizeResult:
-    return least_squares(non_linear_squared_sum_weighted, np.array([0, 0]), args=[anchors], gtol=None)
+    return least_squares(non_linear_squared_sum_weighted, np.array([0, 0]), args=[anchors], gtol=None, verbose=2)
+
 
 
 def draw_plot_with_anchors_circles_and_estimate(anchors, estimate):

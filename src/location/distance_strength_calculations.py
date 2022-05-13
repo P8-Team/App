@@ -20,7 +20,7 @@ def mw_to_dbm(mw):
     return 10 * math.log(mw, 10)
 
 
-def calc_distance_from_dbm_signal_strength(tp, rp, path_loss_exponent):
+def signal_strength_dbm_to_distance(tp, rp, path_loss_exponent):
     return math.pow(10, (tp - rp) / (10 * path_loss_exponent))
 
 

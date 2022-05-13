@@ -214,9 +214,10 @@ def test_input_to_output_with_location_generator_small_distance_between_anchors_
                                              rounding=False)
 
     wifi_frames = [
-        wifi_frame_generator.make_wifi_element(Point2D([3, 3]), transmission_power_dbm=20, sniff_timestamp=1),
-        wifi_frame_generator.make_wifi_element(Point2D([3, 3]), transmission_power_dbm=20, sniff_timestamp=2),
-        wifi_frame_generator.make_wifi_element(Point2D([3, 3]), transmission_power_dbm=20, sniff_timestamp=100)
+        wifi_frame_generator.make_wifi_element(Point2D([3, 3]), transmission_power_dbm=-23, sniff_timestamp=1, receiver_address="0"),
+        wifi_frame_generator.make_wifi_element(Point2D([3, 3]), transmission_power_dbm=-23, sniff_timestamp=2, receiver_address="1"),
+        wifi_frame_generator.make_wifi_element(Point2D([3, 3]), transmission_power_dbm=-23, sniff_timestamp=100, receiver_address="2"),
+        wifi_frame_generator.make_wifi_element(Point2D([3, 3]), transmission_power_dbm=-23, sniff_timestamp=200, receiver_address="3"),
     ]
 
     cl = Classifier(3)
@@ -227,7 +228,7 @@ def test_input_to_output_with_location_generator_small_distance_between_anchors_
         .add_device_aggregator() \
         .add_classifier(cl) \
         .add_average_rssi_with_variance() \
-        .add_location_non_linear_least_square(3)
+        .add_location_non_linear_least_square(4, do_draw=True)
 
     result = generator.to_list()
 
