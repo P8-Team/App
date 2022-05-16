@@ -143,20 +143,6 @@ class Classifier:
 
         cache_dataframe("Data/cache", 'unprocessed_training_data', df)
 
-        # print("First for loop")
-        # frames = []
-        # for file_path in files:
-        #     frames = chain_generators(map_to_frames(load_file(file_path), WifiCard("file", Point2D(0, 0))), frames)
-        # devices = device_aggregator(frame_to_device_converter(frames), 50)
-        #
-        # print("Second for loop")
-        # dfs = []
-        # for device in devices:
-        #     dfs.extend(list(map(lambda frame: frame.to_dataframe(), device.frames)))
-        # df = pd.concat(dfs)
-        #
-        # print("Caching unprocessed training")
-        # cache_dataframe("Data/cache", 'unprocessed_training_data', df)
 
         print("Processing")
         data, label_series = self.preprocess_data(df, labels)
