@@ -234,7 +234,7 @@ def test_input_to_output_with_location_generator_large_distance_between_anchors_
         .add_device_aggregator() \
         .add_classifier(cl) \
         .add_average_rssi_with_variance() \
-        .add_location_non_linear_least_square(4, do_draw=True)
+        .add_location_non_linear_least_square(4, do_draw=False)
 
     result = generator.to_list()
 
