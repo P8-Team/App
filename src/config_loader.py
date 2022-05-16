@@ -34,6 +34,9 @@ schema = {
         "saved_models_folder": {
             "type": "string"
         },
+        "cache_folder": {
+            "type": "string"
+        },
         "classifier_interval": {
             "type": "number"
         },

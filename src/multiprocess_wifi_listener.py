@@ -87,8 +87,8 @@ def map_to_frames(iterator, wifi_card):
 
 
 def cache_dataframe(cache_folder: str, name: str, df: DataFrame) -> None:
-    df.to_json(f"{cache_folder}/{sha1(name.encode('utf-8')).hexdigest()}.json", orient='records', default_handler=str)
+    df.to_json(f"{cache_folder}{sha1(name.encode('utf-8')).hexdigest()}.json", orient='records', default_handler=str)
 
 
 def load_cached_dataframe(cache_folder: str, name: str) -> DataFrame:
-    return pd.read_json(f"{cache_folder}/{sha1(name.encode('utf-8')).hexdigest()}.json", orient='records')
+    return pd.read_json(f"{cache_folder}{sha1(name.encode('utf-8')).hexdigest()}.json", orient='records')

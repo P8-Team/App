@@ -28,6 +28,7 @@ class Classifier:
         self.labels_file = config['labels_file']
         self.hard_data_file = config['hard_data_file']
         self.saved_models_folder = config['saved_models_folder']
+        self.cache_folder = config['cache_folder']
         self.training_files = config['training_files']
         self.model = RandomForestClassifier()
 
@@ -145,7 +146,7 @@ class Classifier:
             dfs.append(frames_from_file_with_caching(file))
         df = pd.concat(dfs)
 
-        cache_dataframe("Data/cache", 'unprocessed_training_data', df)
+        cache_dataframe(self.cache_folder, 'unprocessed_training_data', df)
 
         print("Processing")
         data, label_series = self.preprocess_data(df, labels)

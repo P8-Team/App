@@ -229,7 +229,8 @@ def test_input_to_output_with_location_generator_large_distance_between_anchors_
                    'confidence_threshold': 0.6,
                    'labels_file': 'Data/new_labels.csv',
                    'saved_models_folder': 'Data/cache/savedModels/',
-                   'training_files': {'Google Nest': ['file1', 'file2', 'file3']}}
+                   'training_files': {'Google Nest': ['file1', 'file2', 'file3']},
+                   'cache_folder': 'Data/cache/'}
 
     classifier = Classifier(test_config)
     classifier.load_model('test-trainedModel')

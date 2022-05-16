@@ -6,6 +6,7 @@ adapters:
 hard_data_file: "Data/hard_data.csv"
 labels_file: "Data/new_labels.csv"
 saved_models_folder: "Data/cache/savedModels/"
+cache_folder: "Data/cache/"
 classifier_interval: 3
 device_buffer_size: 50
 path_loss_exponent: 3

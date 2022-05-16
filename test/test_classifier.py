@@ -17,14 +17,16 @@ test_config_1 = {'hard_data_file': 'Data/hard_data.csv',
                  'confidence_threshold': 0.6,
                  'labels_file': 'Data/new_labels.csv',
                  'saved_models_folder': 'Data/cache/savedModels/',
-                 'training_files': {'Google Nest': ['file1', 'file2', 'file3']}}
+                 'training_files': {'Google Nest': ['file1', 'file2', 'file3']},
+                 'cache_folder': 'Data/cache/'}
 
 test_config_2 = {'hard_data_file': 'Data/hard_data.csv',
                  'classifier_interval': 2,
                  'confidence_threshold': 0.6,
                  'labels_file': 'Data/new_labels.csv',
                  'saved_models_folder': 'Data/cache/savedModels/',
-                 'training_files': {'Google Nest': ['file1', 'file2', 'file3']}}
+                 'training_files': {'Google Nest': ['file1', 'file2', 'file3']},
+                 'cache_folder': 'Data/cache/'}
 
 
 def test_get_file_paths_returns_list_of_strings():
