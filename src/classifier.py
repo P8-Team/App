@@ -24,6 +24,7 @@ class Classifier:
         param interval_seconds: The amount of time in seconds to aggregate frames to classify
         """
         self.interval = config['classifier_interval']
+        self.confidence_threshold = config['confidence_threshold']
         self.model = RandomForestClassifier()
         self.config = config
 
@@ -109,11 +110,10 @@ class Classifier:
 
     def determine_device_classification(self, interval_classifications_with_confidence):
         classifications_with_high_confidence = list()
-        threshold = 0.6
 
         # find all classifications with a confidence higher than 0.6
         for classification in interval_classifications_with_confidence:
-            if classification[1] >= threshold:
+            if classification[1] >= self.confidence_threshold:
                 classifications_with_high_confidence.append(classification[0])
         if not classifications_with_high_confidence:
             return None

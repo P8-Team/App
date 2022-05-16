@@ -14,7 +14,9 @@ from test.utils.wifi_test_utils import Frame, Layer
 
 
 def test_get_file_paths_returns_list_of_strings():
-    classifier = Classifier({'hard_data_file': 'Data/hard_data.csv', 'classifier_interval': 1})
+    classifier = Classifier({'hard_data_file': 'Data/hard_data.csv',
+                             'classifier_interval': 1,
+                             'confidence_threshold': 0.6})
     assert all(isinstance(x, str) for x in classifier.get_file_paths()) == True
 
 
@@ -39,7 +41,9 @@ def test_preprocess_data():
     wifi_frame.wlan_radio.frequency_mhz = 2
     labels = pd.DataFrame.from_dict({'Address': ["00:0c:29:b7:d9:b1"], 'Label': ['test']})
 
-    classifier = Classifier({'hard_data_file': 'Data/hard_data.csv', 'classifier_interval': 1})
+    classifier = Classifier({'hard_data_file': 'Data/hard_data.csv',
+                             'classifier_interval': 1,
+                             'confidence_threshold': 0.6})
 
     result_df, result_labels = classifier.preprocess_data(wifi_frame.to_dataframe(), labels)
 
@@ -48,11 +52,13 @@ def test_preprocess_data():
 
 
 def test_classifier_drops_features():
-    cl = Classifier({'hard_data_file': 'Data/hard_data.csv', 'classifier_interval': 1})
+    classifier = Classifier({'hard_data_file': 'Data/hard_data.csv',
+                             'classifier_interval': 1,
+                             'confidence_threshold': 0.6})
     frames_db = frame_factory(1).to_dataframe()
     for i in range(1, 20):
         frames_db = pd.concat([frames_db, frame_factory(i).to_dataframe()], axis=0)
-    new_frames_db = cl.drop_features(frames_db)
+    new_frames_db = classifier.drop_features(frames_db)
 
     dropped_columns = {'radio_timestamp', 'receiver_address', 'transmitter_address'}
 
@@ -78,17 +84,19 @@ def test_classifier_drops_features():
 
 @pytest.fixture
 def cl():
-    cl = Classifier({'hard_data_file': 'Data/hard_data.csv', 'classifier_interval': 2})
+    classifier = Classifier({'hard_data_file': 'Data/hard_data.csv',
+                             'classifier_interval': 2,
+                             'confidence_threshold': 0.6})
 
     frames_df = frame_factory(1).to_dataframe()
     for i in range(1, 20):
         frames_df = pd.concat([frames_df, frame_factory(i).to_dataframe()], axis=0)
 
     labels = pd.DataFrame.from_dict({'Address': ["00:00:00:00:00:01"], 'Label': ['test']})
-    training_data, label_series = cl.preprocess_data(frames_df, labels)
+    training_data, label_series = classifier.preprocess_data(frames_df, labels)
 
-    cl.model.fit(training_data, label_series)
-    return cl
+    classifier.model.fit(training_data, label_series)
+    return classifier
 
 
 def test_classifier_has_labels(cl):
@@ -113,30 +121,34 @@ def generator(items: list):
 
 
 def test_classifier_returns_device():
-    cl = Classifier({'hard_data_file': 'Data/hard_data.csv', 'classifier_interval': 1})
+    classifier = Classifier({'hard_data_file': 'Data/hard_data.csv',
+                             'classifier_interval': 1,
+                             'confidence_threshold': 0.6})
 
     frames_db = frame_factory(1).to_dataframe()
     for i in range(1, 20):
         frames_db = pd.concat([frames_db, frame_factory(i).to_dataframe()], axis=0)
 
     labels = pd.DataFrame.from_dict({'Address': ["00:00:00:00:00:01"], 'Label': ['Nikkei']})
-    training_data, label_series = cl.preprocess_data(frames_db, labels)
+    training_data, label_series = classifier.preprocess_data(frames_db, labels)
 
-    cl.model.fit(training_data, label_series)
+    classifier.model.fit(training_data, label_series)
 
     device = Device("00:00:00:00:00:01", [
         frame_factory(1), frame_factory(2),
     ])
 
-    result = list(cl.classify([device]))
+    result = list(classifier.classify([device]))
     assert result[0] == device
 
 
 def test_classifier_accumulate_frames():
-    cl = Classifier({'hard_data_file': 'Data/hard_data.csv', 'classifier_interval': 2})
+    classifier = Classifier({'hard_data_file': 'Data/hard_data.csv',
+                             'classifier_interval': 2,
+                             'confidence_threshold': 0.6})
     frame_gen = generator([frame_factory(0), frame_factory(0.5), frame_factory(1), frame_factory(1.9),
                            frame_factory(2), frame_factory(2.1), frame_factory(2.5), frame_factory(3)])
-    accumulated_frames = next(cl.accumulate_frames(frame_gen))
+    accumulated_frames = next(classifier.accumulate_frames(frame_gen))
     for e in accumulated_frames:
         assert isinstance(e, WifiFrame)
     assert len(accumulated_frames) == 4
@@ -177,16 +189,18 @@ def test_classifier_extract_correct_features(cl, frames):
 
 
 def test_classifier_extracting_same_features_ignoring_labels(frames):
-    cl = Classifier({'hard_data_file': 'Data/hard_data.csv', 'classifier_interval': 1})
+    classifier = Classifier({'hard_data_file': 'Data/hard_data.csv',
+                             'classifier_interval': 1,
+                             'confidence_threshold': 0.6})
 
     frames_df = frame_factory(1).to_dataframe()
     for i in range(2, 20):
         frames_df = pd.concat([frames_df, frame_factory(i).to_dataframe()], axis=0)
 
     labels = pd.DataFrame.from_dict({'Address': ["00:00:00:00:00:01"], 'Label': ['test']})
-    training_data, label_series = cl.preprocess_data(frames_df, labels)
+    training_data, label_series = classifier.preprocess_data(frames_df, labels)
 
-    features_classifier = cl.extract_features_for_classification(frames).columns.values.tolist()
+    features_classifier = classifier.extract_features_for_classification(frames).columns.values.tolist()
     features_training = training_data.columns.values.tolist()
 
     assert len(features_training) > 0

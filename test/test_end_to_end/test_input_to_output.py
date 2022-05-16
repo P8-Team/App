@@ -224,7 +224,9 @@ def test_input_to_output_with_location_generator_large_distance_between_anchors_
                                                receiver_address="2"),
     ]
 
-    cl = Classifier(3)
+    cl = Classifier({'hard_data_file': 'Data/hard_data.csv',
+                     'classifier_interval': 1,
+                     'confidence_threshold': 0.6})
     cl.load_model('test-trainedModel')
 
     generator = PipelineFactory(wifi_frames) \

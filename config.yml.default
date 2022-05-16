@@ -8,3 +8,4 @@ labels_file: "Data/new_labels.csv"
 classifier_interval: 3
 device_buffer_size: 50
 path_loss_exponent: 3
+confidence_threshold: 0.6
