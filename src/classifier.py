@@ -31,7 +31,7 @@ class Classifier:
     def classify(self, generator: Iterable[Device]):
         """
         Identifies an IoT device based on a number of frames within a time interval
-        Note: This is a generator that yields a label a single device, as a result of labeling time intervals.
+        Note: This is a generator that yields a single device, as a result of labeling time intervals.
 
         param device: A devices
         """

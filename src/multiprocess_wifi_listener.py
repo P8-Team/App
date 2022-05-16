@@ -68,14 +68,6 @@ def frames_from_file_with_caching(file_path: str):
 
         return df
 
-        # frames = map_to_frames(load_file(file_path), WifiCard("file", Point2D(0, 0)))
-        # dfs = list()
-        # for item in frames:
-        #     dfs.append(item.to_dataframe())
-        # df = pd.concat(dfs)
-        # print(f'Caching file {file_path}')
-        # cache_dataframe(cache_folder, file_path, df)
-        # return dfs
     else:
         print(f'Using cached dataframe for {file_path}')
         return load_cached_dataframe(cache_folder, file_path)
