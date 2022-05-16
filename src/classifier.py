@@ -25,8 +25,11 @@ class Classifier:
         """
         self.interval = config['classifier_interval']
         self.confidence_threshold = config['confidence_threshold']
+        self.labels_file = config['labels_file']
+        self.hard_data_file = config['hard_data_file']
+        self.saved_models_folder = config['saved_models_folder']
+        self.training_files = config['training_files']
         self.model = RandomForestClassifier()
-        self.config = config
 
     def classify(self, generator: Iterable[Device]):
         """
@@ -35,7 +38,7 @@ class Classifier:
 
         param device: A devices
         """
-        device_lookup = DeviceLookup(self.config['hard_data_file'])
+        device_lookup = DeviceLookup(self.hard_data_file)
 
         for device in generator:
             interval_classification_with_threshold = list()
@@ -134,7 +137,7 @@ class Classifier:
 
     def train(self):
 
-        labels = pd.read_csv(self.config["labels_path"])
+        labels = pd.read_csv(self.labels_file)
         files = self.get_file_paths()
 
         dfs = list()
@@ -200,32 +203,22 @@ class Classifier:
 
         return pd.concat(dfs)
 
-    @staticmethod
-    def get_file_paths():
+    def get_file_paths(self):
 
-        # TODO Lav dette til en config.
         def add_path(folder):
-            return lambda name: f'Data/{folder}/{name}'
+            return lambda name: f'Data/{folder}/{name}.pcapng'
 
         files = list()
-        files.extend(list(map(add_path('Google Nest'),
-                              ['dump1_2.4_ghz.pcapng', 'dump2_2.4_ghz.pcapng', 'dump1_5_ghz.pcapng',
-                               'dump2_5_ghz.pcapng', 'dump3_5_ghz.pcapng', 'dump4_5_ghz.pcapng'])))
-        files.extend(list(map(add_path('LittleElf'), ['dump.pcapng', 'dump1.pcapng', 'dump2.pcapng', 'dump3.pcapng'])))
-        files.extend(list(map(add_path('Nikkei'), ['dump2.pcapng', 'dump3.pcapng', 'dump4.pcapng'])))
-        files.extend(list(map(add_path('TP-Link'),
-                              ['dump.pcapng', 'dump1.pcapng', 'dump2.pcapng', 'dump3.pcapng', 'dump4.pcapng',
-                               'dump5.pcapng'])))
-        files.extend(list(map(add_path('Blink'), ['dump1.pcapng', 'dump2.pcapng', 'dump4.pcapng'])))
-        files.extend(list(map(add_path('Nedis'), ['dump.pcapng', 'dump1.pcapng', 'dump2.pcapng',
-                                                  'dump3.pcapng', 'dump4.pcapng', 'dump5.pcapng'])))
+
+        for key in self.training_files:
+            files.extend(list(map(add_path(key), self.training_files[key])))
 
         return files
 
     def save_model(self, filename):
-        path_norm = os.path.normpath(f'Data/cache/savedModels/{filename}.joblib')
+        path_norm = os.path.normpath(f'{self.saved_models_folder}{filename}.joblib')
         dump(self.model, path_norm)
 
     def load_model(self, filename):
-        path_norm = os.path.normpath(f'Data/cache/savedModels/{filename}.joblib')
+        path_norm = os.path.normpath(f'{self.saved_models_folder}{filename}.joblib')
         self.model = load(path_norm)

@@ -224,15 +224,20 @@ def test_input_to_output_with_location_generator_large_distance_between_anchors_
                                                receiver_address="2"),
     ]
 
-    cl = Classifier({'hard_data_file': 'Data/hard_data.csv',
-                     'classifier_interval': 1,
-                     'confidence_threshold': 0.6})
-    cl.load_model('test-trainedModel')
+    test_config = {'hard_data_file': 'Data/hard_data.csv',
+                   'classifier_interval': 1,
+                   'confidence_threshold': 0.6,
+                   'labels_file': 'Data/new_labels.csv',
+                   'saved_models_folder': 'Data/cache/savedModels/',
+                   'training_files': {'Google Nest': ['file1', 'file2', 'file3']}}
+
+    classifier = Classifier(test_config)
+    classifier.load_model('test-trainedModel')
 
     generator = PipelineFactory(wifi_frames) \
         .add_frame_to_device_converter() \
         .add_device_aggregator() \
-        .add_classifier(cl) \
+        .add_classifier(classifier) \
         .add_average_rssi_with_variance() \
         .add_location_non_linear_least_square(4, do_draw=False)
 

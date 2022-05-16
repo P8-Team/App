@@ -31,6 +31,9 @@ schema = {
         "labels_file": {
             "type": "string"
         },
+        "saved_models_folder": {
+            "type": "string"
+        },
         "classifier_interval": {
             "type": "number"
         },
@@ -39,8 +42,16 @@ schema = {
         },
         "path_loss_exponent": {
             "type": "number"
+        },
+        "confidence_threshold": {
+            "type": "number"
+        },
+        "training_files": {
+            "type": "object",
+            "additionalProperties": {
+                "type": "array"
+            }
         }
-
     }
 }
 

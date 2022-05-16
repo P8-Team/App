@@ -5,7 +5,15 @@ adapters:
   wlan3: { location: [0, 1.15] }
 hard_data_file: "Data/hard_data.csv"
 labels_file: "Data/new_labels.csv"
+saved_models_folder: "Data/cache/savedModels/"
 classifier_interval: 3
 device_buffer_size: 50
 path_loss_exponent: 3
 confidence_threshold: 0.6
+training_files:
+    Google Nest: ['dump1_2.4_ghz', 'dump2_2.4_ghz', 'dump1_5_ghz', 'dump2_5_ghz', 'dump3_5_ghz', 'dump4_5_ghz']
+    LittleElf: ['dump', 'dump1', 'dump2', 'dump3']
+    Nikkei: ['dump2', 'dump3', 'dump4']
+    TP-Link: ['dump', 'dump1', 'dump2', 'dump3', 'dump4', 'dump5']
+    Blink: ['dump1', 'dump2', 'dump4']
+    Nedis: ['dump', 'dump1', 'dump2', 'dump3', 'dump4', 'dump5']

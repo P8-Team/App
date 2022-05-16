@@ -12,12 +12,27 @@ from src.wifi.wifi_frame import WifiFrame
 from test.utils.wifi_frame_factory import frame_factory
 from test.utils.wifi_test_utils import Frame, Layer
 
+test_config_1 = {'hard_data_file': 'Data/hard_data.csv',
+                 'classifier_interval': 1,
+                 'confidence_threshold': 0.6,
+                 'labels_file': 'Data/new_labels.csv',
+                 'saved_models_folder': 'Data/cache/savedModels/',
+                 'training_files': {'Google Nest': ['file1', 'file2', 'file3']}}
+
+test_config_2 = {'hard_data_file': 'Data/hard_data.csv',
+                 'classifier_interval': 2,
+                 'confidence_threshold': 0.6,
+                 'labels_file': 'Data/new_labels.csv',
+                 'saved_models_folder': 'Data/cache/savedModels/',
+                 'training_files': {'Google Nest': ['file1', 'file2', 'file3']}}
+
 
 def test_get_file_paths_returns_list_of_strings():
-    classifier = Classifier({'hard_data_file': 'Data/hard_data.csv',
-                             'classifier_interval': 1,
-                             'confidence_threshold': 0.6})
-    assert all(isinstance(x, str) for x in classifier.get_file_paths()) == True
+    classifier = Classifier(test_config_1)
+    file_paths = classifier.get_file_paths()
+    assert all(isinstance(x, str) for x in file_paths) is True
+    assert file_paths[0] == 'Data/Google Nest/file1.pcapng'
+    assert file_paths[2] == 'Data/Google Nest/file3.pcapng'
 
 
 def test_preprocess_data():
@@ -41,9 +56,7 @@ def test_preprocess_data():
     wifi_frame.wlan_radio.frequency_mhz = 2
     labels = pd.DataFrame.from_dict({'Address': ["00:0c:29:b7:d9:b1"], 'Label': ['test']})
 
-    classifier = Classifier({'hard_data_file': 'Data/hard_data.csv',
-                             'classifier_interval': 1,
-                             'confidence_threshold': 0.6})
+    classifier = Classifier(test_config_1)
 
     result_df, result_labels = classifier.preprocess_data(wifi_frame.to_dataframe(), labels)
 
@@ -52,9 +65,7 @@ def test_preprocess_data():
 
 
 def test_classifier_drops_features():
-    classifier = Classifier({'hard_data_file': 'Data/hard_data.csv',
-                             'classifier_interval': 1,
-                             'confidence_threshold': 0.6})
+    classifier = Classifier(test_config_1)
     frames_db = frame_factory(1).to_dataframe()
     for i in range(1, 20):
         frames_db = pd.concat([frames_db, frame_factory(i).to_dataframe()], axis=0)
@@ -62,16 +73,14 @@ def test_classifier_drops_features():
 
     dropped_columns = {'radio_timestamp', 'receiver_address', 'transmitter_address'}
 
-    assert dropped_columns.issubset(frames_db.columns) == True
+    assert dropped_columns.issubset(frames_db.columns) is True
     for column in dropped_columns:
-        assert {column}.issubset(new_frames_db) == False
+        assert {column}.issubset(new_frames_db) is False
 
 
 @pytest.fixture
 def cl():
-    classifier = Classifier({'hard_data_file': 'Data/hard_data.csv',
-                             'classifier_interval': 2,
-                             'confidence_threshold': 0.6})
+    classifier = Classifier(test_config_1)
 
     frames_df = frame_factory(1).to_dataframe()
     for i in range(1, 20):
@@ -106,9 +115,7 @@ def generator(items: list):
 
 
 def test_classifier_returns_device():
-    classifier = Classifier({'hard_data_file': 'Data/hard_data.csv',
-                             'classifier_interval': 1,
-                             'confidence_threshold': 0.6})
+    classifier = Classifier(test_config_1)
 
     frames_db = frame_factory(1).to_dataframe()
     for i in range(1, 20):
@@ -128,9 +135,7 @@ def test_classifier_returns_device():
 
 
 def test_classifier_accumulate_frames():
-    classifier = Classifier({'hard_data_file': 'Data/hard_data.csv',
-                             'classifier_interval': 2,
-                             'confidence_threshold': 0.6})
+    classifier = Classifier(test_config_2)
     frame_gen = generator([frame_factory(0), frame_factory(0.5), frame_factory(1), frame_factory(1.9),
                            frame_factory(2), frame_factory(2.1), frame_factory(2.5), frame_factory(3)])
     accumulated_frames = next(classifier.accumulate_frames(frame_gen))
@@ -145,7 +150,7 @@ def test_classifier_save_and_load_model(cl):
     if os.path.exists(path_norm):
         os.remove(path_norm)
     cl.save_model(filename)
-    assert os.path.exists(path_norm) == True
+    assert os.path.exists(path_norm) is True
 
     cl.model = None
     cl.load_model(filename)
@@ -163,7 +168,7 @@ def frames():
 def test_classifier_extract_correct_features(cl, frames):
     extracted_features = cl.extract_features_for_classification(frames)
 
-    assert isinstance(extracted_features, pd.DataFrame) == True
+    assert isinstance(extracted_features, pd.DataFrame) is True
     assert len(extracted_features.columns.values.tolist()) > 0
 
     extracted_features = extracted_features.columns.values.tolist()
@@ -174,9 +179,7 @@ def test_classifier_extract_correct_features(cl, frames):
 
 
 def test_classifier_extracting_same_features_ignoring_labels(frames):
-    classifier = Classifier({'hard_data_file': 'Data/hard_data.csv',
-                             'classifier_interval': 1,
-                             'confidence_threshold': 0.6})
+    classifier = Classifier(test_config_1)
 
     frames_df = frame_factory(1).to_dataframe()
     for i in range(2, 20):
