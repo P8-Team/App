@@ -6,7 +6,7 @@ import numpy as np
 from scipy.optimize import least_squares, OptimizeResult
 
 from src.device.device import Device
-from src.location.distance_strength_calculations import calc_distance_from_dbm_signal_strength
+from src.location.distance_strength_calculations import signal_strength_dbm_to_distance
 
 
 class Anchor:
@@ -24,7 +24,8 @@ class Anchor:
 
     def calc_weight(self) -> float:
         # The article does not mention this edge case. It is assumed that the weight is 1.
-        if self.distance == 0 or self.variance == 0:
+
+        if math.isclose(self.distance, 0, abs_tol=1e-8) or math.isclose(self.variance, 0, abs_tol=1e-10):
             return 1
         return 1 / (math.pow(self.distance, 4) * math.pow(self.variance, 4))
 
@@ -40,14 +41,14 @@ def calculate_position(device: Device, path_loss_exponent, do_draw=False):
     signals = device.averaged_signals
 
     if device.identification is not None:
-        transmission_power_dbm = device.identification["transmission_power_dbm"]
+        transmission_power_dbm = int(device.identification[0])
     else:
         # 20 is max for 2.4ghz, 30 for 5ghz.
-        transmission_power_dbm = 20 if frequency < 4000 else 30
+        transmission_power_dbm = -15.5 if frequency < 4000 else -10
 
     anchors = [Anchor(
         np.array(signal.location.coordinates, dtype=np.float64),
-        calc_distance_from_dbm_signal_strength(transmission_power_dbm, signal.signal_strength, path_loss_exponent),
+        signal_strength_dbm_to_distance(transmission_power_dbm, signal.signal_strength, path_loss_exponent),
         signal.variance
     ) for signal in signals]
 

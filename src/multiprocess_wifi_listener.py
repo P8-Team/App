@@ -1,7 +1,6 @@
 from hashlib import sha1
 from multiprocessing import Queue, Process
 from os.path import exists
-from typing import Generator
 from typing import Iterator
 
 import pandas as pd
@@ -9,6 +8,9 @@ import pyshark
 from pandas import DataFrame
 from sympy import Point2D
 
+from src.device.device_aggregator import device_aggregator
+from src.device.frame_to_device_converter import frame_to_device_converter
+from src.utils import chain_generators
 from src.wifi.wifi_card import WifiCard
 from src.wifi.wifi_frame import WifiFrame
 
@@ -48,18 +50,24 @@ def multiprocess_wifi_listener(wifi_card_list: list[WifiCard]) -> Iterator[WifiF
         yield queue.get()
 
 
-def frames_from_file_with_caching(file_path: str) -> Generator[WifiFrame, None, None]:
+def frames_from_file_with_caching(file_path: str):
     cache_folder = "Data/cache"
     if not exists(f'{cache_folder}/{sha1(file_path.encode("utf-8")).hexdigest()}.json'):
-        print(f'No cached dataframe found for {file_path}. loading frames from file')
-        frames = map_to_frames(load_file(file_path), WifiCard("file", Point2D(0, 0)))
-        dfs = list()
-        for item in frames:
-            dfs.append(item.to_dataframe())
+        print(f'No cached dataframe found for {file_path}. Loading frames from file')
+
+        frames = []
+        frames = chain_generators(map_to_frames(load_file(file_path), WifiCard("file", Point2D(0, 0))), frames)
+        devices = device_aggregator(frame_to_device_converter(frames), 50)
+
+        dfs = []
+        for device in devices:
+            dfs.extend(list(map(lambda frame: frame.to_dataframe(), device.frames)))
         df = pd.concat(dfs)
-        print(f'Caching file {file_path}')
+
         cache_dataframe(cache_folder, file_path, df)
+
         return df
+
     else:
         print(f'Using cached dataframe for {file_path}')
         return load_cached_dataframe(cache_folder, file_path)

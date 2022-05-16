@@ -1,9 +1,24 @@
 import pytest
 from sympy import Point2D
 
-from src.data_generators.location_data_generator import LocationGenerator, mw_to_dbm, distance_to_signal_strength_free_space_path_loss
+from src.data_generators.location_data_generator import LocationGenerator
+from src.location.distance_strength_calculations import *
+from src.location.distance_strength_calculations import mw_to_dbm
 from src.wifi.wifi_frame import WifiFrame
 from src.wifi.wlan_radio_information import WlanRadioInformation
+
+
+def test_location_generator():
+    wifi_frame_generator = LocationGenerator([Point2D([0, 0.433]), Point2D([0.5, -0.433]), Point2D([-0.5, -0.433])],
+                                             rounding=False)
+    result = wifi_frame_generator.make_wifi_element(Point2D([10, 0]), transmission_power_dbm=-23)
+
+    signal_strength = distance_to_signal_strength(10, -23, 4)
+
+    assert result.wlan_radio.signals[0].signal_strength == pytest.approx(signal_strength, abs=1.5, rel=None)
+    assert result.wlan_radio.signals[1].signal_strength == pytest.approx(signal_strength, abs=1.5, rel=None)
+    assert result.wlan_radio.signals[2].signal_strength == pytest.approx(signal_strength, abs=1.5, rel=None)
+    assert signal_strength_dbm_to_distance(-23, distance_to_signal_strength(10, -23, 4), 4) == 10
 
 
 def __generator_factory_for_test():

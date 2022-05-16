@@ -1,8 +1,9 @@
-from src.location.multi_lateration_non_linear_least_square_sum import Anchor, non_linear_squared_sum_weighted, \
-    get_least_squared_error
 import matplotlib.pyplot as plt
 import numpy as np
 from matplotlib import cm
+
+from src.location.multi_lateration_non_linear_least_square_sum import Anchor, non_linear_squared_sum_weighted, \
+    get_least_squared_error
 
 
 def make_surface_plot(fig, anchors: list[Anchor]):

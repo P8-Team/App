@@ -66,17 +66,24 @@ class WlanRadioInformation:
         """
         return min(signal.sniff_timestamp for signal in self.signals)
 
-    def to_dataframe(self):
-        # Create flat dataframe containing all signals
-        sigdf = pd.concat(list(map(lambda x: x.to_dataframe(), self.signals)), ignore_index=True)
-        v = sigdf.unstack().to_frame().sort_index(level=1).T
-        v.columns = v.columns.map(lambda x: x[0] + '_' + str(x[1]))
+    def get_smallest_timestamp_delta(self) -> float | None:
+        signals_with_timestamp_delta = [signal for signal in self.signals if signal.timestamp_delta != None]
+        if not signals_with_timestamp_delta:
+            return None
+        else:
+            return min(signal.timestamp_delta for signal in signals_with_timestamp_delta)
 
-        # Get value of the remaining fields
-        var_dict = vars(self)
-        # Remove signals as that is already handled
-        del var_dict['signals']
-        # Create dataframe containing the field values
-        var_df = pd.DataFrame(var_dict, index=[0])
-        # Combine signals and other fields into complete dataframe
-        return pd.concat([v, var_df], axis=1).infer_objects()
+    def to_dataframe(self):
+
+        all_timestamp_deltas_none = all(signal.timestamp_delta == None for signal in self.signals)
+
+        minimum_timestamp_delta = None if all_timestamp_deltas_none \
+            else min(signal.timestamp_delta for signal in self.signals)
+        df = pd.DataFrame(data=
+        {
+            'timestamp_delta': [minimum_timestamp_delta],
+            'data_rate': [self.data_rate], 'radio_timestamp': [self.radio_timestamp],
+            'frequency_mhz': [self.frequency_mhz]
+        })
+
+        return df

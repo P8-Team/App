@@ -1,12 +1,16 @@
+import os
+import os.path
+
 import pandas as pd
 import pytest
+from sympy import Point2D
+
 from src.classifier import Classifier
+from src.device.device import Device
 from src.wifi.wifi_card import WifiCard
 from src.wifi.wifi_frame import WifiFrame
 from test.utils.wifi_frame_factory import frame_factory
 from test.utils.wifi_test_utils import Frame, Layer
-from sympy import Point2D
-import os
 
 
 def test_get_file_paths_returns_list_of_strings():
@@ -31,6 +35,8 @@ def test_preprocess_data():
     })
 
     wifi_frame = WifiFrame.from_frame(frame, WifiCard("wlan0", Point2D(0, 0)))
+    wifi_frame.wlan_radio.signals[0].timestamp_delta = 10
+    wifi_frame.wlan_radio.frequency_mhz = 2
     labels = pd.DataFrame.from_dict({'Address': ["00:0c:29:b7:d9:b1"], 'Label': ['test']})
 
     classifier = Classifier(1)
@@ -38,7 +44,7 @@ def test_preprocess_data():
     result_df, result_labels = classifier.preprocess_data(wifi_frame.to_dataframe(), labels)
 
     assert result_labels == "test"
-    assert len(result_df.columns) == 7
+    assert len(result_df.columns) == 6
 
 
 def test_classifier_drops_features():
@@ -53,20 +59,6 @@ def test_classifier_drops_features():
     assert dropped_columns.issubset(frames_db.columns) == True
     for column in dropped_columns:
         assert {column}.issubset(new_frames_db) == False
-
-
-def test_classifier_correct_null_values():
-    cl = Classifier(1)
-    frames_db = frame_factory(1).to_dataframe()
-    for i in range(1, 20):
-        frames_db = pd.concat([frames_db, frame_factory(i).to_dataframe()], axis=0)
-    new_frames_db = cl.drop_features(frames_db)
-
-    assert {'data_rate'}.issubset(new_frames_db.columns) == True
-    assert frames_db['data_rate'].isnull().values.any() == True
-    for i, e in enumerate(frames_db['data_rate'].values.tolist()):
-        if e == None:
-            assert new_frames_db['data_rate'].values.tolist()[i] == 0
 
 
 @pytest.fixture
@@ -88,9 +80,41 @@ def test_classifier_has_labels(cl):
     assert cl.labels_in_model()[0] == 'test'
 
 
+def test_classifier_return_confidence_for_interval(cl):
+    frames = []
+    for i in range(0, 10):
+        frames.append(frame_factory(i))
+    assert 0 <= cl.classify_interval_confidence(frames) <= 1
+
+
+def test_classifier_return_most_frequent_label_with_high_confidence(cl):
+    assert cl.determine_device_classification(
+        [['Nedis', 0.6], ['test', 0.7], ['test', 0.8], ['Nedis', 0.2], ['Nedis', 0.5]]) == 'test'
+
+
 def generator(items: list):
     for item in items:
         yield item
+
+
+def test_classifier_returns_device():
+    cl = Classifier(1)
+
+    frames_db = frame_factory(1).to_dataframe()
+    for i in range(1, 20):
+        frames_db = pd.concat([frames_db, frame_factory(i).to_dataframe()], axis=0)
+
+    labels = pd.DataFrame.from_dict({'Address': ["00:00:00:00:00:01"], 'Label': ['Nikkei']})
+    training_data, label_series = cl.preprocess_data(frames_db, labels)
+
+    cl.model.fit(training_data, label_series)
+
+    device = Device("00:00:00:00:00:01", [
+        frame_factory(1), frame_factory(2),
+    ])
+
+    result = list(cl.classify([device]))
+    assert result[0] == device
 
 
 def test_classifier_accumulate_frames():
@@ -101,12 +125,6 @@ def test_classifier_accumulate_frames():
     for e in accumulated_frames:
         assert isinstance(e, WifiFrame)
     assert len(accumulated_frames) == 4
-
-
-def test_classifier_returns_label_for_classify(cl):
-    frame_gen = generator([frame_factory(1), frame_factory(2), frame_factory(3), frame_factory(4)])
-    possible_labels_list = cl.labels_in_model()
-    assert next(cl.classify(frame_gen)) in possible_labels_list
 
 
 def test_classifier_save_and_load_model(cl):
@@ -167,4 +185,3 @@ def test_classifier_returns_label_for_interval(cl, frames):
 
 def test_classifier_return_confidence_for_interval(cl, frames):
     assert 0 <= cl.classify_interval_confidence(frames) <= 1
-

@@ -11,6 +11,9 @@ from src.wifi.wifi_frame import WifiFrame
 from src.wifi.wlan_radio_information import WlanRadioInformation
 from test.utils.wifi_test_utils import Frame, Layer
 
+default_transmitter_address = '50:e0:85:3f:77:5e'
+default_receiver_address = 'b4:de:31:9c:f0:8a'
+
 
 def test_construct_wifi_frame():
     # Arrange
@@ -259,26 +262,61 @@ def test_wifi_frame_has_different_hash():
     assert hash(frame1) != hash(frame2)
 
 
-def test_wifi_frame_to_dataframe():
+def test_wifi_frame_to_dataframe_without_timestamp_delta():
     expected = pd.DataFrame(data=
     {
         'length': 12,
-        'signal_strength_0': [1], 'sniff_timestamp_0': [1567757309],
-        'signal_strength_1': [2], 'sniff_timestamp_1': [1567757309],
-        'signal_strength_2': [3], 'sniff_timestamp_2': [1567757309],
+        'timestamp_delta': [None],
         'data_rate': [12], 'radio_timestamp': [1567757309], 'frequency_mhz': [44],
         'type': [0],
         'subtype': [10],
-        'receiver_address': ['b4:de:31:9c:f0:8a'],
-        'transmitter_address': ['50:e0:85:3f:77:5e']
+        'receiver_address': [default_receiver_address],
+        'transmitter_address': [default_transmitter_address]
     })
 
-    frame_control_information = FrameControlInformation(0, 10, 'b4:de:31:9c:f0:8a', '50:e0:85:3f:77:5e')
+    frame_control_information = FrameControlInformation(0, 10, default_receiver_address, default_transmitter_address)
     wlan_radio_information = WlanRadioInformation(
         [
             Signal(Point2D(1, 1), 1, 1567757309),
             Signal(Point2D(2, 2), 2, 1567757309),
             Signal(Point2D(3, 3), 3, 1567757309)
+        ],
+        12, 1567757309, 44)
+
+    wifi_frame = WifiFrame(12, uuid.uuid4().int, wlan_radio_information, frame_control_information)
+
+    actual = wifi_frame.to_dataframe()
+
+    pd.testing.assert_frame_equal(actual, expected)
+
+
+def test_wifi_frame_to_dataframe_with_timestamp_delta():
+    expected = pd.DataFrame(data=
+    {
+        'length': 12,
+        'timestamp_delta': [8],
+        'data_rate': [12], 'radio_timestamp': [1567757309], 'frequency_mhz': [44],
+        'type': [0],
+        'subtype': [10],
+        'receiver_address': [default_receiver_address],
+        'transmitter_address': [default_transmitter_address]
+    })
+
+    frame_control_information = FrameControlInformation(0, 10, default_receiver_address, default_transmitter_address)
+    previous_signal = Signal(Point2D(1, 1), 1, 1567757299)
+
+    signal1 = Signal(Point2D(1, 1), 1, 1567757307)
+    signal2 = Signal(Point2D(2, 2), 2, 1567757308)
+    signal3 = Signal(Point2D(3, 3), 3, 1567757309)
+    signal1.set_timestamp_delta_from_other_signal(previous_signal)
+    signal2.set_timestamp_delta_from_other_signal(previous_signal)
+    signal3.set_timestamp_delta_from_other_signal(previous_signal)
+
+    wlan_radio_information = WlanRadioInformation(
+        [
+            signal1,
+            signal2,
+            signal3
         ],
         12, 1567757309, 44)
 
