@@ -61,9 +61,6 @@ def test_classifier_drops_features():
         assert {column}.issubset(new_frames_db) == False
 
 
-
-
-
 @pytest.fixture
 def cl():
     cl = Classifier(2)
