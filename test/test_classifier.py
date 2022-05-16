@@ -139,6 +139,8 @@ def test_classifier_save_and_load_model(cl):
     cl.load_model(filename)
     assert cl.model is not None
 
+    os.remove(path_norm)
+
 
 @pytest.fixture
 def frames():
