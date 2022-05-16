@@ -62,11 +62,6 @@ def test_classifier_drops_features():
 
 
 
-#     assert {'data_rate'}.issubset(new_frames_db.columns) == True
-#     assert frames_db['data_rate'].isnull().values.any() == True
-#     for i, e in enumerate(frames_db['data_rate'].values.tolist()):
-#         if e == None:
-#             assert new_frames_db['data_rate'].values.tolist()[i] == 0
 
 
 @pytest.fixture
