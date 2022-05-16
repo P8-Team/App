@@ -146,7 +146,7 @@ def test_classifier_accumulate_frames():
 
 def test_classifier_save_and_load_model(cl):
     filename = 'testSave'
-    path_norm = os.path.normpath('Data/cache/savedModels/{}.joblib'.format(filename))
+    path_norm = os.path.normpath(f'{test_config_1["saved_models_folder"]}{filename}.joblib')
     if os.path.exists(path_norm):
         os.remove(path_norm)
     cl.save_model(filename)
