@@ -18,3 +18,5 @@ training_files:
     TP-Link: ['dump', 'dump1', 'dump2', 'dump3', 'dump4', 'dump5']
     Blink: ['dump1', 'dump2', 'dump4']
     Nedis: ['dump', 'dump1', 'dump2', 'dump3', 'dump4', 'dump5']
+transmission_power_placeholder_2ghz: -15.5
+transmission_power_placeholder_5ghz: -10

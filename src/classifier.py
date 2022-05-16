@@ -143,7 +143,7 @@ class Classifier:
 
         dfs = list()
         for file in files:
-            dfs.append(frames_from_file_with_caching(file))
+            dfs.append(frames_from_file_with_caching(file, self.cache_folder))
         df = pd.concat(dfs)
 
         cache_dataframe(self.cache_folder, 'unprocessed_training_data', df)
@@ -195,14 +195,6 @@ class Classifier:
         df = df.drop(['radio_timestamp'], axis='columns', errors='ignore')
         df = df.drop(['receiver_address', 'transmitter_address'], axis='columns')
         return df
-
-    @staticmethod
-    def load_files(files):
-        dfs = list()
-        for file in files:
-            dfs.append(frames_from_file_with_caching(file))
-
-        return pd.concat(dfs)
 
     def get_file_paths(self):
 

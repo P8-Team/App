@@ -54,6 +54,12 @@ schema = {
             "additionalProperties": {
                 "type": "array"
             }
+        },
+        "transmission_power_placeholder_2ghz": {
+            "type": "number"
+        },
+        "transmission_power_placeholder_5ghz": {
+            "type": "number"
         }
     }
 }

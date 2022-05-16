@@ -21,7 +21,7 @@ def test_calculate_position_from_device_with_identification():
                         Signal(Point2D(1, 0), -20, 0, variance=1),
                     ])
 
-    calculate_position(device, 4)
+    calculate_position(device, 4, -15.5, -10)
 
     # Numbers verified with do_draw=True
     assert device.position == pytest.approx([4.286877918320265, 4.2868779517285])

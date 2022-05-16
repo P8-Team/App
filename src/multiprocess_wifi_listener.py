@@ -50,8 +50,7 @@ def multiprocess_wifi_listener(wifi_card_list: list[WifiCard]) -> Iterator[WifiF
         yield queue.get()
 
 
-def frames_from_file_with_caching(file_path: str):
-    cache_folder = "Data/cache"
+def frames_from_file_with_caching(file_path: str, cache_folder: str):
     if not exists(f'{cache_folder}/{sha1(file_path.encode("utf-8")).hexdigest()}.json'):
         print(f'No cached dataframe found for {file_path}. Loading frames from file')
 

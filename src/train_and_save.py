@@ -6,7 +6,7 @@ from src.config_loader import load_config_file
 if __name__ == '__main__':
     tic = time.perf_counter()
 
-    cl = Classifier(load_config_file("config.yml"))
+    cl = Classifier(load_config_file('config.yml'))
     print("Started training")
     cl.train()
     print("Saving")

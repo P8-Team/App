@@ -19,6 +19,9 @@ if __name__ == '__main__':
         .add_device_aggregator(config['device_buffer_size']) \
         .add_classifier(cl) \
         .add_average_rssi_with_variance() \
-        .add_location_non_linear_least_square(config['path_loss_exponent'], do_draw=False) \
+        .add_location_non_linear_least_square(config['path_loss_exponent'],
+                                              config['transmission_power_placeholder_2ghz'],
+                                              config['transmission_power_placeholder_5ghz'],
+                                              do_draw=False) \
         .output_to_console() \
         .to_list()
