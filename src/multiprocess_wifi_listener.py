@@ -54,13 +54,12 @@ def frames_from_file_with_caching(file_path: str, cache_folder: str):
     if not exists(f'{cache_folder}/{sha1(file_path.encode("utf-8")).hexdigest()}.json'):
         print(f'No cached dataframe found for {file_path}. Loading frames from file')
 
-        frames = []
-        frames = chain_generators(map_to_frames(load_file(file_path), WifiCard("file", Point2D(0, 0))), frames)
-        devices = device_aggregator(frame_to_device_converter(frames), 50)
+        frames = map_to_frames(load_file(file_path), WifiCard("file", Point2D(0, 0)))
+        devices = device_aggregator(frame_to_device_converter(frames), 1000)
 
         dfs = []
         for device in devices:
-            dfs.extend(list(map(lambda frame: frame.to_dataframe(), device.frames)))
+            dfs.extend([frame.to_dataframe() for frame in device.frames])
         df = pd.concat(dfs)
 
         cache_dataframe(cache_folder, file_path, df)
