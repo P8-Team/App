@@ -4,8 +4,10 @@ import json
 from typing import Generator, Iterator
 
 import pandas as pd
+from sympy import Point2D
 
 from src.wifi.frame_control_information import FrameControlInformation
+from src.wifi.signal import Signal
 from src.wifi.wifi_card import WifiCard
 from src.wifi.wlan_radio_information import WlanRadioInformation
 
@@ -80,3 +82,42 @@ class WifiFrame:
         len_df = pd.DataFrame({'length': [self.length]})
         return pd.concat([len_df, self.wlan_radio.to_dataframe(), self.frame_control_information.to_dataframe()],
                          axis=1)
+
+    @staticmethod
+    def get_csv_header():
+        return "length,frame_control_sequence,card_location_x,card_location_y,signal_strength,sniff_timestamp,"\
+               "data_rate,radio_timestamp,frequency_mhz,type,subtype,receiver_address,transmitter_address"
+
+    def to_csv_row(self):
+        return f"{self.length},{self.frame_control_sequence},{self.wlan_radio.signals[0].location.x}," \
+          f"{self.wlan_radio.signals[0].location.y},{self.wlan_radio.signals[0].signal_strength}," \
+          f"{self.wlan_radio.signals[0].sniff_timestamp},{self.wlan_radio.data_rate},"\
+          f"{self.wlan_radio.radio_timestamp},{self.frame_control_information.type},"\
+          f"{self.frame_control_information.subtype},{self.frame_control_information.receiver_address}," \
+          f"{self.frame_control_information.transmitter_address}"
+
+    @classmethod
+    def from_csv_row(cls, row: str):
+        row_split = row.split(",")
+        length = int(row_split[0])
+        frame_control_sequence = int(row_split[1])
+        card_location_x = float(row_split[2])
+        card_location_y = float(row_split[3])
+        signal_strength = float(row_split[4])
+        sniff_timestamp = float(row_split[5])
+        data_rate = float(row_split[6])
+        radio_timestamp = float(row_split[7])
+        frequency_mhz = int(row_split[8])
+        fc_type = int(row_split[9])
+        subtype = int(row_split[10])
+        receiver_address = row_split[11]
+        transmitter_address = row_split[12]
+
+        wlan_radio = WlanRadioInformation(
+            [Signal(Point2D(card_location_x, card_location_y), signal_strength, sniff_timestamp)],
+            data_rate, radio_timestamp, frequency_mhz
+        )
+
+        frame_control_information = FrameControlInformation(fc_type, subtype, receiver_address, transmitter_address)
+
+        return cls(length, frame_control_sequence, wlan_radio, frame_control_information)
