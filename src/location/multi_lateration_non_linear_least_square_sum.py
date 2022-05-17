@@ -60,7 +60,7 @@ def calculate_position(device: Device, path_loss_exponent, do_draw=False):
 
 
 def get_least_squared_error(anchors: list[Anchor]) -> OptimizeResult:
-    return least_squares(non_linear_squared_sum_weighted, np.array([0, 0]), args=[anchors], gtol=None)
+    return least_squares(non_linear_squared_sum_weighted, np.array([0, 0]), args=[anchors], gtol=None, max_nfev=500)
 
 
 def draw_plot_with_anchors_circles_and_estimate(anchors, estimate):

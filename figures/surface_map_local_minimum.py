@@ -29,7 +29,7 @@ def make_surface_plot(fig, anchors: list[Anchor]):
     position = get_least_squared_error(anchors).x.tolist()
     residual = non_linear_squared_sum_weighted(np.array(position), anchors)
     # set a point
-    axs.scatter(position[0], position[1], residual, s=100, marker='o', color='g')
+    axs.scatter(position[0], position[1], residual, s=100, marker='o', color='k')
     # axs.plot([position[0], position[0]], [position[1], position[1]], [0, 50], "k", alpha=1, linewidth=2.5,
     #          zorder=2)
 
@@ -40,7 +40,7 @@ def make_circle_plot(fig, anchors):
     axs = fig.add_subplot(1, 2, 1)
     axs.set_xlim(-7, 10)
     axs.set_ylim(-7, 10)
-    axs.scatter(position[0], position[1], s=100, marker='o', color='g')
+    axs.scatter(position[0], position[1], s=100, marker='o', color='k')
     for anchor in anchors:
         axs.scatter(anchor.location[0], anchor.location[1], s=100, marker='o', color='y')
         axs.add_artist(
