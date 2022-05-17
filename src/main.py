@@ -15,6 +15,7 @@ if __name__ == '__main__':
 
     PipelineFactory.input_wifi_listeners(adapters) \
         .apply(lambda wifi_frame: wifi_frame.to_csv_row()) \
+        .output_to_console() \
         .output_to_file("test-output.csv") \
         .to_list()
         # .add_frame_aggregator(threshold=len(adapters)) \
