@@ -46,6 +46,11 @@ def filter(generator: Iterator[WifiFrame], filter_function):
             yield item
 
 
+def apply(generator: Iterator[WifiFrame], function):
+    for item in generator:
+        yield function(item)
+
+
 def append_location_to_wifi_frame(generator: Iterator[WifiFrame]) -> Iterator[WifiFrame]:
     for item in generator:
         print(item.wlan_radio.__dict__)
