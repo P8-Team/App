@@ -13,7 +13,7 @@ if __name__ == '__main__':
     cl = Classifier(config)
     cl.load_model('test-trainedModel')
 
-    PipelineFactory.input_wifi_listeners(adapters) \
+    PipelineFactory.from_csv_file("test.csv", skip_header=False) \
         .add_frame_aggregator(threshold=len(adapters)) \
         .add_frame_to_device_converter() \
         .add_device_aggregator(config['device_buffer_size']) \

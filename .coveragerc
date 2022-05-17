@@ -2,3 +2,4 @@
 omit =
     # omit anything in a figures directory
     */figures/*
+    */src/run/*
