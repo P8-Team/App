@@ -92,7 +92,7 @@ class WifiFrame:
         return f"{self.length},{self.frame_control_sequence},{self.wlan_radio.signals[0].location.x}," \
           f"{self.wlan_radio.signals[0].location.y},{self.wlan_radio.signals[0].signal_strength}," \
           f"{self.wlan_radio.signals[0].sniff_timestamp},{self.wlan_radio.data_rate},"\
-          f"{self.wlan_radio.radio_timestamp},{self.frame_control_information.type},"\
+          f"{self.wlan_radio.radio_timestamp},{self.wlan_radio.frequency_mhz},{self.frame_control_information.type},"\
           f"{self.frame_control_information.subtype},{self.frame_control_information.receiver_address}," \
           f"{self.frame_control_information.transmitter_address}"
 
