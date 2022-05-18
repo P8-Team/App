@@ -1,4 +1,50 @@
+from typing import Iterator
+
 from expiringdict import ExpiringDict
+
+from src.wifi.wifi_frame import WifiFrame
+
+
+def frame_aggregator_sniff_timestamp(generator: Iterator[WifiFrame],
+                                     threshold=None, max_age_seconds=None) -> Iterator[WifiFrame]:
+    """
+    Generator that yields combined frames from a generator.
+    Uses sniff_timestamp to assimilate frames.
+    If frames are equal, combine into one with multiple signal_strengths and sniff_timestamps.
+    If some threshold of combined frames is reached, yield the combined frame.
+
+    :param generator: generator that yields frames
+    :param threshold: number of frames to combine before yielding
+    :param max_age_seconds: max age of frames in buffer
+    :return: generator that yields combined frames
+    """
+    if threshold is None:
+        threshold = 3
+    if max_age_seconds is None:
+        max_age_seconds = 2
+
+    buffer = {}
+    for frame in generator:
+        # Create hash of frame
+        frame_hash = hash(frame)
+
+        if frame_hash in buffer:
+            buffered_frame: WifiFrame = buffer[frame_hash]
+            # Check if too old
+            if frame.wlan_radio.signals[0].sniff_timestamp - \
+                    buffered_frame.wlan_radio.get_earliest_sniff_timestamp() > max_age_seconds:
+                buffer.pop(frame_hash)
+                buffer[frame_hash] = frame
+            else:
+                # Append signal_strength and sniff_timestamps to buffer_frame
+                buffered_frame.wlan_radio.signals.extend(frame.wlan_radio.signals)
+        else:
+            buffer[frame_hash] = frame
+
+        buffered_frame: WifiFrame = buffer[frame_hash]
+        if len(buffered_frame.wlan_radio.signals) >= threshold:
+            buffer.pop(frame_hash)
+            yield buffered_frame
 
 
 def frame_aggregator(generator, threshold=None, max_age_seconds=None, max_buffer_size=None):
