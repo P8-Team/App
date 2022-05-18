@@ -339,14 +339,13 @@ def test_csv_input_output():
         'wlan_radio': Layer({
             'wlan_radio.signal_dbm': '-62',
             'wlan_radio.data_rate': '54',
-            'wlan_radio.timestamp': '1567757308',
             'wlan_radio.frequency': '5200'
         })
     }), WifiCard("wlan0", Point2D(1, 2)))
 
     csv_frame = frame.to_csv_row()
     assert csv_frame == "340,3996,1,2,-62.0,1647417907.513663,54.0,"\
-                        "1567757308,5200,0,4,00:0c:29:b7:d9:b0,00:0c:29:b7:d9:b1"
+                        "None,5200,0,4,00:0c:29:b7:d9:b0,00:0c:29:b7:d9:b1"
     # And back again
     frame2 = WifiFrame.from_csv_row(csv_frame)
     assert frame2 == frame

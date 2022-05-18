@@ -60,8 +60,7 @@ class WifiFrame:
             Used for debugging purposes
         :return:
         """
-        # return json.dumps(self, default=lambda o: o.__dict__, sort_keys=True, indent=4)
-        return "Transmitter: " + self.frame_control_information.transmitter_address + ", receiver: " + self.frame_control_information.receiver_address
+        return json.dumps(self, default=lambda o: o.__dict__, sort_keys=True, indent=4)
 
     @classmethod
     def construct_from_generator(cls, generator: Generator) -> Iterator[WifiFrame]:
