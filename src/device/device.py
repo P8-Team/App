@@ -46,3 +46,12 @@ class Device:
                f"identification={self.identification}, " \
                f"position=({self._position[0]}, {self._position[1]}), " \
                f"distance={float(Point2D(self._position).distance(Point2D([0, 0])))}"
+
+    def to_csv_row(self) -> str:
+        return f"{self.physical_address},{self.identification[0] if self.identification is not None else ''}," \
+               f"{self.identification[1] if self.identification is not None else ''},{float(self._position[0])}," \
+               f"{float(self._position[1])},{float(Point2D(self._position).distance(Point2D([0, 0])))}"
+
+    @staticmethod
+    def get_csv_header():
+        return "address,identification_label,identification_transmit_power,x,y,distance\n"
