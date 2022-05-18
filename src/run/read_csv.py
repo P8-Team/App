@@ -13,7 +13,7 @@ if __name__ == '__main__':
     cl = Classifier(config)
     cl.load_model('test-trainedModel')
 
-    PipelineFactory.from_csv_file("test.csv", skip_header=False) \
+    PipelineFactory.from_csv_file("experiment_1_3.csv", skip_header=False) \
         .filter(lambda frame: frame.wlan_radio.signals[0].signal_strength is not None) \
         .add_frame_aggregator(threshold=len(adapters)) \
         .add_frame_to_device_converter() \

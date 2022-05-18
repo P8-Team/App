@@ -14,14 +14,23 @@ if __name__ == '__main__':
     device_address_dict = {
         "50:8a:06:3f:27:9b": [-23, "LittleElf"],
         "6c:5a:b0:42:02:58": [-6, "TP-Link"],
-        "dc:29:19:94:b1:f8": [-23, "Nikkei"]
+        "dc:29:19:94:b1:f8": [-23, "Nikkei"],
+        "48:78:5e:bd:a9:44": [-7, "Blink"],
+        "38:01:46:1d:bd:ec": [-17, "Nedis"]
     }
 
     oracle = Oracle(device_address_dict)
 
-    PipelineFactory.input_wifi_listeners(adapters) \
-        .filter(lambda frame: frame.wlan_radio.signals[0].signal_strength is not None) \
+    def print_signal_strength_none(frame):
+        if frame.wlan_radio.signals[0].signal_strength is None:
+            print(device_address_dict[frame.frame_control_information.transmitter_address][1] + " had no signal strength")
+
+        return frame
+
+    PipelineFactory.from_csv_file("experiment_1_3.csv", skip_header=False) \
         .filter(lambda frame: frame.frame_control_information.transmitter_address in device_address_dict) \
+        .apply(print_signal_strength_none) \
+        .filter(lambda frame: frame.wlan_radio.signals[0].signal_strength is not None) \
         .add_frame_aggregator(threshold=len(adapters)) \
         .add_frame_to_device_converter() \
         .add_device_aggregator(config['device_buffer_size']) \
