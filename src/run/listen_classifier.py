@@ -11,9 +11,9 @@ if __name__ == '__main__':
     adapters = [WifiCard(name, Point2D(wifi_card['location'])) for name, wifi_card in config['adapters'].items()]
 
     cl = Classifier(config)
-    cl.load_model('test-trainedModel')
+    cl.load_model('model_with_camera_labels')
 
-    PipelineFactory.from_csv_file("test.csv", skip_header=False) \
+    PipelineFactory.input_wifi_listeners(adapters) \
         .filter(lambda frame: frame.wlan_radio.signals[0].signal_strength is not None) \
         .add_frame_aggregator(threshold=len(adapters)) \
         .add_frame_to_device_converter() \

@@ -4,7 +4,7 @@ import json
 from typing import Generator, Iterator
 
 import pandas as pd
-from sympy import Point2D
+from sympy import Point2D, N
 
 from src.wifi.frame_control_information import FrameControlInformation
 from src.wifi.signal import Signal
@@ -60,7 +60,8 @@ class WifiFrame:
             Used for debugging purposes
         :return:
         """
-        return json.dumps(self, default=lambda o: o.__dict__, sort_keys=True, indent=4)
+        # return json.dumps(self, default=lambda o: o.__dict__, sort_keys=True, indent=4)
+        return "Transmitter: " + self.frame_control_information.transmitter_address + ", receiver: " + self.frame_control_information.receiver_address
 
     @classmethod
     def construct_from_generator(cls, generator: Generator) -> Iterator[WifiFrame]:
@@ -98,15 +99,15 @@ class WifiFrame:
 
     @classmethod
     def from_csv_row(cls, row: str):
-        row_split = row.split(",")
+        row_split = row.strip().split(",")
         length = int(row_split[0])
         frame_control_sequence = int(row_split[1])
-        card_location_x = float(row_split[2])
-        card_location_y = float(row_split[3])
-        signal_strength = float(row_split[4])
+        card_location_x = N(row_split[2])
+        card_location_y = N(row_split[3])
+        signal_strength = None if row_split[4] == 'None' else float(row_split[4])
         sniff_timestamp = float(row_split[5])
         data_rate = float(row_split[6])
-        radio_timestamp = float(row_split[7])
+        radio_timestamp = None
         frequency_mhz = int(row_split[8])
         fc_type = int(row_split[9])
         subtype = int(row_split[10])
