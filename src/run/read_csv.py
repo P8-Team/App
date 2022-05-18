@@ -14,7 +14,7 @@ if __name__ == '__main__':
     cl.load_model('test-trainedModel')
 
     PipelineFactory.from_csv_file("test.csv", skip_header=False) \
-        .add_frame_aggregator(threshold=len(adapters)) \
+        .add_frame_aggregator_sniff_timestamp(threshold=len(adapters)) \
         .add_frame_to_device_converter() \
         .add_device_aggregator() \
         .add_classifier(cl) \
