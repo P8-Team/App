@@ -30,8 +30,6 @@ def make_surface_plot(fig, anchors: list[Anchor]):
     residual = non_linear_squared_sum_weighted(np.array(position), anchors)
     # set a point
     axs.scatter(position[0], position[1], residual, s=100, marker='o', color='k')
-    # axs.plot([position[0], position[0]], [position[1], position[1]], [0, 50], "k", alpha=1, linewidth=2.5,
-    #          zorder=2)
 
 
 def make_circle_plot(fig, anchors):
