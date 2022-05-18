@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from src.device.device_aggregator import device_aggregator
 from src.device.frame_to_device_converter import frame_to_device_converter
-from src.frame_aggregator import frame_aggregator
+from src.frame_aggregator import frame_aggregator, frame_aggregator_sniff_timestamp
 from src.frame_filter import FrameFilter
 from src.location.average_signal_strength import calculate_average_signal_strength
 from src.location.multi_lateration_non_linear_least_square_sum import append_location_generator
@@ -42,6 +42,10 @@ class PipelineFactory:
 
     def add_frame_aggregator(self, threshold=None, max_age_seconds=None, max_buffer_size=None):
         self.generator = frame_aggregator(self.generator, threshold, max_age_seconds, max_buffer_size)
+        return self
+
+    def add_frame_aggregator_sniff_timestamp(self, threshold=None, max_age_seconds=None):
+        self.generator = frame_aggregator_sniff_timestamp(self.generator, threshold, max_age_seconds)
         return self
 
     def add_frame_to_device_converter(self):
