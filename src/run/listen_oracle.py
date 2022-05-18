@@ -1,6 +1,5 @@
 from sympy import Point2D
 
-from src.classifier import Classifier
 from src.config_loader import load_config_file
 from src.oracle import Oracle
 from src.pipeline_factory import PipelineFactory
@@ -21,11 +20,14 @@ if __name__ == '__main__':
 
     oracle = Oracle(device_address_dict)
 
+
     def print_signal_strength_none(frame):
         if frame.wlan_radio.signals[0].signal_strength is None:
-            print(device_address_dict[frame.frame_control_information.transmitter_address][1] + " had no signal strength")
+            print(
+                device_address_dict[frame.frame_control_information.transmitter_address][1] + " had no signal strength")
 
         return frame
+
 
     PipelineFactory.from_csv_file("experiment_1_3.csv", skip_header=False) \
         .filter(lambda frame: frame.frame_control_information.transmitter_address in device_address_dict) \

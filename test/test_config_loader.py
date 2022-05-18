@@ -35,15 +35,15 @@ def test_config_loader_returns_valid_config():
          "training_files": {"Google Nest": ["file1", "file2", "file3"]}})
 
     config = load_config(data)
-    assert config ==  {"adapters": {"wlan1": {"location": [0, 0.433]}},
-         "hard_data_file": "string",
-         "labels_file": "string",
-         "classifier_interval": 3,
-         "device_buffer_size": 3,
-         "path_loss_exponent": 2,
-         "confidence_threshold": 0.5,
-         "saved_models_folder": "Somewhere",
-         "training_files": {"Google Nest": ["file1", "file2", "file3"]}}
+    assert config == {"adapters": {"wlan1": {"location": [0, 0.433]}},
+                      "hard_data_file": "string",
+                      "labels_file": "string",
+                      "classifier_interval": 3,
+                      "device_buffer_size": 3,
+                      "path_loss_exponent": 2,
+                      "confidence_threshold": 0.5,
+                      "saved_models_folder": "Somewhere",
+                      "training_files": {"Google Nest": ["file1", "file2", "file3"]}}
 
 
 def test_load_config_file_copies_default():

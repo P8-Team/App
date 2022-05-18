@@ -25,8 +25,8 @@ class Classifier:
         """
         self.interval = config['classifier_interval']
         self.confidence_threshold = config['confidence_threshold']
-        self.labels_file = config['labels_file']
-        self.hard_data_file = config['hard_data_file']
+        self.address_label_map = config['address_label_map']
+        self.label_device_map = config['label_device_map']
         self.saved_models_folder = config['saved_models_folder']
         self.cache_folder = config['cache_folder']
         self.training_files = config['training_files']
@@ -39,7 +39,7 @@ class Classifier:
 
         param device: A devices
         """
-        device_lookup = DeviceLookup(self.hard_data_file)
+        device_lookup = DeviceLookup(self.label_device_map)
 
         for device in generator:
             interval_classification_with_threshold = list()
@@ -140,7 +140,7 @@ class Classifier:
 
     def train(self):
 
-        labels = pd.read_csv(self.labels_file)
+        labels = pd.read_csv(self.address_label_map)
         files = self.get_file_paths()
 
         dfs = list()

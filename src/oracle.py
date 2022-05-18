@@ -14,4 +14,3 @@ class Oracle:
                 device.identification = self.device_list[device.physical_address]
 
             yield device
-

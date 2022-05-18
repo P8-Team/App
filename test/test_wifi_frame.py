@@ -9,7 +9,6 @@ from src.wifi.signal import Signal
 from src.wifi.wifi_card import WifiCard
 from src.wifi.wifi_frame import WifiFrame
 from src.wifi.wlan_radio_information import WlanRadioInformation
-from test.utils.wifi_frame_factory import frame_factory
 from test.utils.wifi_test_utils import Frame, Layer
 
 default_transmitter_address = '50:e0:85:3f:77:5e'
@@ -327,6 +326,7 @@ def test_wifi_frame_to_dataframe_with_timestamp_delta():
 
     pd.testing.assert_frame_equal(actual, expected)
 
+
 def test_csv_input_output():
     frame = WifiFrame.from_frame(Frame("340", "1647417907.513663000", {
         'wlan': Layer({
@@ -344,7 +344,7 @@ def test_csv_input_output():
     }), WifiCard("wlan0", Point2D(1, 2)))
 
     csv_frame = frame.to_csv_row()
-    assert csv_frame == "340,3996,1,2,-62.0,1647417907.513663,54.0,"\
+    assert csv_frame == "340,3996,1,2,-62.0,1647417907.513663,54.0," \
                         "None,5200,0,4,00:0c:29:b7:d9:b0,00:0c:29:b7:d9:b1"
     # And back again
     frame2 = WifiFrame.from_csv_row(csv_frame)
