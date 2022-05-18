@@ -24,6 +24,42 @@ schema = {
                     }
                 }
             }
+        },
+        "hard_data_file": {
+            "type": "string"
+        },
+        "labels_file": {
+            "type": "string"
+        },
+        "saved_models_folder": {
+            "type": "string"
+        },
+        "cache_folder": {
+            "type": "string"
+        },
+        "classifier_interval": {
+            "type": "number"
+        },
+        "device_buffer_size": {
+            "type": "number"
+        },
+        "path_loss_exponent": {
+            "type": "number"
+        },
+        "confidence_threshold": {
+            "type": "number"
+        },
+        "training_files": {
+            "type": "object",
+            "additionalProperties": {
+                "type": "array"
+            }
+        },
+        "transmission_power_placeholder_2ghz": {
+            "type": "number"
+        },
+        "transmission_power_placeholder_5ghz": {
+            "type": "number"
         }
     }
 }
@@ -40,7 +76,7 @@ def load_config_file(file_path):
 
 def load_config(config_stream):
     """
-    Loads the configuration yml file, validates if with json schema and returns the config object
+    Loads the configuration yml file, validates it with json schema and returns the config object
     :param config_stream: stream containing data from config file
     :return: config object
     """

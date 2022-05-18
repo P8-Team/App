@@ -18,7 +18,8 @@ address_for_test_3 = "00:00:00:00:00:03"
 
 position_precision = 0.5
 
-transmission_power = -15.5
+transmission_power_2ghz = -15.5
+transmission_power_5ghz = -10
 
 
 @pytest.fixture(autouse=True)
@@ -95,7 +96,7 @@ def test_input_to_output_one_physical_address_one_device_in_result(wifi_frames: 
         .add_frame_to_device_converter() \
         .add_device_aggregator() \
         .add_average_rssi_with_variance() \
-        .add_location_non_linear_least_square(4)
+        .add_location_non_linear_least_square(4, transmission_power_2ghz, transmission_power_5ghz)
 
     result = set(generator.to_list())
 
@@ -109,7 +110,7 @@ def test_input_to_output_two_physical_addresses_two_devices_in_result(input_to_o
         .add_frame_to_device_converter() \
         .add_device_aggregator() \
         .add_average_rssi_with_variance() \
-        .add_location_non_linear_least_square(4)
+        .add_location_non_linear_least_square(4, transmission_power_2ghz, transmission_power_5ghz)
 
     result = set(generator.to_list())
 
@@ -128,7 +129,7 @@ def test_input_to_output_with_location_generator_small_distance_between_anchors(
         .add_frame_to_device_converter() \
         .add_device_aggregator() \
         .add_average_rssi_with_variance() \
-        .add_location_non_linear_least_square(4)
+        .add_location_non_linear_least_square(4, transmission_power_2ghz, transmission_power_5ghz)
 
     result = generator.to_list()
 
@@ -147,7 +148,7 @@ def test_input_to_output_with_location_generator_large_distance_between_anchors(
         .add_frame_to_device_converter() \
         .add_device_aggregator() \
         .add_average_rssi_with_variance() \
-        .add_location_non_linear_least_square(4)
+        .add_location_non_linear_least_square(4, transmission_power_2ghz, transmission_power_5ghz)
 
     result = generator.to_list()
 
@@ -166,7 +167,7 @@ def test_input_to_output_device_changes_position():
         .add_frame_to_device_converter() \
         .add_device_aggregator() \
         .add_average_rssi_with_variance() \
-        .add_location_non_linear_least_square(4)
+        .add_location_non_linear_least_square(4, transmission_power_2ghz, transmission_power_5ghz)
 
     result = generator.to_list()
 
@@ -224,15 +225,23 @@ def test_input_to_output_with_location_generator_large_distance_between_anchors_
                                                receiver_address="2"),
     ]
 
-    cl = Classifier(3)
-    cl.load_model('test-trainedModel')
+    test_config = {'hard_data_file': 'Data/hard_data.csv',
+                   'classifier_interval': 1,
+                   'confidence_threshold': 0.6,
+                   'labels_file': 'Data/new_labels.csv',
+                   'saved_models_folder': 'Data/cache/savedModels/',
+                   'training_files': {'Google Nest': ['file1', 'file2', 'file3']},
+                   'cache_folder': 'Data/cache/'}
+
+    classifier = Classifier(test_config)
+    classifier.load_model('test-trainedModel')
 
     generator = PipelineFactory(wifi_frames) \
         .add_frame_to_device_converter() \
         .add_device_aggregator() \
-        .add_classifier(cl) \
+        .add_classifier(classifier) \
         .add_average_rssi_with_variance() \
-        .add_location_non_linear_least_square(4, do_draw=False)
+        .add_location_non_linear_least_square(4, transmission_power_2ghz, transmission_power_5ghz, do_draw=False)
 
     result = generator.to_list()
 

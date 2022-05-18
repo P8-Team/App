@@ -8,9 +8,9 @@ from src.location.average_signal_strength import calculate_average_signal_streng
 from src.location.multi_lateration_non_linear_least_square_sum import append_location_generator
 from src.multiprocess_wifi_listener import multiprocess_wifi_listener
 from src.pipeline_factory.basic_generators import csv_row_generator, output_to_file_generator, \
-    output_to_console_generator, json_generator, pcap_file_generator, append_location_to_wifi_frame, filter, apply
+    output_to_console_generator, json_generator, pcap_file_generator, append_location_to_wifi_frame, filter, apply, \
+    csv_reader
 from src.wifi.wifi_card import WifiCard
-from src.wifi.wifi_frame import WifiFrame
 
 
 class PipelineFactory:
@@ -23,13 +23,10 @@ class PipelineFactory:
         return cls(multiprocess_wifi_listener(wlan_interfaces))
 
     @classmethod
-    def from_csv_file(cls, filename, delimiter=',', skip_header=True):
+    def from_csv_file(cls, filename, skip_header=True):
         # open and read file
-        with open(filename, 'r') as csv_file:
-            if skip_header:
-                next(csv_file)
-            for line in csv_file:
-                yield WifiFrame.from_csv_row(line)
+
+        return cls(csv_reader(filename, skip_header))
 
     @classmethod
     def input_pcap_file(cls, filename):
@@ -60,6 +57,10 @@ class PipelineFactory:
         self.generator = classifier.classify(self.generator)
         return self
 
+    def add_oracle(self, oracle):
+        self.generator = oracle.classify(self.generator)
+        return self
+
     def output_to_console(self):
         self.generator = output_to_console_generator(self.generator)
         return self
@@ -83,8 +84,10 @@ class PipelineFactory:
         self.generator = calculate_average_signal_strength(self.generator)
         return self
 
-    def add_location_non_linear_least_square(self, path_loss_exponent, do_draw=False):
-        self.generator = append_location_generator(self.generator, path_loss_exponent, do_draw=do_draw)
+    def add_location_non_linear_least_square(self, path_loss_exponent,
+                                             placeholder_2ghz, placeholder_5ghz, do_draw=False):
+        self.generator = append_location_generator(self.generator, path_loss_exponent,
+                                                   placeholder_2ghz, placeholder_5ghz, do_draw=do_draw)
         return self
 
     def filter(self, filter_function):
@@ -97,3 +100,4 @@ class PipelineFactory:
 
     def apply(self, apply_function):
         self.generator = apply(self.generator, apply_function)
+        return self

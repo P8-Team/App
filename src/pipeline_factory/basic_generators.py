@@ -51,6 +51,14 @@ def apply(generator: Iterator[WifiFrame], function):
         yield function(item)
 
 
+def csv_reader(filename, skip_header):
+    with open(filename, 'r') as csv_file:
+        if skip_header:
+            next(csv_file)
+        for line in csv_file:
+            yield WifiFrame.from_csv_row(line)
+
+
 def append_location_to_wifi_frame(generator: Iterator[WifiFrame]) -> Iterator[WifiFrame]:
     for item in generator:
         print(item.wlan_radio.__dict__)

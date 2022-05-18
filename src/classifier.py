@@ -19,11 +19,17 @@ class Classifier:
     A class for classifying the behavior of IoT devices
     """
 
-    def __init__(self, interval_seconds):
+    def __init__(self, config):
         """
         param interval_seconds: The amount of time in seconds to aggregate frames to classify
         """
-        self.interval = interval_seconds
+        self.interval = config['classifier_interval']
+        self.confidence_threshold = config['confidence_threshold']
+        self.labels_file = config['labels_file']
+        self.hard_data_file = config['hard_data_file']
+        self.saved_models_folder = config['saved_models_folder']
+        self.cache_folder = config['cache_folder']
+        self.training_files = config['training_files']
         self.model = RandomForestClassifier()
 
     def classify(self, generator: Iterable[Device]):
@@ -33,7 +39,7 @@ class Classifier:
 
         param device: A devices
         """
-        device_lookup = DeviceLookup()
+        device_lookup = DeviceLookup(self.hard_data_file)
 
         for device in generator:
             interval_classification_with_threshold = list()
@@ -44,12 +50,14 @@ class Classifier:
             for frame_list in frame_acc:
                 interval_classification_with_threshold.append([self.classify_interval_label(frame_list),
                                                                self.classify_interval_confidence(frame_list)])
+
             if not interval_classification_with_threshold:
                 yield device
                 continue
             # Determines the classification of the device based on classification of frame intervals with high
             # confidence (>= 0.6)
             label = self.determine_device_classification(interval_classification_with_threshold)
+
             if label is None:
                 yield device
                 continue
@@ -108,11 +116,10 @@ class Classifier:
 
     def determine_device_classification(self, interval_classifications_with_confidence):
         classifications_with_high_confidence = list()
-        threshold = 0.6
 
         # find all classifications with a confidence higher than 0.6
         for classification in interval_classifications_with_confidence:
-            if classification[1] >= threshold:
+            if classification[1] >= self.confidence_threshold:
                 classifications_with_high_confidence.append(classification[0])
         if not classifications_with_high_confidence:
             return None
@@ -133,15 +140,15 @@ class Classifier:
 
     def train(self):
 
-        labels = pd.read_csv("Data/new_labels.csv")
+        labels = pd.read_csv(self.labels_file)
         files = self.get_file_paths()
 
         dfs = list()
         for file in files:
-            dfs.append(frames_from_file_with_caching(file))
+            dfs.append(frames_from_file_with_caching(file, self.cache_folder))
         df = pd.concat(dfs)
 
-        cache_dataframe("Data/cache", 'unprocessed_training_data', df)
+        cache_dataframe(self.cache_folder, 'unprocessed_training_data', df)
 
         print("Processing")
         data, label_series = self.preprocess_data(df, labels)
@@ -188,43 +195,25 @@ class Classifier:
     def drop_features(df):
         # Drop radio timestamp as it is NaN for the file data
         df = df.drop(['radio_timestamp'], axis='columns', errors='ignore')
-        # df['sniff_timestamp_0'] = pd.to_datetime(df['sniff_timestamp_0'],unit='s')
         df = df.drop(['receiver_address', 'transmitter_address'], axis='columns')
-        # df['data_rate'] = df['data_rate'].fillna(0)
         return df
 
-    @staticmethod
-    def load_files(files):
-        dfs = list()
-        for file in files:
-            dfs.append(frames_from_file_with_caching(file))
+    def get_file_paths(self):
 
-        return pd.concat(dfs)
-
-    @staticmethod
-    def get_file_paths():
         def add_path(folder):
-            return lambda name: f'Data/{folder}/{name}'
+            return lambda name: f'Data/{folder}/{name}.pcapng'
 
         files = list()
-        files.extend(list(map(add_path('Google Nest'),
-                              ['dump1_2.4_ghz.pcapng', 'dump2_2.4_ghz.pcapng', 'dump1_5_ghz.pcapng',
-                               'dump2_5_ghz.pcapng', 'dump3_5_ghz.pcapng', 'dump4_5_ghz.pcapng'])))
-        files.extend(list(map(add_path('LittleElf'), ['dump.pcapng', 'dump1.pcapng', 'dump2.pcapng', 'dump3.pcapng'])))
-        files.extend(list(map(add_path('Nikkei'), ['dump2.pcapng', 'dump3.pcapng', 'dump4.pcapng'])))
-        files.extend(list(map(add_path('TP-Link'),
-                              ['dump.pcapng', 'dump1.pcapng', 'dump2.pcapng', 'dump3.pcapng', 'dump4.pcapng',
-                               'dump5.pcapng'])))
-        files.extend(list(map(add_path('Blink'), ['dump1.pcapng', 'dump2.pcapng', 'dump4.pcapng'])))
-        files.extend(list(map(add_path('Nedis'), ['dump.pcapng', 'dump1.pcapng', 'dump2.pcapng',
-                                                  'dump3.pcapng', 'dump4.pcapng', 'dump5.pcapng'])))
+
+        for key in self.training_files:
+            files.extend(list(map(add_path(key), self.training_files[key])))
 
         return files
 
     def save_model(self, filename):
-        path_norm = os.path.normpath(f'Data/cache/savedModels/{filename}.joblib')
+        path_norm = os.path.normpath(f'{self.saved_models_folder}{filename}.joblib')
         dump(self.model, path_norm)
 
     def load_model(self, filename):
-        path_norm = os.path.normpath(f'Data/cache/savedModels/{filename}.joblib')
+        path_norm = os.path.normpath(f'{self.saved_models_folder}{filename}.joblib')
         self.model = load(path_norm)

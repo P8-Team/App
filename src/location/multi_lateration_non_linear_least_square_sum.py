@@ -25,7 +25,7 @@ class Anchor:
     def calc_weight(self) -> float:
         # The article does not mention this edge case. It is assumed that the weight is 1.
 
-        if math.isclose(self.distance, 0, abs_tol=1e-8) or math.isclose(self.variance, 0, abs_tol=1e-10):
+        if math.isclose(self.distance, 0, abs_tol=1e-10) or math.isclose(self.variance, 0, abs_tol=1e-10):
             return 1
         return 1 / (math.pow(self.distance, 4) * math.pow(self.variance, 4))
 
@@ -36,15 +36,14 @@ def non_linear_squared_sum_weighted(x: np.ndarray, anchors: list[Anchor]) -> flo
     )
 
 
-def calculate_position(device: Device, path_loss_exponent, do_draw=False):
+def calculate_position(device: Device, path_loss_exponent, placeholder_2ghz, placeholder_5ghz, do_draw=False):
     frequency = device.frames[-1].wlan_radio.frequency_mhz
     signals = device.averaged_signals
 
     if device.identification is not None:
         transmission_power_dbm = int(device.identification[0])
     else:
-        # 20 is max for 2.4ghz, 30 for 5ghz.
-        transmission_power_dbm = -15.5 if frequency < 4000 else -10
+        transmission_power_dbm = placeholder_2ghz if frequency < 4000 else placeholder_5ghz
 
     anchors = [Anchor(
         np.array(signal.location.coordinates, dtype=np.float64),
@@ -87,7 +86,8 @@ def draw_plot_with_anchors_circles_and_estimate(anchors, estimate):
     plt.show()
 
 
-def append_location_generator(generator: Iterable[Device], path_loss_exponent, do_draw=False) -> Iterable[Device]:
+def append_location_generator(generator: Iterable[Device], path_loss_exponent,
+                              placeholder_2ghz, placeholder_5ghz, do_draw=False) -> Iterable[Device]:
     for device in generator:
-        calculate_position(device, path_loss_exponent, do_draw)
+        calculate_position(device, path_loss_exponent, placeholder_2ghz, placeholder_5ghz, do_draw)
         yield device

@@ -52,7 +52,7 @@ def test_cache_dataframe():
     data = {'col_1': [3, 2, 1, 0], 'col_2': ['a', 'b', 'c', 'd']}
     df = pd.DataFrame.from_dict(data)
     os.mkdir("cache")
-    cache_dataframe("cache", "test", df)
+    cache_dataframe("cache/", "test", df)
 
     assert exists(f"cache/{sha1('test'.encode('utf-8')).hexdigest()}.json")
     os.remove(f"cache/{sha1('test'.encode('utf-8')).hexdigest()}.json")
@@ -63,9 +63,9 @@ def test_load_cached_dataframe():
     data = {'col_1': [3, 2, 1, 0], 'col_2': ['a', 'b', 'c', 'd']}
     expected = pd.DataFrame.from_dict(data)
     os.mkdir("cache")
-    cache_dataframe("cache", "test", expected)
+    cache_dataframe("cache/", "test", expected)
 
-    actual = load_cached_dataframe("cache", "test")
+    actual = load_cached_dataframe("cache/", "test")
 
     pd.testing.assert_frame_equal(actual, expected)
     os.remove(f"cache/{sha1('test'.encode('utf-8')).hexdigest()}.json")
