@@ -44,7 +44,7 @@ class PipelineFactory:
         self.generator = frame_aggregator(self.generator, threshold, max_age_seconds, max_buffer_size)
         return self
 
-    def add_frame_aggregator_sniff_timestamp(self, threshold=None, max_age_seconds=None ):
+    def add_frame_aggregator_sniff_timestamp(self, threshold=None, max_age_seconds=None):
         self.generator = frame_aggregator_sniff_timestamp(self.generator, threshold, max_age_seconds)
         return self
 
