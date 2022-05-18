@@ -144,7 +144,7 @@ def test_frame_aggregator_with_sniff_timestamp_not_exceeding_threshold():
     ]
 
     # Act
-    combined_frames = list(frame_aggregator_sniff_timestamp(frames, 3, 1))
+    combined_frames = list(frame_aggregator_sniff_timestamp(iter(frames), 3, 1))
 
     # Assert
     assert len(combined_frames) == 0
@@ -159,7 +159,7 @@ def test_frame_aggregator_with_sniff_timestamp_getting_earlier_sniff_timestamp_t
     ]
 
     # Act
-    combined_frames = list(frame_aggregator_sniff_timestamp(frames, 3, 1))
+    combined_frames = list(frame_aggregator_sniff_timestamp(iter(frames), 3, 1))
 
     # Assert
     assert len(combined_frames) == 1
@@ -175,7 +175,7 @@ def test_frame_aggregator_with_sniff_timestamp_expire():
     ]
 
     # Act
-    combined_frames = list(frame_aggregator_sniff_timestamp(frames, 3, 1))
+    combined_frames = list(frame_aggregator_sniff_timestamp(iter(frames), 3, 1))
 
     # Assert
     assert len(combined_frames) == 0
@@ -190,7 +190,7 @@ def test_frame_aggregator_with_sniff_timestamp_exceeding_threshold():
     ]
 
     # Act
-    combined_frames = list(frame_aggregator_sniff_timestamp(frames, 3, 1))
+    combined_frames = list(frame_aggregator_sniff_timestamp(iter(frames), 3, 1))
 
     # Assert
     assert len(combined_frames) == 1
@@ -206,7 +206,7 @@ def test_frame_aggregator_with_sniff_timestamp_default_parameters():
     ]
 
     # Act
-    combined_frames = list(frame_aggregator_sniff_timestamp(frames))
+    combined_frames = list(frame_aggregator_sniff_timestamp(iter(frames)))
 
     # Assert
     assert len(combined_frames) == 1
