@@ -9,7 +9,7 @@ import numpy as np
 def get_devices_from_path(path):
     # get the first char after 'devices_' as int
     index = path.find('devices_') + 8
-    return int(path[index:index+1])
+    return int(path[index:index + 1])
 
 
 def get_weighted(path):
@@ -30,7 +30,8 @@ def make_result(path, expected_location):
 
     fig = plt.figure(figsize=plt.figaspect(.5))
     fig.suptitle(f"{data['identification_transmit_power'][0]} for location {expected_location}"
-              f" with {get_devices_from_path(path)} devices, {'weighted' if get_weighted(path) else 'unweighted'}")
+                 f" with {get_devices_from_path(path)} {'devices' if get_devices_from_path(path) > 1 else 'device'},"
+                 f" {'weighted' if get_weighted(path) else 'unweighted'}")
     axs = fig.add_subplot(1, 2, 1)
     axs2 = fig.add_subplot(1, 2, 2)
 
@@ -58,7 +59,7 @@ def make_result(path, expected_location):
 
     # calculate mean error and RMSE
     mean_error = np.mean(error)
-    rmse = 1/ len(error) * np.sum(error)
+    rmse = 1 / len(error) * np.sum(error)
     print("Mean error: ", mean_error)
     print("RMSE: ", rmse)
 
