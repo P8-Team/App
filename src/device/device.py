@@ -1,5 +1,8 @@
 from __future__ import annotations
 
+import datetime
+import locale
+
 from sympy import Point2D
 
 from src.wifi.signal import Signal
@@ -42,7 +45,12 @@ class Device:
         return hash(self.physical_address)
 
     def __repr__(self) -> str:
-        return f"{self.frames[-1].wlan_radio.radio_timestamp} - {self.physical_address}: " \
-               f"identification={self.identification}, " \
-               f"position=({self._position[0]}, {self._position[1]}), " \
-               f"distance={float(Point2D(self._position).distance(Point2D([0, 0])))}"
+        time = datetime.datetime.utcfromtimestamp(round(self.frames[-1].wlan_radio.get_earliest_sniff_timestamp()))
+        address = self.physical_address
+        identification = self.identification
+        x = float(self._position[0])
+        y = float(self._position[1])
+        distance = float(Point2D(self._position).distance(Point2D([0, 0])))
+
+        return "{} (UTC) - {}: identification={}, position=({:.2f}, {:.2f}), distance={:.2f}"\
+            .format(time, address, identification, x, y, distance)
