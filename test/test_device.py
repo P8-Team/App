@@ -59,10 +59,12 @@ def test_device_from_frame_returns_device_with_physical_address_and_frame():
 
 def test_device_prints_correctly():
     device = Device("Address", [
-        WifiFrame(wlan_radio=WlanRadioInformation(radio_timestamp=0.1))
+        WifiFrame(wlan_radio=WlanRadioInformation(
+            signals=[Signal(sniff_timestamp=1, location=Point2D([0, 0]), signal_strength=10)]))
     ], identification="TestIdentification", position=Point2D([0, 10]))
 
-    assert repr(device) == "0.1 - Address: identification=TestIdentification, position=(0, 10), distance=10.0"
+    assert repr(device) == "1970-01-01 01:00:01 - Address: identification=TestIdentification, " \
+                           "position=(0.00, 10.00), distance=10.00"
 
 
 def test_device_new_position_pushes_old_to_historic():
