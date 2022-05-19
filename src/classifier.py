@@ -30,6 +30,7 @@ class Classifier:
         self.saved_models_folder = config['saved_models_folder']
         self.cache_folder = config['cache_folder']
         self.training_files = config['training_files']
+        self.training_size = config['classifier_train_split']
         self.model = RandomForestClassifier()
 
     def classify(self, generator: Iterable[Device]):
@@ -154,7 +155,9 @@ class Classifier:
         data, label_series = self.preprocess_data(df, labels)
 
         print("Split")
-        input_train, input_test, labels_train, labels_test = train_test_split(data, label_series)
+        input_train, input_test, labels_train, labels_test = train_test_split(data,
+                                                                              label_series,
+                                                                              train_size=self.training_size)
 
         print("Fitting")
         self.model.fit(input_train, labels_train)
