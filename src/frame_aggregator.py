@@ -59,7 +59,7 @@ def frame_aggregator(generator, threshold=None, max_age_seconds=None, max_buffer
     :param max_buffer_size: max number of frames in buffer
     :return: generator that yields combined frames
     """
-    
+
     if threshold is None:
         threshold = 3
     if max_age_seconds is None:

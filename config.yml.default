@@ -1,10 +1,10 @@
 ---
 adapters:
-  wlan1: { location: [-1, -0.58] }
-  wlan2: { location: [1, -0.58] }
-  wlan3: { location: [0, 1.15] }
-hard_data_file: "Data/hard_data.csv"
-labels_file: "Data/new_labels.csv"
+  wlan1: { location: [0.9, -0.52] }
+  wlan2: { location: [0, 1.03] }
+  wlan3: { location: [-0.9, -0.52] }
+label_device_map: "Data/label_device_maps/label_device_map.csv"
+address_label_map: "Data/address_label_maps/address_label_map.csv"
 saved_models_folder: "Data/cache/savedModels/"
 cache_folder: "Data/cache/"
 classifier_interval: 3

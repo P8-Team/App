@@ -85,16 +85,16 @@ class WifiFrame:
 
     @staticmethod
     def get_csv_header():
-        return "length,frame_control_sequence,card_location_x,card_location_y,signal_strength,sniff_timestamp,"\
+        return "length,frame_control_sequence,card_location_x,card_location_y,signal_strength,sniff_timestamp," \
                "data_rate,radio_timestamp,frequency_mhz,type,subtype,receiver_address,transmitter_address"
 
     def to_csv_row(self):
         return f"{self.length},{self.frame_control_sequence},{self.wlan_radio.signals[0].location.x}," \
-          f"{self.wlan_radio.signals[0].location.y},{self.wlan_radio.signals[0].signal_strength}," \
-          f"{self.wlan_radio.signals[0].sniff_timestamp},{self.wlan_radio.data_rate},"\
-          f"{self.wlan_radio.radio_timestamp},{self.wlan_radio.frequency_mhz},{self.frame_control_information.type},"\
-          f"{self.frame_control_information.subtype},{self.frame_control_information.receiver_address}," \
-          f"{self.frame_control_information.transmitter_address}"
+               f"{self.wlan_radio.signals[0].location.y},{self.wlan_radio.signals[0].signal_strength}," \
+               f"{self.wlan_radio.signals[0].sniff_timestamp},{self.wlan_radio.data_rate}," \
+               f"{self.wlan_radio.radio_timestamp},{self.wlan_radio.frequency_mhz},{self.frame_control_information.type}," \
+               f"{self.frame_control_information.subtype},{self.frame_control_information.receiver_address}," \
+               f"{self.frame_control_information.transmitter_address}"
 
     @classmethod
     def from_csv_row(cls, row: str):

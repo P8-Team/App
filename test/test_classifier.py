@@ -12,18 +12,18 @@ from src.wifi.wifi_frame import WifiFrame
 from test.utils.wifi_frame_factory import frame_factory
 from test.utils.wifi_test_utils import Frame, Layer
 
-test_config_1 = {'hard_data_file': 'Data/hard_data.csv',
+test_config_1 = {'label_device_map': 'Data/label_device_maps/label_device_map.csv',
                  'classifier_interval': 1,
                  'confidence_threshold': 0.6,
-                 'labels_file': 'Data/new_labels.csv',
+                 'address_label_map': 'Data/address_label_maps/address_label_map.csv',
                  'saved_models_folder': 'Data/cache/savedModels/',
                  'training_files': {'Google Nest': ['file1', 'file2', 'file3']},
                  'cache_folder': 'Data/cache/'}
 
-test_config_2 = {'hard_data_file': 'Data/hard_data.csv',
+test_config_2 = {'label_device_map': 'Data/label_device_maps/label_device_map.csv',
                  'classifier_interval': 2,
                  'confidence_threshold': 0.6,
-                 'labels_file': 'Data/new_labels.csv',
+                 'address_label_map': 'Data/address_label_maps/address_label_map.csv',
                  'saved_models_folder': 'Data/cache/savedModels/',
                  'training_files': {'Google Nest': ['file1', 'file2', 'file3']},
                  'cache_folder': 'Data/cache/'}

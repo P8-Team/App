@@ -186,16 +186,14 @@ def generate_tests_positions_and_check_for_failures(frame_generator: LocationGen
         for y in range(-bounds, bounds + 1):
             points.append([x, y])
             wifi_frames.append(
-                frame_generator.make_wifi_element(Point2D([x, y]),
-                                                  transmission_power_dbm=transmission_power,
-                                                  transmitter_address=str(number_of_positions)))
+                frame_generator.make_wifi_element(Point2D([x, y]), transmitter_address=str(number_of_positions)))
             number_of_positions = number_of_positions + 1
 
     generator = PipelineFactory(wifi_frames) \
         .add_frame_to_device_converter() \
         .add_device_aggregator() \
         .add_average_rssi_with_variance() \
-        .add_location_non_linear_least_square(4)
+        .add_location_non_linear_least_square(4, transmission_power_2ghz, transmission_power_5ghz)
 
     result = generator.to_list()
 
@@ -225,10 +223,10 @@ def test_input_to_output_with_location_generator_large_distance_between_anchors_
                                                receiver_address="2"),
     ]
 
-    test_config = {'hard_data_file': 'Data/hard_data.csv',
+    test_config = {'label_device_map': 'Data/label_device_maps/label_device_map.csv',
                    'classifier_interval': 1,
                    'confidence_threshold': 0.6,
-                   'labels_file': 'Data/new_labels.csv',
+                   'address_label_map': 'Data/address_label_maps/address_label_map.csv',
                    'saved_models_folder': 'Data/cache/savedModels/',
                    'training_files': {'Google Nest': ['file1', 'file2', 'file3']},
                    'cache_folder': 'Data/cache/'}
