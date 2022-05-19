@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import datetime
+import locale
 
 from sympy import Point2D
 
@@ -44,12 +45,12 @@ class Device:
         return hash(self.physical_address)
 
     def __repr__(self) -> str:
-        time = datetime.datetime.fromtimestamp(round(self.frames[-1].wlan_radio.get_earliest_sniff_timestamp()))
+        time = datetime.datetime.utcfromtimestamp(round(self.frames[-1].wlan_radio.get_earliest_sniff_timestamp()))
         address = self.physical_address
         identification = self.identification
         x = float(self._position[0])
         y = float(self._position[1])
         distance = float(Point2D(self._position).distance(Point2D([0, 0])))
 
-        return "{} - {}: identification={}, position=({:.2f}, {:.2f}), distance={:.2f}"\
+        return "{} (UTC) - {}: identification={}, position=({:.2f}, {:.2f}), distance={:.2f}"\
             .format(time, address, identification, x, y, distance)

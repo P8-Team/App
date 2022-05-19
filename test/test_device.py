@@ -63,7 +63,7 @@ def test_device_prints_correctly():
             signals=[Signal(sniff_timestamp=1, location=Point2D([0, 0]), signal_strength=10)]))
     ], identification="TestIdentification", position=Point2D([0, 10]))
 
-    assert repr(device) == "1970-01-01 01:00:01 - Address: identification=TestIdentification, " \
+    assert repr(device) == "1970-01-01 00:00:01 (UTC) - Address: identification=TestIdentification, " \
                            "position=(0.00, 10.00), distance=10.00"
 
 
