@@ -43,6 +43,9 @@ schema = {
         "device_buffer_size": {
             "type": "number"
         },
+        "classifier_train_split": {
+            "type": "number"
+        },
         "path_loss_exponent": {
             "type": "number"
         },
