@@ -1,32 +1,22 @@
 from sympy import Point2D
 
-from src.classifier import Classifier
 from src.config_loader import load_config_file
 from src.device.device import Device
 from src.oracle import Oracle
 from src.pipeline_factory import PipelineFactory
 from src.wifi.wifi_card import WifiCard
 
-if __name__ == '__main__':
-    config = load_config_file("config.yml")
 
-    adapters = [WifiCard(name, Point2D(wifi_card['location'])) for name, wifi_card in config['adapters'].items()]
-
-    device_address_dict = {
-        "50:8a:06:3f:27:9b": [-23, "LittleElf"],
-        "6c:5a:b0:42:02:58": [-6, "TP-Link"],
-        "dc:29:19:94:b1:f8": [-23, "Nikkei"],
-        "48:78:5e:bd:a9:44": [-7, "Blink"],
-        "38:01:46:1d:bd:ec": [-17, "Nedis"]
-    }
-
-    oracle = Oracle(device_address_dict)
-
-    filename = 'test-data.csv'
-    with open(filename, 'w') as f:
+def run_pipeline(file_name, devices_tested, distance, device_address, label,
+                 adapters: list[WifiCard], config, oracle, weighted=True):
+    output_file_name = f"result_distance_{distance}_devices_{devices_tested}_" \
+                       f"path_{config['path_loss_exponent']}_{label}_{'weighted' if weighted else 'unweighted'}.csv"
+    print(f"Output file name: {output_file_name}")
+    with open(output_file_name, 'w') as f:
         f.write(Device.get_csv_header())
 
-    PipelineFactory.from_csv_file("experiments/experiment_10_3.csv", skip_header=False) \
+    PipelineFactory.from_csv_file(file_name, skip_header=False) \
+        .filter(lambda frame: frame.frame_control_information.transmitter_address == device_address) \
         .filter(lambda frame: frame.wlan_radio.signals[0].signal_strength is not None) \
         .filter(lambda frame: frame.frame_control_information.transmitter_address in device_address_dict) \
         .add_frame_aggregator_sniff_timestamp(threshold=len(adapters)) \
@@ -39,5 +29,41 @@ if __name__ == '__main__':
                                               config['transmission_power_placeholder_5ghz'],
                                               do_draw=False) \
         .apply(lambda device: device.to_csv_row()) \
-        .output_to_file(filename) \
+        .output_to_file(output_file_name) \
         .to_list()
+
+
+if __name__ == '__main__':
+    config = load_config_file("config.yml")
+
+    adapters = [WifiCard(name, Point2D(wifi_card['location'])) for name, wifi_card in config['adapters'].items()]
+
+    device_address_dict = {
+        "50:8a:06:3f:27:9b": [-23, "LittleElf"],
+        "dc:29:19:94:b1:f8": [-23, "Nikkei"],
+        "48:78:5e:bd:a9:44": [-7, "Blink"],
+    }
+    oracle = Oracle(device_address_dict)
+
+    files_all = {
+        "experiments/experiment_10_3.csv": 10,
+        "experiments/experiment_5_3.csv": 5,
+        "experiments/experiment_1_3.csv": 1
+    }
+
+    # loop files_all
+    for file_name, distance in files_all.items():
+        for device_address, label in device_address_dict.items():
+            run_pipeline(file_name, 3, distance, device_address, label[1], adapters, config, oracle, weighted=True)
+            run_pipeline(file_name, 3, distance, device_address, label[1], adapters, config, oracle, weighted=False)
+
+    files_single = {
+        "experiments/experiment_10_1.csv": 10,
+        "experiments/experiment_5_1.csv": 5,
+        "experiments/experiment_1_1.csv": 1
+    }
+
+    # loop files_single
+    for file_name, distance in files_single.items():
+        run_pipeline(file_name, 1, distance, "dc:29:19:94:b1:f8", "Nikkei", adapters, config, oracle, weighted=True)
+        run_pipeline(file_name, 1, distance, "dc:29:19:94:b1:f8", "Nikkei", adapters, config, oracle, weighted=False)
