@@ -13,7 +13,7 @@ def get_devices_from_path(path):
 
 
 def get_weighted(path):
-    return not path.find('unweighted') != -1
+    return path.find('unweighted') == -1
 
 
 def euclidean_distance(x, y, expected_location):
