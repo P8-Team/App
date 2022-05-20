@@ -212,14 +212,14 @@ def generate_tests_positions_and_check_for_failures(frame_generator: LocationGen
 
 def test_input_to_output_with_location_generator_large_distance_between_anchors_with_classifier():
     wifi_frame_generator = LocationGenerator([Point2D([0, 4.33]), Point2D([5, -4.33]), Point2D([-5, -4.33])],
-                                             rounding=True)
+                                             rounding=False)
 
     wifi_frames = [
-        wifi_frame_generator.make_wifi_element(Point2D([3, 3]), transmission_power_dbm=-23, sniff_timestamp=1,
+        wifi_frame_generator.make_wifi_element(Point2D([0, 10]), transmission_power_dbm=-23, sniff_timestamp=1,
                                                receiver_address="0"),
-        wifi_frame_generator.make_wifi_element(Point2D([3, 3]), transmission_power_dbm=-23, sniff_timestamp=2,
+        wifi_frame_generator.make_wifi_element(Point2D([0, 10]), transmission_power_dbm=-23, sniff_timestamp=2,
                                                receiver_address="1"),
-        wifi_frame_generator.make_wifi_element(Point2D([3, 3]), transmission_power_dbm=-23, sniff_timestamp=100,
+        wifi_frame_generator.make_wifi_element(Point2D([0, 10]), transmission_power_dbm=-23, sniff_timestamp=100,
                                                receiver_address="2"),
     ]
 
@@ -240,11 +240,11 @@ def test_input_to_output_with_location_generator_large_distance_between_anchors_
         .add_device_aggregator() \
         .add_classifier(classifier) \
         .add_average_rssi_with_variance() \
-        .add_location_non_linear_least_square(4, transmission_power_2ghz, transmission_power_5ghz, do_draw=False)
+        .add_location_non_linear_least_square(4, transmission_power_2ghz, transmission_power_5ghz, do_draw=True)
 
     result = generator.to_list()
 
-    assert result[-1].position == pytest.approx([3, 3], position_precision)
+    assert result[-1].position == pytest.approx([0, 100], abs=1)
 
 
 @pytest.mark.slow
