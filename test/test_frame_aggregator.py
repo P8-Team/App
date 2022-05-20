@@ -10,7 +10,7 @@ from src.wifi.wifi_frame import WifiFrame
 from src.wifi.wlan_radio_information import WlanRadioInformation
 
 
-def make_wifi_frame(sniff_timestamp, signal_strength, transmitter_address='00:00:00:00:00:01'):
+def make_wifi_frame(sniff_timestamp, signal_strength, transmitter_address='00:00:00:00:00:01', location_x=0, location_y=0):
     return WifiFrame(
         length=200,
         frame_control_information=FrameControlInformation(
@@ -20,7 +20,7 @@ def make_wifi_frame(sniff_timestamp, signal_strength, transmitter_address='00:00
             transmitter_address=transmitter_address,
         ),
         wlan_radio=WlanRadioInformation(
-            signals=[Signal(Point2D([0, 0]), signal_strength, sniff_timestamp)],
+            signals=[Signal(Point2D([location_x, location_y]), signal_strength, sniff_timestamp)],
             data_rate=12,
             radio_timestamp=1200
         )
@@ -153,9 +153,9 @@ def test_frame_aggregator_with_sniff_timestamp_not_exceeding_threshold():
 def test_frame_aggregator_with_sniff_timestamp_getting_earlier_sniff_timestamp_than_previous():
     # Arrange
     frames = [
-        make_wifi_frame(2, 5),
-        make_wifi_frame(1, 6),
-        make_wifi_frame(0, 6),
+        make_wifi_frame(2, 5, location_x=1),
+        make_wifi_frame(1, 6, location_x=2),
+        make_wifi_frame(0, 6, location_x=3),
     ]
 
     # Act
@@ -184,9 +184,9 @@ def test_frame_aggregator_with_sniff_timestamp_expire():
 def test_frame_aggregator_with_sniff_timestamp_exceeding_threshold():
     # Arrange
     frames = [
-        make_wifi_frame(2, 5),
-        make_wifi_frame(2.1, 6),
-        make_wifi_frame(2.2, 6),
+        make_wifi_frame(2, 5, location_x=1),
+        make_wifi_frame(2.1, 6, location_x=2),
+        make_wifi_frame(2.2, 6, location_x=3),
     ]
 
     # Act
@@ -200,9 +200,9 @@ def test_frame_aggregator_with_sniff_timestamp_exceeding_threshold():
 def test_frame_aggregator_with_sniff_timestamp_default_parameters():
     # Arrange
     frames = [
-        make_wifi_frame(2, 5),
-        make_wifi_frame(3.1, 6),
-        make_wifi_frame(2.2, 6),
+        make_wifi_frame(2, 5, location_x=1),
+        make_wifi_frame(3.1, 6, location_x=2),
+        make_wifi_frame(2.2, 6, location_x=3),
     ]
 
     # Act
@@ -211,3 +211,18 @@ def test_frame_aggregator_with_sniff_timestamp_default_parameters():
     # Assert
     assert len(combined_frames) == 1
     assert len(combined_frames[0].wlan_radio.signals) == 3
+
+
+def test_frame_aggregator_with_sniff_timestamp_unique_location():
+    # Arrange
+    frames = [
+        make_wifi_frame(2, 5, location_x=1),
+        make_wifi_frame(3.1, 6, location_x=1),
+        make_wifi_frame(2.2, 6, location_x=3),
+    ]
+
+    # Act
+    combined_frames = list(frame_aggregator_sniff_timestamp(iter(frames)))
+
+    # Assert
+    assert len(combined_frames) == 0

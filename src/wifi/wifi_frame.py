@@ -73,7 +73,7 @@ class WifiFrame:
             Calls __key__ on the frame_control_information object to avoid getting signal_strength in the comparison
         :return:
         """
-        return self.length, self.frame_control_sequence, self.frame_control_information, self.wlan_radio.__key__()
+        return self.length, self.frame_control_sequence, self.frame_control_information.__key__(), self.wlan_radio.__key__()
 
     def __hash__(self) -> int:
         return hash(self.__key__())

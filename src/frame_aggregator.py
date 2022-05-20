@@ -37,7 +37,10 @@ def frame_aggregator_sniff_timestamp(generator: Iterator[WifiFrame],
                 buffer[frame_hash] = frame
             else:
                 # Append signal_strength and sniff_timestamps to buffer_frame
-                buffered_frame.wlan_radio.signals.extend(frame.wlan_radio.signals)
+                if not any(signal.location == frame.wlan_radio.signals[0].location
+                           for signal in buffered_frame.wlan_radio.signals):
+                    buffered_frame.wlan_radio.signals.append(frame.wlan_radio.signals[0])
+
         else:
             buffer[frame_hash] = frame
 

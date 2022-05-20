@@ -15,18 +15,20 @@ class Anchor:
     variance: float
     weight: float
 
-    def __init__(self, location: np.ndarray, distance: float, variance: float):
+    def __init__(self, location: np.ndarray, distance: float, variance: float, weighted: bool = True):
         self.location = location
         self.distance = distance
         assert variance is not None
         self.variance = variance
-        self.weight = self.calc_weight()
+        self.weight = self.calc_weight(weighted)
 
-    def calc_weight(self) -> float:
+    def calc_weight(self, weighted) -> float:
         # The article does not mention this edge case. It is assumed that the weight is 1.
+        if not weighted:
+            return 1.0
 
         if math.isclose(self.distance, 0, abs_tol=1e-10) or math.isclose(self.variance, 0, abs_tol=1e-10):
-            return 1
+            return 1.0
         return 1 / (math.pow(self.distance, 4) * math.pow(self.variance, 4))
 
 
@@ -36,7 +38,7 @@ def non_linear_squared_sum_weighted(x: np.ndarray, anchors: list[Anchor]) -> flo
     )
 
 
-def calculate_position(device: Device, path_loss_exponent, placeholder_2ghz, placeholder_5ghz, do_draw=False):
+def calculate_position(device: Device, path_loss_exponent, placeholder_2ghz, placeholder_5ghz, do_draw=False, weighted=True):
     frequency = device.frames[-1].wlan_radio.frequency_mhz
     signals = device.averaged_signals
 
@@ -48,7 +50,8 @@ def calculate_position(device: Device, path_loss_exponent, placeholder_2ghz, pla
     anchors = [Anchor(
         np.array(signal.location.coordinates, dtype=np.float64),
         signal_strength_dbm_to_distance(transmission_power_dbm, signal.signal_strength, path_loss_exponent),
-        signal.variance
+        signal.variance,
+        weighted=weighted
     ) for signal in signals]
 
     res = get_least_squared_error(anchors)
@@ -60,7 +63,8 @@ def calculate_position(device: Device, path_loss_exponent, placeholder_2ghz, pla
 
 
 def get_least_squared_error(anchors: list[Anchor]) -> OptimizeResult:
-    return least_squares(non_linear_squared_sum_weighted, np.array([0, 0]), args=[anchors], gtol=None)
+    return least_squares(non_linear_squared_sum_weighted, np.array([0, 0]), args=[anchors],
+                         gtol=None, xtol=None, max_nfev=500)
 
 
 def draw_plot_with_anchors_circles_and_estimate(anchors, estimate):
@@ -87,7 +91,7 @@ def draw_plot_with_anchors_circles_and_estimate(anchors, estimate):
 
 
 def append_location_generator(generator: Iterable[Device], path_loss_exponent,
-                              placeholder_2ghz, placeholder_5ghz, do_draw=False) -> Iterable[Device]:
+                              placeholder_2ghz, placeholder_5ghz, do_draw=False, weighted=True) -> Iterable[Device]:
     for device in generator:
-        calculate_position(device, path_loss_exponent, placeholder_2ghz, placeholder_5ghz, do_draw)
+        calculate_position(device, path_loss_exponent, placeholder_2ghz, placeholder_5ghz, do_draw, weighted=weighted)
         yield device
