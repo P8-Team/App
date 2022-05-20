@@ -11,61 +11,64 @@ if __name__ == '__main__':
                                              rounding=False)
     path_loss_exponent = 4
 
-    max_distance = 100
+    max_distance = 10
     distance_step = 1
-    distance_current = 0
 
     tx_power_max = 20
     tx_power_min = -20
-    tx_power_actual = 0
+    tx_power_actual = [-10, 10]
     tx_power_step = 0.5
-    tx_power_current = tx_power_min
 
-    power_points_dict = {}
+    for tx_power in tx_power_actual:
+        distance_current = 0
 
-    print("Making dict")
-    while tx_power_current <= tx_power_max:
-        power_points_dict[tx_power_current] = []
-        tx_power_current = tx_power_current + tx_power_step
-
-    tx_power_current = tx_power_min
-
-    print("Making list of list of points")
-    while distance_current <= max_distance:
-        wifi_frame = wifi_frame_generator.make_wifi_element(Point2D([0, distance_current]),
-                                                            transmission_power_dbm=0)
-        device = Device("0", [wifi_frame])
-
-        signal_strengths = []
-
-        for frame in device.frames:
-            signal_strengths.append(frame.wlan_radio.signals)
-
-        device.averaged_signals = average_signals(signal_strengths)
-
-        while tx_power_current <= tx_power_max:
-            calculate_position(device, path_loss_exponent, tx_power_current, 0)
-
-            power_points_dict[tx_power_current].append(device.position)
-
-            tx_power_current = tx_power_current + tx_power_step
-
-        distance_current = distance_current + distance_step
         tx_power_current = tx_power_min
 
-    distance_current = 0
+        power_points_dict = {}
 
-    print("Calculate errors")
-    for key in power_points_dict.keys():
-        error_sum = float(0)
-        for estimated_point in power_points_dict[key]:
-            actual_point = Point2D([0, distance_current])
-            error_sum = error_sum + float(Point2D(estimated_point).distance(actual_point))
+        print("Making dict")
+        while tx_power_current <= tx_power_max:
+            power_points_dict[tx_power_current] = []
+            tx_power_current = tx_power_current + tx_power_step
+
+        tx_power_current = tx_power_min
+
+        print("Making list of list of points")
+        while distance_current <= max_distance:
+            wifi_frame = wifi_frame_generator.make_wifi_element(Point2D([0, distance_current]),
+                                                                transmission_power_dbm=tx_power)
+            device = Device("0", [wifi_frame])
+
+            signal_strengths = []
+
+            for frame in device.frames:
+                signal_strengths.append(frame.wlan_radio.signals)
+
+            device.averaged_signals = average_signals(signal_strengths)
+
+            while tx_power_current <= tx_power_max:
+                calculate_position(device, path_loss_exponent, tx_power_current, 0)
+
+                power_points_dict[tx_power_current].append(device.position)
+
+                tx_power_current = tx_power_current + tx_power_step
+
             distance_current = distance_current + distance_step
+            tx_power_current = tx_power_min
 
         distance_current = 0
 
-        print(f"{key}: {error_sum / len(power_points_dict[key])}")
+        print("Calculate errors")
+        for key in power_points_dict.keys():
+            error_sum = float(0)
+            for estimated_point in power_points_dict[key]:
+                actual_point = Point2D([0, distance_current])
+                error_sum = error_sum + float(Point2D(estimated_point).distance(actual_point))
+                distance_current = distance_current + distance_step
+
+            distance_current = 0
+
+            print(f"{tx_power}\t{key}\t{error_sum / len(power_points_dict[key])}")
 
 # -20: 37.44436243244219
 # -19.5: 36.75656257726219
