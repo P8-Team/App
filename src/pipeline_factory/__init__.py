@@ -85,9 +85,9 @@ class PipelineFactory:
         return self
 
     def add_location_non_linear_least_square(self, path_loss_exponent,
-                                             placeholder_2ghz, placeholder_5ghz, do_draw=False):
+                                             placeholder_2ghz, placeholder_5ghz, do_draw=False, weighted=True):
         self.generator = append_location_generator(self.generator, path_loss_exponent,
-                                                   placeholder_2ghz, placeholder_5ghz, do_draw=do_draw)
+                                                   placeholder_2ghz, placeholder_5ghz, do_draw=do_draw, weighted=weighted)
         return self
 
     def filter(self, filter_function):

@@ -13,7 +13,7 @@ def get_devices_from_path(path):
 
 
 def get_weighted(path):
-    return path.find('weighted') != -1
+    return not path.find('unweighted') != -1
 
 
 def euclidean_distance(x, y, expected_location):
@@ -40,9 +40,14 @@ def make_result(path, expected_location):
     axs.scatter(expected_location[0], expected_location[1], c='black', marker='x')
     axs.scatter(x, y, s=1)
     # add legend
-    axs.legend(['Actual Location', 'Estimated locations'], loc='upper right')
+    axs.legend(['Actual location', 'Estimated locations'], loc='upper right')
     axs.set_xlabel('x (m)')
     axs.set_ylabel('y (m)')
+    # make the axis max and min 20% bigger
+    axs.set_ylim(
+        min(min(y), expected_location[1]) - (max(max(y), expected_location[1]) - min(min(y), expected_location[1])) * 0.2,
+        max(max(y), expected_location[1]) + (max(max(y), expected_location[1]) - min(min(y), expected_location[1])) * 0.4
+    )
     axs.grid(True)
     axs.set_title(f"Estimations of location")
 
@@ -64,7 +69,7 @@ def make_result(path, expected_location):
     print("RMSE: ", rmse)
 
 
-if __name__ == "__main__":
+if __name__  == "__main__":
     # Find all the files in the folder
     files = [f for f in listdir("results") if isfile(join("results", f)) and f.endswith(".csv")]
 

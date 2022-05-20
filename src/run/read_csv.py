@@ -27,7 +27,8 @@ def run_pipeline(file_name, devices_tested, distance, device_address, label,
         .add_location_non_linear_least_square(config['path_loss_exponent'],
                                               config['transmission_power_placeholder_2ghz'],
                                               config['transmission_power_placeholder_5ghz'],
-                                              do_draw=False) \
+                                              do_draw=False,
+                                              weighted=weighted) \
         .apply(lambda device: device.to_csv_row()) \
         .output_to_file(output_file_name) \
         .to_list()
