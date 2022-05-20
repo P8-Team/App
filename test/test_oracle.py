@@ -1,5 +1,3 @@
-import pytest
-
 from src.device.device import Device
 from src.oracle import Oracle
 

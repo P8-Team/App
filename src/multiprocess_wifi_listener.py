@@ -10,7 +10,6 @@ from sympy import Point2D
 
 from src.device.device_aggregator import device_aggregator
 from src.device.frame_to_device_converter import frame_to_device_converter
-from src.utils import chain_generators
 from src.wifi.wifi_card import WifiCard
 from src.wifi.wifi_frame import WifiFrame
 

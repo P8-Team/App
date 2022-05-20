@@ -25,11 +25,12 @@ class Classifier:
         """
         self.interval = config['classifier_interval']
         self.confidence_threshold = config['confidence_threshold']
-        self.labels_file = config['labels_file']
-        self.hard_data_file = config['hard_data_file']
+        self.address_label_map = config['address_label_map']
+        self.label_device_map = config['label_device_map']
         self.saved_models_folder = config['saved_models_folder']
         self.cache_folder = config['cache_folder']
         self.training_files = config['training_files']
+        self.training_size = config['classifier_train_split']
         self.model = RandomForestClassifier()
 
     def classify(self, generator: Iterable[Device]):
@@ -39,7 +40,7 @@ class Classifier:
 
         param device: A devices
         """
-        device_lookup = DeviceLookup(self.hard_data_file)
+        device_lookup = DeviceLookup(self.label_device_map)
 
         for device in generator:
             interval_classification_with_threshold = list()
@@ -140,7 +141,7 @@ class Classifier:
 
     def train(self):
 
-        labels = pd.read_csv(self.labels_file)
+        labels = pd.read_csv(self.address_label_map)
         files = self.get_file_paths()
 
         dfs = list()
@@ -154,7 +155,9 @@ class Classifier:
         data, label_series = self.preprocess_data(df, labels)
 
         print("Split")
-        input_train, input_test, labels_train, labels_test = train_test_split(data, label_series)
+        input_train, input_test, labels_train, labels_test = train_test_split(data,
+                                                                              label_series,
+                                                                              train_size=self.training_size)
 
         print("Fitting")
         self.model.fit(input_train, labels_train)
