@@ -31,8 +31,8 @@ def classification_output_runner(filename):
 
 
 if __name__ == '__main__':
-    path = "Data/experiments/"
-    files = ["experiments_1_1.csv", "experiments_1_3.csv", "experiments_5_1.csv", "experiments_5_3.csv",
-             "experiments_10_1.csv","experiments_10_3.csv"]
+    path = "experiments/"
+    files = ["experiment_1_1.csv", "experiment_1_3.csv", "experiment_5_1.csv", "experiment_5_3.csv",
+             "experiment_10_1.csv","experiment_10_3.csv"]
     for file in files:
         classification_output_runner(path + file)
