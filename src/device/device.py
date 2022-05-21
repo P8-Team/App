@@ -51,13 +51,15 @@ class Device:
         y = float(self._position[1])
         distance = float(Point2D(self._position).distance(Point2D([0, 0])))
 
-        return "{} (UTC) - {}: identification={}, position=({:.2f}, {:.2f}), distance={:.2f}"\
+        return "{} (UTC) - {}: identification={}, position=({:.2f}, {:.2f}), distance={:.2f}" \
             .format(time, address, identification, x, y, distance)
 
     def to_csv_row(self) -> str:
         return f"{self.physical_address},{self.identification[0] if self.identification is not None else ''}," \
-               f"{self.identification[1] if self.identification is not None else ''},{float(self._position[0])}," \
-               f"{float(self._position[1])},{float(Point2D(self._position).distance(Point2D([0, 0])))}"
+               f"{self.identification[1] if self.identification is not None else ''}," \
+               f"{float(self._position[0]) if self.position is not None else ' '}," \
+               f"{float(self._position[1]) if self.position is not None else ' '}," \
+               f"{float(Point2D(self._position).distance(Point2D([0, 0]))) if self._position is not None else ' '}"
 
     @staticmethod
     def get_csv_header():
