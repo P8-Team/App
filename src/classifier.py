@@ -149,6 +149,9 @@ class Classifier:
             dfs.append(frames_from_file_with_caching(file, self.cache_folder))
         df = pd.concat(dfs)
 
+        # drop the column 'frequency'
+        df = df.drop(columns=['frequency_mhz'])
+
         cache_dataframe(self.cache_folder, 'unprocessed_training_data', df)
 
         print("Processing")
