@@ -77,9 +77,13 @@ def draw_plot_with_anchors_circles_and_estimate(anchors, estimate):
     limit_y_max = max([anchor.location[1] + anchor.distance for anchor in anchors])
     limit_y_min = min([anchor.location[1] - anchor.distance for anchor in anchors])
 
+    limit_max = max([limit_y_max, limit_x_max])
+    limit_min = min([limit_y_min, limit_x_min])
+
     fig, ax = plt.subplots()
-    ax.set_xlim(limit_x_min, limit_x_max)
-    ax.set_ylim(limit_y_min, limit_y_max)
+
+    ax.set_xlim(limit_min, limit_max)
+    ax.set_ylim(limit_min, limit_max)
     for anchor in anchors:
         ax.scatter(anchor.location[0], anchor.location[1], s=100, marker='o', color='y')
         ax.add_artist(plt.Circle((anchor.location[0], anchor.location[1]), anchor.distance, color='r', fill=False))
@@ -87,6 +91,10 @@ def draw_plot_with_anchors_circles_and_estimate(anchors, estimate):
     ax.scatter(estimate[0], estimate[1], s=100, marker='o', color='g')
 
     fig.set_size_inches(10, 10)
+
+    # plt.xticks(np.arange(int(limit_min), int(limit_max) + 1, 1))
+    # plt.yticks(np.arange(int(limit_min), int(limit_max) + 1, 1))
+
     plt.show()
 
 
